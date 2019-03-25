@@ -25,9 +25,20 @@
             <div id="nav-mobile" class="left">
                 <h5><strong><i class="fas fa-glass-martini-alt"></i> Drinkit</strong></h5>
             </div>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a class="waves-effect waves-light btn-small modal-trigger" href="#login">Login</a></li>
-                <li><a class="waves-effect waves-light btn-small modal-trigger" href="#sign-up">Sign-Up</a></li>
+            <ul id="nav-mobile" class="right">
+                {% if session['username'] %}
+                    <li>
+                        <div class="chip">
+                            <img src="https://www.vrc.crim.cam.ac.uk/VRCconferences/conference/cplenaries/pelnspeakers/person-placeholder.jpg/image" 
+                            alt="Contact Person" />{{ session['username'] }}
+                        </div>
+                    </li>
+                    <li><a class="waves-effect waves-light btn-small modal-trigger" href="{{ url_for('logout') }}">Log Out</a></li>
+                {% else %}
+                    <li><a class="waves-effect waves-light btn-small modal-trigger" href="#login">Login</a></li>
+                    <li><a class="waves-effect waves-light btn-small modal-trigger" href="#sign-up">Sign-Up</a></li>
+                {% endif %} 
+               
             </ul>
         </div>
     </nav>
