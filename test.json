@@ -1,0 +1,36 @@
+{
+    "_id": 0,
+    "cocktail_name": "dark and stormy",
+    "spirits":
+        [{
+            "drink_id":0,
+            "quantity": "2 oz" 
+        }],
+    "ingredients":
+    [
+        {
+            "name":"ginger beer",
+            "quantity": "3 oz"
+        },
+        {
+            "name": "Lime Juice",
+            "quantity": "0.5 oz",
+            "optional": true
+        },
+        {
+            "name": "Lime Juice",
+            "quantity": "1 slice",
+            "optional": true
+        }
+    
+    ],
+    "description": "The Dark and Stormy cocktail was not born from the windy blackness of London, nor was it created in a barroom catering to the alcoholic needs of woebegone writers. In fact, it has nothing to do with bad literary tropes and gothic language. The Dark and Stormy is a drink that came to be in the Caribbean waters, where rum is plentiful and so are sailors. It’s a drink that was spit out by the sea, more or less. It’s a drink with a really cool name.",
+    "Flavor_Descriptor": ["Spicy"],
+    "rating": 0,
+    "method": ["Fill a Highball Glass With ice","Add Rum", "Add Ginger Beer and Lime Juice","Garnish with a lime wedge", "Enjoy"],
+    "glass" : "Highball",
+    "equipment":[],
+    "submitted_by": 1,
+    "flagged": false
+
+}
