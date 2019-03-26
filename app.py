@@ -1,4 +1,7 @@
 import pymongo
+from pymongo import MongoClient
+from bson import ObjectId
+
 from datetime import datetime
 from flask import Flask, redirect, render_template, request, session, url_for
 from passlib.hash  import sha256_crypt
@@ -16,7 +19,7 @@ def mongo_connect(uri):
         conn = pymongo.MongoClient(uri)
         print("DB Connected Successfully")
         return conn["bartendr"]
-    except pymongo.error.ConnectionFailure as e:
+    except pymongo.errors.ConnectionFailure as e:
         print("Could not connect to MongoDB: %s") % e
 
 
@@ -34,7 +37,9 @@ def login():
     if userdetails != None:
         if sha256_crypt.verify(request.form["password"], userdetails["passhash"]):
             session['username'] = request.form["username"]
+            session['_id'] = str(userdetails["_id"])
             return redirect(url_for("index"))
+    return redirect(url_for("index"))
 
 @app.route('/logout/')
 def logout():
@@ -57,9 +62,19 @@ def new_user():
             "date_joined":str(datetime.now())
         }
     )
-    print("new user added")
-    session['username'] = request.form["newusername"]
+    userdetails = userCollection.find_one({"username": request.form["newusername"]})
+    session['username'] = request.form["username"]
+    session['_id'] = str(userdetails["_id"])
     return redirect(url_for("index"))
 
+
+@app.route('/c/cocktail', methods=["GET", "POST"])
+def new_drink():
+    """ Add a new cocktail to the database"""
+    if session['username']:
+        return render_template('addcocktail.html')
+
+    else:
+        return redirect(url_for("index"))
 
 app.run(debug=True)

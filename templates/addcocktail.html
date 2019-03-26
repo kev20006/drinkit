@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="container">
+    <div class="card">
+        <div class="row">
+            <div class="col s11">
+                <h4>Cocktail Details:</h4>
+            </div>
+            <div class="col s1" ><a class="waves-effect waves-teal btn-flat" href="{{ url_for('index') }}"><i class="fas fa-times"></i></a></div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input id="name" type="text">
+                <label for="name">Type full name of cocktail</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="file-field input-field">
+                <div class="btn">
+                    <i class="fas fa-image"></i>
+                    <input type="file">
+                </div>
+                <div class="file-path-wrapper">
+                    <input id="image" class="file-path validate" type="text">
+                    <label for="name">select and image file</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <textarea id="description" class="materialize-textarea"></textarea>
+                <label for="description">Describe your cocktail</label>
+            </div>
+        </div>
+        <div class="row center-align">
+            <label>Add some flavor tags to help people find your cocktail</label>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <div class="chips chips-autocomplete">
+                    <input id="flavors" class="custom-class">
+                </div>
+                <span class="helper-text">e.g. sweet, spicy, fruity, creamy etc.</span>
+            </div>
+        </div>
+        <hr>
+        <div id="ingredients">
+            <div class="row">
+              <h4>Ingredients and Equipment:</h4>  
+            </div>
+            <div class="row">
+                <div class="input-field col s5">
+                    <input id="ingredient-1" class="ingredient" type="text">
+                    <label for="ingredient-1">Ingredient</label>
+                </div>
+                <div class="input-field col s3">
+                    <input id="quantity-1" type="text" class="quantity">
+                    <label for="quantity-1">quantity</label>
+                </div>
+                <div class="input-field col s2">
+                    <input id="units-1" type="text" class="quantity">
+                    <label for="units-1">units</label>
+                </div>
+                <div class="input-field col s2">
+                    <a class="waves-effect waves-teal btn-flat"><i id="add-1" class="far fa-plus-square" onclick="newIngredient(this)"></i></a>
+                </div>
+            </div>
+        </div> 
+        <div class="row">
+            <div class="input-field col s12 m6">
+                <select class="icons">
+                    <option value="" disabled>Choose your option</option>
+                    <option value="collins" data-icon="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Collins_Glass.gif/73px-Collins_Glass.gif" 
+                    class="left">Collins</option>
+                    <option value="martini" data-icon="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cocktail_Glass_%28Martini%29.svg/80px-Cocktail_Glass_%28Martini%29.svg.png" 
+                    class="left">Martini</option>
+                    <option value="hurricane" data-icon="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Hurricane_Glass.svg/43px-Hurricane_Glass.svg.png" 
+                    class="left">Hurricane</option>
+                    <option value="margarita"
+                        data-icon="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cocktail_Glass_%28Martini%29.svg/80px-Cocktail_Glass_%28Martini%29.svg.png"
+                        class="left">Margarita</option>
+                    <option value="lowball"
+                        data-icon="https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Rocks_Glass_%28Standard%29.svg/108px-Rocks_Glass_%28Standard%29.svg.png"
+                        class="left">Lowball/Rocks</option>
+                    <option value="highball"
+                        data-icon="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Highball_Glass_%28Tumbler%29.svg/64px-Highball_Glass_%28Tumbler%29.svg.png"
+                        class="left">Highball</option>
+                    <option value="other" class="left">Other</option>
+                    <option value="any" class="left">Any</option>
+                </select>
+                <label>Preferred Glass</label>
+            </div>
+            <div class="input-field col s12 m6">
+                <select multiple>
+                    <option value="" disabled>Choose your option</option>
+                    <option value="1">Type of Spirit 3</option>
+                    <option value="2">Type of Spirit 2</option>
+                    <option value="3">add new drink</option>
+                </select>
+                <label>Preferred brands of Spirit</label>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <h4>Method:</h4>
+        </div>
+        <div id="step-by-step">
+            <div class="row">
+                Enter step by step instructions how to make your cocktail below.
+            </div>
+            <div class="row">
+                <div class="input-field col s10">
+                    <input id="step-1" class="ingredient" type="text" placeholder="step 1">
+                </div>
+                <div class="input-field col s2">
+                    <a class="waves-effect waves-teal btn-flat"><i id="add-step-1" class="far fa-plus-square"
+                            onclick="newStep(this)"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 center-align">
+                <a class="waves-effect waves-light btn-small"><i class="fas fa-times left"></i>cancel</a>
+                <a class="waves-effect waves-light btn-small"><i class="fas fa-cocktail"></i>submit drink</a>
+            </div>
+           
+        </div>
+    </div>
+   
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', ()=> {
+        let chipsElems = document.querySelectorAll('.chips');
+        var chipinstances = M.Chips.init(chipsElems, {
+            autocompleteOptions: {
+                data: {
+                    'Sweet': null,
+                    'Dry': null,
+                    'Bitter': null,
+                    'Sour': null,
+                    'Fruity': null,
+                    'Creamy': null
+                },
+                limit: Infinity,
+                minLength: 1
+            }
+        });
+    });
+
+
+    let newIngredient = (e) =>{
+        let index = parseInt(e.id.split("-")[1]) + 1
+        e.parentNode.parentNode.removeChild(e.parentNode);
+        let htmlString = `
+            <div class="row">
+                <div class="input-field col s5">
+                    <input id="ingredient-${index} class="ingredient" type="text">
+                    <label for="ingredient-${index}">Ingredient</label>
+                </div>
+                <div class="input-field col s3">
+                    <input id="quantity-${index}" type="text" class="quantity">
+                    <label for="quantity-${index}">quantity</label>
+                </div>
+                <div class="input-field col s2">
+                    <input id="units-${index}" type="text" class="quantity">
+                    <label for="units-${index}">units</label>
+                </div>
+                <div class="input-field col s2">
+                    <a class="waves-effect waves-teal btn-flat"><i id="add-${index}" class="far fa-plus-square" onclick="newIngredient(this)"></i></a>
+                </div>
+            </div>
+        `;
+        let div = document.createElement("div");
+        div.className = "row";
+        div.innerHTML = htmlString;
+        document.getElementById("ingredients").append(div);
+       
+    }
+
+    let newStep = (e)=> {
+        let index = parseInt(e.id.split("-")[2]) + 1
+        e.parentNode.parentNode.removeChild(e.parentNode);
+        let htmlString = `<div class="row">
+            <div class="input-field col s10">
+                <input id="step-${index}" name="step-${index}" class="ingredient" type="text" placeholder="step ${index}">
+                </div>
+                <div class="input-field col s2">
+                    <a class="waves-effect waves-teal btn-flat"><i id="add-step-${index}" class="far fa-plus-square"
+                        onclick="newStep(this)"></i></a>
+                </div>
+            </div>`
+        let div = document.createElement("div");
+        div.className = "row";
+        div.innerHTML = htmlString;
+        document.getElementById("step-by-step").append(div);
+    }                           
+   
+        
+
+    </script>
+</main>
+{% endblock %}

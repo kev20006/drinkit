@@ -24,7 +24,7 @@
                     </div>
                     <div class="card-content center">
                          {% if session['username'] %}
-                            <a class="waves-effect waves-light btn modal-trigger"><i class="fas fa-cocktail"></i>New Drink</a>
+                            <a class="waves-effect waves-light btn modal-trigger" href="{{ url_for('new_drink') }}"><i class="fas fa-cocktail"></i>New Drink</a>
                          {% else %}
                             <a class="waves-effect waves-light btn modal-trigger" href="#sign-up"><i class="fas fa-cocktail"></i>Join Today</a>
                          {% endif %} 
