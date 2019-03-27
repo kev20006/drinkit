@@ -14,6 +14,55 @@ DBS_NAME =  "bartendr"
 app.secret_key = 'any random string'
 
 
+def aggregate_cocktail_previews(cocktails):
+    cocktailPreviews = []
+    cocktailDetails = cocktails.aggregate([
+        {"$lookup":
+            {
+                "from": "users",
+                "foreignField": "_id",
+                "localField": "creator",
+                "as": "creator"
+            }
+         },
+        {"$unwind": "$flavor_tags"},
+        {"$lookup":
+            {
+                "from": "flavors",
+                "foreignField": "_id",
+                "localField": "flavor_tags",
+                "as": "flavors"
+            }
+         },
+        {"$unwind": "$flavors"},
+        {"$unwind": "$creator"},
+        {"$unwind": "$ingredients"},
+        {"$lookup":
+            {
+                "from": "ingredients",
+                "foreignField": "_id",
+                "localField": "ingredients.ingredient",
+                "as": "ingredient_list"
+            }
+         },
+        {"$unwind": "$ingredient_list"},
+        {"$group":
+            {
+                "_id": "$_id",
+                "name": {"$min": "$name"},
+                "description": {"$min": "$description"},
+                "upvotes": {"$min": "$upvotes"},
+                "image_url": {"$min": "$image_url"},
+                "creator": {"$min": "$creator.username"},
+                "flavors": {"$addToSet": '$flavors'},
+                "ingredient_list":  {"$addToSet": '$ingredient_list'}
+            }
+        }
+    ])
+
+    return cocktailDetails
+
+
 def mongo_connect(uri):
     try:
         conn = pymongo.MongoClient(uri)
@@ -25,7 +74,10 @@ def mongo_connect(uri):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    connection = mongo_connect(mongo_uri)
+    cocktails = connection["cocktails"]
+    cocktailPreviews = aggregate_cocktail_previews(cocktails)
+    return render_template('index.html', cocktails = cocktailPreviews)
 
 
 #Login and Logout
@@ -63,7 +115,7 @@ def new_user():
         }
     )
     userdetails = userCollection.find_one({"username": request.form["newusername"]})
-    session['username'] = request.form["username"]
+    session['username'] = request.form["newusername"]
     session['_id'] = str(userdetails["_id"])
     return redirect(url_for("index"))
 
