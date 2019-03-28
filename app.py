@@ -1,6 +1,7 @@
 import pymongo
 from pymongo import MongoClient
 from bson import ObjectId
+from bson.json_util import dumps
 
 from datetime import datetime
 from flask import Flask, redirect, render_template, request, session, url_for
@@ -15,7 +16,6 @@ app.secret_key = 'any random string'
 
 
 def aggregate_cocktail_previews(cocktails):
-    cocktailPreviews = []
     cocktailDetails = cocktails.aggregate([
         {"$lookup":
             {
@@ -128,5 +128,16 @@ def new_drink():
 
     else:
         return redirect(url_for("index"))
+
+
+#ajax routes
+@app.route('/api/ingredients/<type>')
+def get_ingredients_by_type(type):
+    print(type)
+    connection = mongo_connect(mongo_uri)
+    ingredients = connection["ingredients"].find({"type":type})
+    return dumps(ingredients)
+
+
 
 app.run(debug=True)

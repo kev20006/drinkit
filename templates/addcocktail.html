@@ -46,26 +46,42 @@
         <hr>
         <div id="ingredients">
             <div class="row">
-              <h4>Ingredients and Equipment:</h4>  
+                <div class="col s10">
+                    <h4>Ingredients:</h4>
+                </div>
+                <div class="input-field col s2">
+                    <h4>
+                        <a class="waves-effect waves-teal btn-flat modal-trigger" 
+                        href="#new-ingredient">
+                        
+                            <i id="add-1" class="far fa-plus-square"></i>
+                        
+                        </a>
+                    </h4>
+                </div>
             </div>
             <div class="row">
-                <div class="input-field col s5">
-                    <input id="ingredient-1" class="ingredient" type="text">
-                    <label for="ingredient-1">Ingredient</label>
-                </div>
-                <div class="input-field col s3">
-                    <input id="quantity-1" type="text" class="quantity">
-                    <label for="quantity-1">quantity</label>
-                </div>
-                <div class="input-field col s2">
-                    <input id="units-1" type="text" class="quantity">
-                    <label for="units-1">units</label>
-                </div>
-                <div class="input-field col s2">
-                    <a class="waves-effect waves-teal btn-flat"><i id="add-1" class="far fa-plus-square" onclick="newIngredient(this)"></i></a>
+                <div class="col s12">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ingredient</th>
+                                <th>Type</th>
+                                <th>Quanitiy</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ingredients-table">
+                        </tbody>
+                        <tfoot>
+                            <tr></tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
         </div> 
+        <div class="row">
+            <h4>Equipment:</h4>
+        </div>
         <div class="row">
             <div class="input-field col s12 m6">
                 <select class="icons">
@@ -126,57 +142,62 @@
            
         </div>
     </div>
-   
-
-
-    <script>
-    document.addEventListener('DOMContentLoaded', ()=> {
-        let chipsElems = document.querySelectorAll('.chips');
-        var chipinstances = M.Chips.init(chipsElems, {
-            autocompleteOptions: {
-                data: {
-                    'Sweet': null,
-                    'Dry': null,
-                    'Bitter': null,
-                    'Sour': null,
-                    'Fruity': null,
-                    'Creamy': null
-                },
-                limit: Infinity,
-                minLength: 1
-            }
-        });
-    });
-
-
-    let newIngredient = (e) =>{
-        let index = parseInt(e.id.split("-")[1]) + 1
-        e.parentNode.parentNode.removeChild(e.parentNode);
-        let htmlString = `
-            <div class="row">
-                <div class="input-field col s5">
-                    <input id="ingredient-${index} class="ingredient" type="text">
-                    <label for="ingredient-${index}">Ingredient</label>
+    <!-- Modals -->
+    <!-- Add Ingredient -->
+    <div id="new-ingredient" class="modal">
+        <div class="modal-content">
+            <h4>Add New Ingredient</h4>
+            <div id="ingredient-row"class="row">
+                <div class="input-field col s4">
+                    <select id="type-selector" onchange="getIngredients(this);">
+                        <option disabled selected>Choose your option</option>
+                        <option value="spirit">Spirit</option>
+                        <option value="garnish">Garnish</option>
+                        <option value="mixer">Mixer</option>
+                    </select>
+                    <label>Type of Ingredient</label>
                 </div>
-                <div class="input-field col s3">
-                    <input id="quantity-${index}" type="text" class="quantity">
-                    <label for="quantity-${index}">quantity</label>
+                <div id="ingredient-selector" class="input-field col s4">
                 </div>
-                <div class="input-field col s2">
-                    <input id="units-${index}" type="text" class="quantity">
-                    <label for="units-${index}">units</label>
-                </div>
-                <div class="input-field col s2">
-                    <a class="waves-effect waves-teal btn-flat"><i id="add-${index}" class="far fa-plus-square" onclick="newIngredient(this)"></i></a>
+                <div id="quantity-input" class="input-field col s4">
+                    <input id="quantity" type="text">
+                    <label for="quantity">quantity</label>
+                    <span class="helper-text">2 oz, 3 ml, 1 slice</span>
                 </div>
             </div>
-        `;
-        let div = document.createElement("div");
-        div.className = "row";
-        div.innerHTML = htmlString;
-        document.getElementById("ingredients").append(div);
-       
-    }
+        </div>
+        <div class="modal-footer">
+            <a class="modal-close waves-effect waves-green btn-flat" onclick="addToTable()">add</a>
+        </div>
+    </div>
+    <!-- End of Add Ingredient -->
+    <!-- End of Modals -->
+
+    <script src="/static/scripts/addingredient.js" charset="utf-8"></script>
+    <script>
+    
+    document.addEventListener('DOMContentLoaded', () => {
+
+            let chipsElems = document.querySelectorAll('.chips');
+            var chipinstances = M.Chips.init(chipsElems, {
+                autocompleteOptions: {
+                    data: {
+                        'Sweet': null,
+                        'Dry': null,
+                        'Bitter': null,
+                        'Sour': null,
+                        'Fruity': null,
+                        'Creamy': null
+                    },
+                    limit: Infinity,
+                    minLength: 1
+                }
+            });
+            var elems = document.querySelectorAll('.modal');
+            var instances = M.Modal.init(elems, {});
+
+
+    });
 
     let newStep = (e)=> {
         let index = parseInt(e.id.split("-")[2]) + 1
