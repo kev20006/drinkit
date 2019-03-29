@@ -133,11 +133,22 @@ def new_drink():
 #ajax routes
 @app.route('/api/ingredients/<type>')
 def get_ingredients_by_type(type):
-    print(type)
     connection = mongo_connect(mongo_uri)
     ingredients = connection["ingredients"].find({"type":type})
     return dumps(ingredients)
 
 
+@app.route('/api/spirits/<type>')
+def spirits_by_type(type):
+    connection = mongo_connect(mongo_uri)
+    spirits = connection["spirits"].find({"typeof": type})
+    return dumps(spirits)
+
+
+@app.route('/api/flavors/')
+def get_flavors():
+    connection = mongo_connect(mongo_uri)
+    flavors = connection["flavors"].find({})
+    return dumps(flavors)
 
 app.run(debug=True)

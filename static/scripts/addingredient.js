@@ -1,8 +1,7 @@
 
 
 let getIngredients = (trigger) =>{
-    document.getElementById('ingredient-selector')
-            .innerHTML = 'fetching ingredients...';
+    document.getElementById('ingredient-selector').innerHTML = 'fetching ingredients...';
     let xhr = new XMLHttpRequest();
     xhr.onload = () =>{
         if (xhr.status >= 200 && xhr.status < 300){
@@ -11,6 +10,7 @@ let getIngredients = (trigger) =>{
             data = JSON.parse(xhr.response);
             let select = document.createElement("select")
             select.id = "ingredient-select"
+            select.classList = "form-control"
             select.innerHTML = '<option disabled selected>Choose your option</option>';
             data.forEach(element => {
                 select.innerHTML += `<option value="${element.name}">${element.name}</option>`;
@@ -18,22 +18,23 @@ let getIngredients = (trigger) =>{
             select.innerHTML += `<option value="new">add new</option>`;
             let label= document.createElement('label');
             label.textContent = `type of ${trigger.value}`;
+            label.for = 'ingredient-select';
             select.onchange = (event)=>{
                 if(event.target.value == "new"){
                     target.innerHTML = '';
                     ingredientInput = document.createElement("input");
                     ingredientInput.id = "ingredient-select";
+                    ingredientInput.classList = 'form-control';
                     ingredientInput.type = "text";
                     label.for = "ingredient-select";
-                    label.textContent = "Enter New Ingredient";
-                    target.appendChild(ingredientInput);
+                    label.textContent = "New Ingredient";
                     target.appendChild(label);
+                    target.appendChild(ingredientInput);
+                    
                 }
             };
-            target.appendChild(select);
             target.appendChild(label);
-            var selectelems = document.querySelectorAll('select');
-            var instances = M.FormSelect.init(selectelems, {});        
+            target.appendChild(select); 
         }
         else{
             console.log('The request failed!')
@@ -42,7 +43,6 @@ let getIngredients = (trigger) =>{
 
     xhr.open('GET', `/api/ingredients/${trigger.value}`);
     xhr.send();
-
 }
 
 

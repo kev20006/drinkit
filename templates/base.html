@@ -9,120 +9,118 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
         integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <!--Import Google Icon Font-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!--Import Materialise-->
-    <link rel="stylesheet" 
-    href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    
+    <!--Import Bootstrap-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <style>
-    #controls{
-        position: -webkit-sticky; /* Safari */
-        position: sticky;
-        top: 0;
-    }
     
 
 </style>
-<body class="grey darken-2">
-    <nav>
+<body>
+    <nav class="navbar navbar-light bg-light justify-content-between">
         <div class="nav-wrapper black">
-            <div id="nav-mobile" class="left">
-                <h5><strong><i class="fas fa-glass-martini-alt"></i> Drinkit</strong></h5>
-            </div>
-            <ul id="nav-mobile" class="right">
-                {% if session['username'] %}
-                    <li>
-                        <div class="chip">
-                            <img src="https://www.vrc.crim.cam.ac.uk/VRCconferences/conference/cplenaries/pelnspeakers/person-placeholder.jpg/image" 
-                            alt="Contact Person" />{{ session['username'] }}
-                        </div>
-                    </li>
-                    <li><a class="waves-effect waves-light btn-small modal-trigger" href="{{ url_for('logout') }}">Log Out</a></li>
-                {% else %}
-                    <li><a class="waves-effect waves-light btn-small modal-trigger" href="#login">Login</a></li>
-                    <li><a class="waves-effect waves-light btn-small modal-trigger" href="#sign-up">Sign-Up</a></li>
-                {% endif %} 
-               
-            </ul>
+            <h5><strong><i class="fas fa-glass-martini-alt"></i> Drinkit</strong></h5>
+        </div>
+        <div>
+            {% if session['username'] %}
+                <span>
+                    {{ session['username'] }}
+                </span>
+                <a href="{{ url_for('logout') }}"><span class="btn btn-outline-primary" >Log Out</span></a>
+            {% else %}
+                <span class="btn btn-outline-primary" data-toggle="modal" data-target="#login">Login</span>
+                <span class="btn btn-outline-primary" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
+            {% endif %}
         </div>
     </nav>
     {% block content %}
     {% endblock %}
       <!-- Login Modal -->
-    <div id="login" class="modal">
-        <div class="modal-content">
-            <h4>login</h4>
-             <div class="row">
-                <form class="col s10" action="{{ url_for('login') }}" method="POST">
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input id="username" name="username" type="text" class="validate">
-                            <label for="username">Please Enter Your Username</label>
-                        </div>
+    <div id="login" class="modal fade" aria-labelledby="login" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <h4>login</h4>
+                
+                <form action="{{ url_for('login') }}" method="POST">
+                    <div class="form-group">
+                        <label for="username">Please Enter Your Username</label>
+                        <input id="username" class="form-control" name="username" type="text" aria-describedby="username"
+                            placeholder="Enter Username" required>
                     </div>
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input id="password" name="password" type="password" class="validate" data-length="5">
-                            <label for="password">Please Enter Your Password</label>
-                        </div>
+                    <div class="form-group">
+                        <label for="password">Please Enter Your Password</label>
+                        <input id="password" name="password" class="form-control" type="password" placeholder="Password">
                     </div>
-                    <button class="btn waves-effect waves-light" type="submit">Join Today</button>
+                    <button class="btn btn-primary" type="submit">Join Today</button>
                 </form>
             </div>
         </div>
     </div>
 
     <!-- Sign Up Modal -->
-    <div id="sign-up" class="modal">
-        <div class="modal-content">
-            <h4>Create Account</h4>
-            <p>By joining drinkit you are joining a brand new community of cocktail enthusiasts. As a member you will be able to share
-            your creations, offer your advice to other like minded people and follow your favorite spirits, mixers or flavors to get
-            new ideas to try in your bar or at home with your friends.</p>
-
-            <p>To join all you need to do is provide a username and a 5 digit pin number that will serve as your password.</p>
-            <div class="row">
-                <form class="col s12" action="{{ url_for('new_user') }}" method="POST" onsubmit="validatePasswords()">
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input id="new-username" name="newusername" type="text" class="validate">
+    <div id="sign-up" class="modal fade" aria-labelledby="sign up" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                <div class="row mx-0 px-2">
+                    <div class="col-12">
+                    <h4>Create Account</h4>
+                    <p>By joining drinkit you are joining a brand new community of cocktail enthusiasts. As a member you will be able to
+                        share
+                        your creations, offer your advice to other like minded people and follow your favorite spirits, mixers or flavors to
+                        get
+                        new ideas to try in your bar or at home with your friends.</p>
+                    
+                    <p>To join all you need to do is provide a username and a 5 digit pin number that will serve as your password.</p>
+                    </div>
+                </div>
+                <div class="row mx-0 px-2">
+                    <form action="{{ url_for('new_user') }}" method="POST" onsubmit="validatePasswords()">
+                        <div class="form-group">
+                            <input id="new-username" name="newusername" class="form-control" type="text" placeholder="new username" required>
                             <label for="new-username">Please Enter Your Desired Username</label>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input id="new-password1" name="newpassword1" type="password" class="validate" data-length="5">
+                        
+                        <div class="form-group">
                             <label for="new-password1">Please Enter Your Password</label>
+                            <input id="new-password1" name="newpassword1"  class="form-control" type="password" placeholder="password" >
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input id="new-password2" name="newpassword2" type="password" class="validate" data-length="5">
+                        <div class="form-group">
                             <label for="new-password2">Please Re-Enter Your Password</label>
+                            <input id="new-password2" name="newpassword2" type="password"  class="form-control" type="password" placeholder="password">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col s12">
-                            <p id="password-error"></p>
+                        <div class="row">
+                            <div class="col-12">
+                                <p id="password-error"></p>
+                            </div>
                         </div>
-                    </div>
-                     <div class="row">
-                        <div class="col s12">
-                           <button class="btn waves-effect waves-light" type="submit">Join Today</button>  
+                        <div class="form-group">
+                            <button class="btn waves-effect waves-light" type="submit">Join Today</button>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
+                <div class="row mx-0 px-2">
+                <p><strong>Disclaimer:</strong> Drinkit is a practice project and has implemented minimal security so please don't
+                    disclose any personal
+                    information, I would also advise against using your email address as your username</p>
+                </div>
             </div>
-            <p><strong>Disclaimer:</strong> Drinkit is a practice project and has implemented minimal security so please don't disclose any personal
-            information, I would also advise against using your email address as your username</p>
-            
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    {% block scripts %}
+    {% endblock %}
     <script>
-        M.AutoInit();
-
         validatePasswords = ()=>{
             let password1 = document.getElementById("new-password1").value;
             let password2 = document.getElementById("new-password2").value;
