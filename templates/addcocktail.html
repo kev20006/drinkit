@@ -17,7 +17,7 @@
             <div class="form-group px-4">
                 <label for="image-url">Attach image url</label>
                 <input id="image-url" name="image-url" type="text" class="form-control" 
-                    placeholder="Name of Cocktail">
+                    placeholder="cocktail url">
             </div>
             <div class="form-group px-4">
                 <label for="description">Describe your cocktail</label>
@@ -28,8 +28,8 @@
             <div class="form-group px-4">
                 <label for="flavors">enter a list of decriptors</label>
                 <input id="flavors" name="flavors" type="text" class="form-control" aria-describedby="flavorHelp"
-                    placeholder="Name of Cocktail">
-                <small id="flavorHelp" class="form-text text-muted">Enter a coma separated list of flavors i.e. spicy, fruity, creamy</small>
+                    placeholder="Flavor Descriptors">
+                <small id="flavorHelp" class="form-text text-muted">Enter a comma separated list of flavors i.e. spicy, fruity, creamy</small>
             </div>
             <hr>
             <div id="ingredients">
@@ -38,21 +38,34 @@
                         <h4>Ingredients:</h4>
                     </div>
                     <div>
-                        <h4><a class="btn btn-outline-dark" data-toggle="modal" data-target="#new-ingredient"><i id="add-1" class="far fa-plus-square"></i></a></h4>
+                        <h4><a class="btn btn-outline-dark" onclick="addMore()"><i id="add-1" class="far fa-plus-square"></i></a></h4>
                     </div>
                 </div>
-                <div class="row mx-0 px-4">
-                    <table class="table">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th scope="col">Ingredient</th>
-                                <th scope="col">Type</th>
-                                <th scope="col">Quanitiy</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ingredients-table">
-                        </tbody>
-                    </table>
+                <div id="ingredients-table">
+                    <div id="ingredients-row-1" class="row mx-0 px-4">
+                        <div class="col-md-4">
+                            <label for="type-selector-1">Type of Ingredient</label>
+                            <select id="type-selector-1" class="form-control" onchange="getIngredients(this);">
+                                <option disabled selected>Choose your option</option>
+                                <option value="spirit">Spirit</option>
+                                <option value="garnish">Garnish</option>
+                                <option value="mixer">Mixer</option>
+                                <option value="others">Other</option>
+                            </select>
+                        </div>
+                        <div id="ingredient-selector-1" class="col-md-4">
+                            <label id="label-ingredient-select-1" for="ingredient-select-1" >Select Ingredient</label>
+                            <input id="ingredient-select-1" class="form-control" type="text" placeholder="select type first" disabled>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="quantity-1">quantity</label>
+                            <input id="quantity-1" class="form-control" type="text" placeholder="quantity" onkeydown="next(this, event, addMore)">
+                            <small id="flavorHelp" class="form-text text-muted">
+                                please leave a space between quantity and units eg. 2 oz, 30 ml, 2 slices
+                            </small>
+                        </div>
+                        <hr>
+                    </div>    
                 </div>
             </div>
             <div class="row mx-0 px-4">
@@ -76,16 +89,35 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="equipment">Any equipment required</label>
-                        <select multiple id="equipment" class="form-control">
-                            <option value="Muddler">Muddler</option>
-                            <option value="Shaker">Shaker</option>
-                            <option value="Strainer">Strainer</option>
-                            <option value="Lighter">Lighter</option>
-                            <option value="Blender">Blender</option>
-                            <option value="none">None</option>
-                        </select>
+                    <div class="row">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" value="Muddler">
+                            <label class="form-check-label" for="inlineCheckbox1">Muddler</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" value="Shaker">
+                            <label class="form-check-label" for="inlineCheckbox2">Shaker</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" value="Strainer">
+                            <label class="form-check-label" for="inlineCheckbox3">Strainer</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" value="Lighter">
+                            <label class="form-check-label" for="inlineCheckbox1">Lighter</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" value="Blender">
+                            <label class="form-check-label" for="inlineCheckbox2">Blender</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" value="Other">
+                            <label class="form-check-label" for="inlineCheckbox2">
+                                <input class="form-control" type="text" placeholder="other - please specify" disabled>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -97,14 +129,14 @@
                 <div>
                     Enter step by step instructions how to make your cocktail below.
                 </div>
-                <div><i id="add-step" class="far fa-plus-square" onclick="newStep(this)"></i></div>
+                <div><i id="add-step" class="far fa-plus-square" onclick="nextStep()"></i></div>
                
             </div>
             
                 <div class="row mx-0 px-4">
                     <div id = "step-by-step" class="col-12">
-                        <div class="form-group">
-                            <input class="form-control steps" type="text" placeholder="step 1">  
+                        <div id="step-1" class="form-group">
+                            <input class="form-control" type="text" placeholder="step 1" onkeydown="next(this, event, nextStep)">  
                         </div>
                     </div>
                 </div>
@@ -116,42 +148,6 @@
             </div>
         </form>
     </div>
-    <!-- Modals -->
-    <!-- Add Ingredient -->
-    <div id="new-ingredient" class="modal fade" 
-    role="dialog" aria-labelledby="new-ingerdient-modal-title" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <h4>Add New Ingredient</h4>
-                <div id="ingredient-row" class="row px-4">
-                    <div class="form-group col-xs-12 col-md-4">
-                            <label for="type-selector">Type of Ingredient</label>
-                            <select id="type-selector" class="form-control" onchange="getIngredients(this);">
-                                <option disabled selected>Choose your option</option>
-                                <option value="spirit">Spirit</option>
-                                <option value="garnish">Garnish</option>
-                                <option value="mixer">Mixer</option>
-                                <option value="mixer">Other</option>
-                            </select>
-                    </div>
-                    <div id="ingredient-selector" class="col-xs-12 col-md-4">
-                    </div>
-                    <div id="quantity-input" class="form-group col-xs-12 col-md-4">
-                        <label for="quantity">quantity</label>
-                        <input id="quantity" class="form-control" type="text" placeholder = "quantity">
-                        <small id="flavorHelp" class="form-text text-muted">
-                           e.g. 2 oz, 30 ml, 2 slices
-                        </small>
-                    </div>
-                </div>
-                <div class="row d-flex justify-content-around">
-                    <button type="button" class="btn btn-dark" onclick="addToTable()">add</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- End of Add Ingredient -->
-    <!-- End of Modals -->
 
     
 </main>
@@ -162,7 +158,7 @@
     <script src="/static/scripts/getFormDetails.js" charset="utf-8"></script>
     <script>
 
-        let newStep = (e) => {
+        let newStep = (target) => {
 
             let htmlString = `
                     <input class="form-control steps" type="text" placeholder="next step">
