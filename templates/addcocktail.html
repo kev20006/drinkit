@@ -8,7 +8,7 @@
             </div>
             <div><a class="btn btn-outline-dark" href="{{ url_for('index') }}"><i class="fas fa-times"></i></a></div>
         </div>
-        <form>
+        <form >
             <div class="form-group px-4">
                 <label for="name">Type full name of cocktail</label>
                 <input id="name" name="name" type="text" class="form-control" 
@@ -21,7 +21,7 @@
             </div>
             <div class="form-group px-4">
                 <label for="description">Describe your cocktail</label>
-                <textarea id="description" class="form-control"
+                <textarea id="description" name="description" class="form-control"
                     placeholder="describe your cocktail"></textarea>
                 
             </div>
@@ -45,8 +45,8 @@
                     <div id="ingredients-row-1" class="row mx-0 px-4">
                         <div class="col-md-4">
                             <label for="type-selector-1">Type of Ingredient</label>
-                            <select id="type-selector-1" class="form-control" onchange="getIngredients(this);">
-                                <option disabled selected>Choose your option</option>
+                            <select id="type-selector-1" name="type-selector-1" class="form-control" onchange="getIngredients(this);">
+                                <option disabled value="" selected>Choose your option</option>
                                 <option value="spirit">Spirit</option>
                                 <option value="garnish">Garnish</option>
                                 <option value="mixer">Mixer</option>
@@ -55,11 +55,11 @@
                         </div>
                         <div id="ingredient-selector-1" class="col-md-4">
                             <label id="label-ingredient-select-1" for="ingredient-select-1" >Select Ingredient</label>
-                            <input id="ingredient-select-1" class="form-control" type="text" placeholder="select type first" disabled>
+                            <input id="ingredient-select-1" name="ingredient-select-1" class="form-control" type="text" value="" placeholder="select type first" disabled>
                         </div>
                         <div class="col-md-4">
                             <label for="quantity-1">quantity</label>
-                            <input id="quantity-1" class="form-control" type="text" placeholder="quantity" onkeydown="next(this, event, addMore)">
+                            <input id="quantity-1" name="ingredient-select-1" class="form-control" type="text" placeholder="quantity" onkeydown="next(this, event, addMore)">
                             <small id="flavorHelp" class="form-text text-muted">
                                 please leave a space between quantity and units eg. 2 oz, 30 ml, 2 slices
                             </small>
@@ -75,8 +75,8 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="glass">Select Your Glass</label>
-                        <select id="glass" class="form-control">
-                            <option value="" disabled>Choose your option</option>
+                        <select id="glass" name="glass" class="form-control">
+                            <option value="" selected disabled>Choose your option</option>
                             <option value="collins">Collins</option>
                             <option value="martini">Martini</option>
                             <option value="hurricane">Hurricane</option>
@@ -91,31 +91,31 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" value="Muddler">
+                            <input id="equip-1" name="equip-1" class="form-check-input" type="checkbox" value="Muddler">
                             <label class="form-check-label" for="inlineCheckbox1">Muddler</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" value="Shaker">
+                            <input id="equip-2" name="equip-2" class="form-check-input" type="checkbox" value="Shaker">
                             <label class="form-check-label" for="inlineCheckbox2">Shaker</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" value="Strainer">
+                            <input id="equip-3" name="equip-3" class="form-check-input" type="checkbox" value="Strainer">
                             <label class="form-check-label" for="inlineCheckbox3">Strainer</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" value="Lighter">
+                            <input id="equip-4" name="equip-4" class="form-check-input" type="checkbox" value="Lighter">
                             <label class="form-check-label" for="inlineCheckbox1">Lighter</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" value="Blender">
+                            <input id="equip-5" name="equip-5" class="form-check-input" type="checkbox" value="Blender">
                             <label class="form-check-label" for="inlineCheckbox2">Blender</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" value="Other">
+                            <input id="equip-other" class="form-check-input" type="checkbox" value="Other">
                             <label class="form-check-label" for="inlineCheckbox2">
-                                <input class="form-control" type="text" placeholder="other - please specify" disabled>
+                                <input id="other-equipment-name" class="form-control" type="text" placeholder="other - please specify" disabled>
                             </label>
                         </div>
                     </div>
@@ -129,14 +129,14 @@
                 <div>
                     Enter step by step instructions how to make your cocktail below.
                 </div>
-                <div><i id="add-step" class="far fa-plus-square" onclick="nextStep()"></i></div>
+                <div><i id="add-step" class="far fa-plus-square" onclick="newStep()"></i></div>
                
             </div>
             
                 <div class="row mx-0 px-4">
                     <div id = "step-by-step" class="col-12">
-                        <div id="step-1" class="form-group">
-                            <input class="form-control" type="text" placeholder="step 1" onkeydown="next(this, event, nextStep)">  
+                        <div id="step-1" name="step-1" class="form-group">
+                            <input class="form-control" type="text" placeholder="step 1" onkeydown="next(this, event, newStep)">  
                         </div>
                     </div>
                 </div>
@@ -158,15 +158,18 @@
     <script src="/static/scripts/getFormDetails.js" charset="utf-8"></script>
     <script>
 
-        let newStep = (target) => {
-
+        let newStep = () => {
+            let stepByStep = document.getElementById("step-by-step")
+            let nextStep = parseInt(stepByStep.children[stepByStep.children.length-1].id.split("-")[1]) + 1 
             let htmlString = `
-                    <input class="form-control steps" type="text" placeholder="next step">
+                    <input class="form-control steps" type="text" placeholder="step ${nextStep}" onkeydown="next(this, event, newStep)">
             `
             let div = document.createElement("div");
             div.className = "form-group";
+            div.id=`step-${nextStep}`
             div.innerHTML = htmlString;
-            document.getElementById("step-by-step").append(div);
+            stepByStep.append(div);
+            div.focus()
         }
 
 

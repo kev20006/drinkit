@@ -1,4 +1,6 @@
 import pymongo
+import json
+
 from pymongo import MongoClient
 from bson import ObjectId
 from bson.json_util import dumps
@@ -61,6 +63,12 @@ def aggregate_cocktail_previews(cocktails):
     ])
 
     return cocktailDetails
+
+def get_id(collection, name):
+    item = collection.find_one({"name":name})
+    if item != None:
+        return item["_id"]
+
 
 
 def mongo_connect(uri):
@@ -129,12 +137,89 @@ def new_drink():
     else:
         return redirect(url_for("index"))
 
+@app.route('/c/cocktail_processing', methods=["POST"])
+def add_new_drink_to_db():
+    ingredients = json.loads(get_ingredients_by_type(None))
+    flavors = json.loads(get_flavors())
+    data = request.data
+    dataDict = json.loads(data)
+    flavorIds = []
+    for i in dataDict["flavors"]:
+        if any(j["name"] == i for j in flavors):
+            for j in flavors:
+                if j["name"] == i:
+                    flavorIds.append(j["_id"]["$oid"])
+        else:
+            flavorIds.append(
+                add_flavor_return_id(i)
+            )
+    
+    ingredientIds = []
+    for i in dataDict["ingredients"]:
+        print(i)
+        if any(j["name"] == i["name"] for j in ingredients):
+            for j in ingredients:
+                if j["name"] == i["name"]:
+                    ingredients_id = j["_id"]["$oid"] 
+        else:
+                ingredients_id = add_ingredient_return_id(i["name"], i["type"])
+                
+        ingredientIds.append(
+            {
+                "ingredient": ingredients_id,
+                "quantity": i['quantity'],
+                "units": i['units'],
+                "type": i['type']
+            })
+
+    connection = mongo_connect(mongo_uri)
+    flavorsTest = connection["flavors"].find_one(
+        {"_id": ObjectId(flavorIds[0])})
+    IngredientsTest = connection["ingredients"].find_one(
+        {"_id": ObjectId(ingredientIds[0]["ingredient"])})
+    print(IngredientsTest)
+    print(flavorsTest)
+
+    
+    return redirect(url_for("index"))
+
+#functions for adding to the DB, without routes
+def add_ingredient_return_id(name, type):
+    connection = mongo_connect(mongo_uri)
+    ingredients = connection["ingredients"]
+    ingredients.insert_one(
+        {
+            "name": name,
+            "type": type,
+        })
+    newIngredient = ingredients.find_one({
+            "name": name
+    })
+    return newIngredient["_id"]
+
+
+def add_flavor_return_id(name):
+    connection = mongo_connect(mongo_uri)
+    flavors = connection["flavors"]
+    flavors.insert_one(
+        {
+            "name": name,
+        })
+    newFlavor=flavors.find_one({
+            "name": name
+        })
+    return newFlavor["_id"]
+
+
 
 #ajax routes
 @app.route('/api/ingredients/<type>')
 def get_ingredients_by_type(type):
     connection = mongo_connect(mongo_uri)
-    ingredients = connection["ingredients"].find({"type":type})
+    if not type:
+        ingredients = connection["ingredients"].find({})
+    else:
+        ingredients = connection["ingredients"].find({"type":type})
     return dumps(ingredients)
 
 

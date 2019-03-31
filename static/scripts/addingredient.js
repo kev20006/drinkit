@@ -50,7 +50,7 @@ let getIngredients = (trigger) =>{
 
 let addMore = () =>{
     let ingredients = document.getElementById('ingredients-table');
-    let nextIndex = ingredients.children[ingredients.children.length - 1].id.split("-")[2] +1
+    let nextIndex = parseInt(ingredients.children[ingredients.children.length - 1].id.split("-")[2]) +1
     let newRow = document.createElement("div")
     newRow.id = `ingredients-row-${nextIndex}`;
     newRow.classList = 'row mx-0 px-4';
@@ -113,6 +113,7 @@ let newIngredient = (e) => {
     div.className = "row";
     div.innerHTML = htmlString;
     document.getElementById("ingredients").append(div);
+    div.focus();
 
 }
 
