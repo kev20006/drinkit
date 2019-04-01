@@ -53,6 +53,8 @@ def aggregate_cocktail_previews(cocktails):
                 "_id": "$_id",
                 "name": {"$min": "$name"},
                 "description": {"$min": "$description"},
+                "flavor_tags": {"$min": "$flavor_tags"},
+                "ingredients": {"$min": "$ingredients"},
                 "upvotes": {"$min": "$upvotes"},
                 "image_url": {"$min": "$image_url"},
                 "creator": {"$min": "$creator.username"},
@@ -84,8 +86,12 @@ def mongo_connect(uri):
 def index():
     connection = mongo_connect(mongo_uri)
     cocktails = connection["cocktails"]
+    user = None
+    if session:   
+        user = connection["users"].find_one({"_id": ObjectId(session['_id'])})
+        print(user)
     cocktailPreviews = aggregate_cocktail_previews(cocktails)
-    return render_template('index.html', cocktails = cocktailPreviews)
+    return render_template('index.html', cocktails = cocktailPreviews, user= user)
 
 
 #Login and Logout
@@ -119,7 +125,10 @@ def new_user():
         {
             "username": request.form["newusername"], 
             "passhash": hash,
-            "date_joined":str(datetime.now())
+            "date_joined":str(datetime.now()),
+            "starred_cocktails":[],
+            "favorite_ingredients":[],
+            "favorite_flavors":[]
         }
     )
     userdetails = userCollection.find_one({"username": request.form["newusername"]})
@@ -235,5 +244,22 @@ def get_flavors():
     connection = mongo_connect(mongo_uri)
     flavors = connection["flavors"].find({})
     return dumps(flavors)
+
+#routes to update details
+@app.route("/update/<update_type>/stars/<cocktail_id>/", methods=["GET","POST"])
+def update_starred_cocktails(cocktail_id, update_type):
+    connection = mongo_connect(mongo_uri)
+    if(update_type == "add"):
+        connection["users"].update_one(
+            {"_id": ObjectId(session['_id'])},
+            {"$push": {"starred_cocktails": cocktail_id}}
+        )
+    else:
+        connection["users"].update_one(
+            {"_id": ObjectId(session['_id'])},
+            {"$push": {"starred_cocktails": cocktail_id}}
+        )
+    return str(ObjectId('5ca212adec4ad14754eec8b6'))
+
 
 app.run(debug=True)
