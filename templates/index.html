@@ -25,14 +25,19 @@
                 <div class="card my-4">
                     <img class="card-img-top" src="{{ cocktail.image_url }}">
                     <div class="card-body">
-                        
                         <div class="row d-flex justify-content-between">
                             <div>
                                 <h3>{{ cocktail.name }}</h3>
                             </div>
+                            {% if session['username'] %}
                             <div>
-                                <h3><i class="far fa-star right"></i></h3>
+                                {%  if cocktail._id in user.starred_cocktails %}
+                                    <h3><i class="fas fa-star" data-id="{{cocktail._id}}" data-user="{{session['_id']}}" onclick="removeFavorite(this)" ></i></h3>
+                                {% else %}
+                                    <h3><i class="far fa-star" data-id="{{cocktail._id}}" data-user="{{session['_id']}}" onclick="addFavorite(this)"></i></h3>
+                                {% endif %}
                             </div>
+                            {% endif %}
                         </div>
                         <div class="row">
                             <p>Spirits:
@@ -97,5 +102,32 @@
             <!-- End of Sticky Column -->
         </div>
         <!-- End of body-->
+        <script>
+            let addFavorite = (trigger) =>{
+                let parentElement = trigger.parentNode 
+                console.log(trigger.dataset.id)
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', `/update/${trigger.dataset.user}/add/stars/${trigger.dataset.id}/`);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        parentElement.innerHTML = ""
+                        parentElement.innerHTML = `<i class="fas fa-star" data-id="${trigger.dataset.id}" data-user="${trigger.dataset.user}" onclick="removeFavorite(this)" ></i>`
+                    }
+                    else {
+                        alert('Request failed.  Returned status of ' + xhr.status);
+                    }
+                };
+                xhr.send();
+            }
+
+            let removeFavorite = (trigger) => {
+                let parentElement = trigger.parentNode 
+                fetch(`/update/${trigger.dataset.user}/remove/stars/${trigger.dataset.id}/`)
+                .then(()=>{
+                    parentElement.innerHTML = ""
+                    parentElement.innerHTML = `<i class="far fa-star" data-id="${trigger.dataset.id}" data-user="${trigger.dataset.user}" onclick="addFavorite(this)" ></i>`
+                })
+            }
+        </script>
     </main>
   {% endblock %}

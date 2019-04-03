@@ -3,6 +3,14 @@
 let getIngredients = (trigger) =>{
     let idNumber = trigger.id.split('-')[2];
     document.getElementById(`label-ingredient-select-${idNumber}`).textContent = 'fetching ingredients...';
+    
+    fetch(`/api/ingredients/${trigger.value}`)
+    .then(response=>{
+        response=response.json()
+        console.log("response from fetch")
+        console.log(response)
+        } 
+    );
     let xhr = new XMLHttpRequest();
     xhr.onload = () =>{
         if (xhr.status >= 200 && xhr.status < 300){

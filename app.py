@@ -104,7 +104,6 @@ def login():
         if sha256_crypt.verify(request.form["password"], userdetails["passhash"]):
             session['username'] = request.form["username"]
             session['_id'] = str(userdetails["_id"])
-            return redirect(url_for("index"))
     return redirect(url_for("index"))
 
 @app.route('/logout/')
@@ -246,20 +245,25 @@ def get_flavors():
     return dumps(flavors)
 
 #routes to update details
-@app.route("/update/<update_type>/stars/<cocktail_id>/", methods=["GET","POST"])
-def update_starred_cocktails(cocktail_id, update_type):
+@app.route("/update/<user_id>/<update_type>/stars/<cocktail_id>/")
+def update_starred_cocktails(user_id, cocktail_id, update_type):
     connection = mongo_connect(mongo_uri)
     if(update_type == "add"):
         connection["users"].update_one(
-            {"_id": ObjectId(session['_id'])},
-            {"$push": {"starred_cocktails": cocktail_id}}
+            {"_id": ObjectId(user_id)},
+            {"$push": {"starred_cocktails": ObjectId(cocktail_id)}}
         )
     else:
+        print("deleting")
         connection["users"].update_one(
-            {"_id": ObjectId(session['_id'])},
-            {"$push": {"starred_cocktails": cocktail_id}}
+            {"_id": ObjectId(user_id)},
+            {"$pull": 
+                {
+                    "starred_cocktails": ObjectId(cocktail_id)
+                }
+            }
         )
-    return str(ObjectId('5ca212adec4ad14754eec8b6'))
-
+    return "success"
+        
 
 app.run(debug=True)
