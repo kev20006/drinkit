@@ -245,25 +245,32 @@ def get_flavors():
     return dumps(flavors)
 
 #routes to update details
-@app.route("/update/<user_id>/<update_type>/stars/<cocktail_id>/")
-def update_starred_cocktails(user_id, cocktail_id, update_type):
+@app.route("/update/favorite_things/", methods=["POST"])
+def update_favorite_things():
+    data = request.data
+    favorite_things = json.loads(data)
+    print(favorite_things["type"])
     connection = mongo_connect(mongo_uri)
-    if(update_type == "add"):
+    if(favorite_things["action"] == "add"):
         connection["users"].update_one(
-            {"_id": ObjectId(user_id)},
-            {"$push": {"starred_cocktails": ObjectId(cocktail_id)}}
+            {"_id": ObjectId(favorite_things["user"])},
+            {"$push": {
+                favorite_things["type"]: ObjectId(favorite_things["item_id"])
+                }
+            }
         )
     else:
-        print("deleting")
         connection["users"].update_one(
-            {"_id": ObjectId(user_id)},
+            {"_id": ObjectId(favorite_things["user"])},
             {"$pull": 
                 {
-                    "starred_cocktails": ObjectId(cocktail_id)
+                    favorite_things["type"]: ObjectId(favorite_things["item_id"])
                 }
             }
         )
     return "success"
-        
+
+
+
 
 app.run(debug=True)
