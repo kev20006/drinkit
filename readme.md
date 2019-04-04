@@ -67,7 +67,7 @@ Submitting Cocktails (Registered users):
 
 
 
-Social/comments(Registered users):
+#### Social/comments(Registered users):
 
 * As a registered user i should be able to leave a comment on peoples cocktails.
 
@@ -78,6 +78,9 @@ Social/comments(Registered users):
 * As a registered user i should be able to flag a comment as innapropriate.
 
 ## UX - Scope
+
+### Functional Requirements
+1. 
 
 ## UX - Structure
 
