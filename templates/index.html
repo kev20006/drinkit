@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+
+
+
 {% block content %}
     <main class="container">
         <div class="row d-md-none my-2 mx-0">
@@ -87,9 +90,15 @@
                         <div class="d-flex justify-content-between">
                             <div class="mr-2">
                                 <h5>
-                                    <i class="far fa-arrow-alt-circle-up"></i>
-                                    {{ cocktail.upvotes }}
-                                    <i class="far fa-arrow-alt-circle-down"></i>
+                                    {% if session['username'] %}
+                                    <i class="far fa-arrow-alt-circle-up" data-id="{{cocktail._id}}" 
+                                    data-user="{{session['_id']}}" onclick="vote(this, 'up')"></i>
+                                    {% endif %}
+                                    <span class="vote-count">{{ cocktail.votes.upvotes|length - cocktail.votes.downvotes|length }}</span>
+                                    {% if session['username'] %}
+                                    <i class="far fa-arrow-alt-circle-down" data-id="{{cocktail._id}}" 
+                                    data-user="{{session['_id']}}" onclick="vote(this, 'down')"></i>
+                                    {% endif %}
                                 </h5>
                             </div>
                             <div class="mr-2">
@@ -169,6 +178,57 @@
                     data-user="${trigger.dataset.user}" data-name="${trigger.dataset.name}" 
                     onclick="addFavorite(this, '${type}')" ></i>`
                 });
+            }
+
+            let vote = (trigger, type) => {
+                fetch("/update/like_dislike", {
+                    method: 'post',
+                    body: JSON.stringify({
+                        "type": type,
+                        "user_id": trigger.dataset.user,
+                        "cocktial_id": trigger.dataset.id,
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                if (trigger.classList.contains("voted")){
+                    trigger.classList.remove("voted")
+                    if (type =="down"){
+                        trigger.parentNode.childNodes[3].innerText = parseInt(trigger.parentNode.childNodes[3].innerText) + 1;
+                        fetch("/update/like_dislike", {
+                            method: 'post',
+                            body: JSON.stringify({
+                                "type": type,
+                                "user_id": trigger.dataset.user,
+                                "cocktail_id": trigger.dataset.id,
+                            }),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                    }
+                    else{
+                        trigger.parentNode.childNodes[3].innerText = parseInt(trigger.parentNode.childNodes[3].innerText) - 1;
+                    }
+                }
+                else{
+                    if (type == "down") {
+                        trigger.parentNode.childNodes[3].innerText = parseInt(trigger.parentNode.childNodes[3].innerText) - 1;
+                        if (trigger.parentNode.childNodes[1].classList.contains("voted")) {
+                            trigger.parentNode.childNodes[1].classList.remove("voted");
+                            trigger.parentNode.childNodes[3].innerText = parseInt(trigger.parentNode.childNodes[3].innerText) -1;
+                        }
+                    }
+                    else{
+                        trigger.parentNode.childNodes[3].innerText = parseInt(trigger.parentNode.childNodes[3].innerText) + 1;
+                        if(trigger.parentNode.childNodes[5].classList.contains("voted")){
+                            trigger.parentNode.childNodes[5].classList.remove("voted");
+                            trigger.parentNode.childNodes[3].innerText = parseInt(trigger.parentNode.childNodes[3].innerText) + 1;
+                        }
+                    }
+                    trigger.classList.add("voted")
+                }
             }
         </script>
     </main>

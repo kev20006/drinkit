@@ -55,7 +55,7 @@ def aggregate_cocktail_previews(cocktails):
                 "description": {"$min": "$description"},
                 "flavor_tags": {"$min": "$flavor_tags"},
                 "ingredients": {"$min": "$ingredients"},
-                "upvotes": {"$min": "$upvotes"},
+                "votes": {"$min": "$upvotes"},
                 "image_url": {"$min": "$image_url"},
                 "creator": {"$min": "$creator.username"},
                 "flavors": {"$addToSet": '$flavors'},
@@ -269,6 +269,36 @@ def update_favorite_things():
             }
         )
     return "success"
+
+@app.route("/update/like_dislike", methods = ["POST"])
+def like_dislike():
+    data = request.data
+    new_like = json.loads(data)
+    print(new_like)
+    connection = mongo_connect(mongo_uri)
+    if new_like["type"] == "down":
+        connection["cocktails"].update_one(
+            {"_id": ObjectId(new_like["cocktail_id"])},
+            {"$push":{
+                    "votes.downvotes": ObjectId(new_like["user_id"])
+                },
+            "$pull":{
+                    "votes.upvotes": ObjectId(new_like["user_id"])
+                }
+            }
+        )
+    else:
+        connection["cocktails"].update_one(
+            {"_id": ObjectId(new_like["cocktail_id"])},
+            {"$push": {
+                "votes.upvotes": ObjectId(new_like["user_id"])
+            },
+                "$pull": {
+                "votes.downvotes": ObjectId(new_like["user_id"])
+            }
+            }
+        )
+
 
 
 
