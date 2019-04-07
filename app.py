@@ -55,7 +55,7 @@ def aggregate_cocktail_previews(cocktails):
                 "description": {"$min": "$description"},
                 "flavor_tags": {"$min": "$flavor_tags"},
                 "ingredients": {"$min": "$ingredients"},
-                "votes": {"$min": "$upvotes"},
+                "votes": {"$min": "$votes"},
                 "image_url": {"$min": "$image_url"},
                 "creator": {"$min": "$creator.username"},
                 "flavors": {"$addToSet": '$flavors'},
@@ -89,7 +89,6 @@ def index():
     user = None
     if session:   
         user = connection["users"].find_one({"_id": ObjectId(session['_id'])})
-        print(user)
     cocktailPreviews = aggregate_cocktail_previews(cocktails)
     return render_template('index.html', cocktails = cocktailPreviews, user= user)
 
@@ -164,7 +163,6 @@ def add_new_drink_to_db():
     
     ingredientIds = []
     for i in dataDict["ingredients"]:
-        print(i)
         if any(j["name"] == i["name"] for j in ingredients):
             for j in ingredients:
                 if j["name"] == i["name"]:
@@ -249,7 +247,6 @@ def get_flavors():
 def update_favorite_things():
     data = request.data
     favorite_things = json.loads(data)
-    print(favorite_things["type"])
     connection = mongo_connect(mongo_uri)
     if(favorite_things["action"] == "add"):
         connection["users"].update_one(
@@ -276,28 +273,44 @@ def like_dislike():
     new_like = json.loads(data)
     print(new_like)
     connection = mongo_connect(mongo_uri)
-    if new_like["type"] == "down":
+    if new_like["type"] == "up":
         connection["cocktails"].update_one(
             {"_id": ObjectId(new_like["cocktail_id"])},
-            {"$push":{
-                    "votes.downvotes": ObjectId(new_like["user_id"])
+            {"$pull":
+                {
+                    "votes.downvotes": new_like["user_id"]
                 },
-            "$pull":{
-                    "votes.upvotes": ObjectId(new_like["user_id"])
+            "$push":
+                {
+                    "votes.upvotes": new_like["user_id"]
                 }
             }
+        )
+    elif new_like["type"] == "down":
+        connection["cocktails"].update_one(
+            {"_id": ObjectId(new_like["cocktail_id"])},
+            {"$push":
+                {
+                    "votes.downvotes": new_like["user_id"]
+                },
+             "$pull":
+                {
+                    "votes.upvotes": new_like["user_id"]
+                }
+             }
         )
     else:
         connection["cocktails"].update_one(
             {"_id": ObjectId(new_like["cocktail_id"])},
-            {"$push": {
-                "votes.upvotes": ObjectId(new_like["user_id"])
-            },
-                "$pull": {
-                "votes.downvotes": ObjectId(new_like["user_id"])
-            }
+            {"$pull":
+                {
+                    "votes.downvotes": new_like["user_id"],
+                    "votes.upvotes": new_like["user_id"]
+                },
             }
         )
+    return "success"
+        
 
 
 
