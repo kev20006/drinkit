@@ -48,7 +48,7 @@
                             <p>Spirits:
                                 {% for spirit in cocktail.ingredient_list %}
                                     {%  if spirit.type == "spirit" %}
-                                    <span class="badge badge-secondary">
+                                    <span class="ingredients badge badge-secondary">
                                         {{ spirit.name }}
                                         {% if session['username'] %}
                                             {%  if spirit._id in user.favorite_ingredients %}
@@ -67,7 +67,7 @@
                         <div class="row">
                                 <p>Flavor:
                                     {% for flavor in cocktail.flavors %}
-                                    <span class="badge badge-secondary">
+                                    <span class="flavors badge badge-secondary">
                                         {{ flavor.name }}
                                         {% if session['username'] %}
                                             {%  if flavor._id in user.favorite_flavors %}
@@ -159,9 +159,15 @@
                     }
                 })
                 .then(()=>{
-                    parentElement.innerHTML = `${textContent}<i class="fas ${icon}" data-id="${trigger.dataset.id}" 
-                    data-user="${trigger.dataset.user}" data-name="${trigger.dataset.name}" 
-                    onclick="removeFavorite(this, '${type}')" ></i>`
+                    let allTags = document.getElementsByClassName(type.split("_")[1])
+                    for(i = 0; i < allTags.length; i++){
+                        if(allTags[i].children.length == 0 || allTags[i].children[0].dataset.name == trigger.dataset.name){
+                            allTags[i].innerHTML = 
+                            `${textContent}<i class="fas ${icon}" data-id="${trigger.dataset.id}" 
+                                data-user="${trigger.dataset.user}" data-name="${trigger.dataset.name}" 
+                                onclick="removeFavorite(this, '${type}')" ></i>`
+                        }
+                    }
                 });
             }
 
@@ -184,9 +190,15 @@
                     }
                 })
                 .then(()=>{
-                    parentElement.innerHTML = `${textContent}<i class="far ${icon}" data-id="${trigger.dataset.id}" 
-                    data-user="${trigger.dataset.user}" data-name="${trigger.dataset.name}" 
-                    onclick="addFavorite(this, '${type}')" ></i>`
+                    let allTags = document.getElementsByClassName(type.split("_")[1])
+                    for (i = 0; i < allTags.length; i++) {
+                        if (allTags[i].children.length == 0 || allTags[i].children[0].dataset.name == trigger.dataset.name ){
+                            allTags[i].innerHTML = 
+                                `${textContent}<i class="far ${icon}" data-id="${trigger.dataset.id}" 
+                                data-user="${trigger.dataset.user}" data-name="${trigger.dataset.name}" 
+                                onclick="addFavorite(this, '${type}')" ></i>`
+                        }
+                    }
                 });
             }
 

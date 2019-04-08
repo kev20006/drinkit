@@ -113,7 +113,7 @@
                             <label class="form-check-label" for="inlineCheckbox2">Blender</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input id="equip-other" class="form-check-input" type="checkbox" value="Other">
+                            <input id="equip-other" class="form-check-input" type="checkbox" value="Other" onchange="unlockOther(this)">
                             <label class="form-check-label" for="inlineCheckbox2">
                                 <input id="other-equipment-name" class="form-control" type="text" placeholder="other - please specify" disabled>
                             </label>
@@ -157,6 +157,15 @@
     <script src="/static/scripts/addingredient.js" charset="utf-8"></script>
     <script src="/static/scripts/getFormDetails.js" charset="utf-8"></script>
     <script>
+
+        let unlockOther = (trigger) => {
+           if(trigger.checked){
+               document.getElementById("other-equipment-name").disabled = false;
+           }else{
+               document.getElementById("other-equipment-name").value = "";
+               document.getElementById("other-equipment-name").disabled = false;
+           }
+        }
 
         let newStep = () => {
             let stepByStep = document.getElementById("step-by-step")

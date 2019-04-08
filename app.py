@@ -155,10 +155,10 @@ def add_new_drink_to_db():
         if any(j["name"] == i for j in flavors):
             for j in flavors:
                 if j["name"] == i:
-                    flavorIds.append(j["_id"]["$oid"])
+                    flavorIds.append(ObjectId(j["_id"]["$oid"]))
         else:
             flavorIds.append(
-                add_flavor_return_id(i)
+                ObjectId(add_flavor_return_id(i))
             )
     
     ingredientIds = []
@@ -172,21 +172,33 @@ def add_new_drink_to_db():
                 
         ingredientIds.append(
             {
-                "ingredient": ingredients_id,
+                "ingredient": ObjectId(ingredients_id),
                 "quantity": i['quantity'],
                 "units": i['units'],
                 "type": i['type']
             })
 
     connection = mongo_connect(mongo_uri)
-    flavorsTest = connection["flavors"].find_one(
-        {"_id": ObjectId(flavorIds[0])})
-    IngredientsTest = connection["ingredients"].find_one(
-        {"_id": ObjectId(ingredientIds[0]["ingredient"])})
-    print(IngredientsTest)
-    print(flavorsTest)
-
     
+    connection["cocktails"].insert_one({
+        "name": dataDict["name"],
+        "description": dataDict["description"],
+        "flavor_tags": flavorIds,
+        "ingredients": ingredientIds,
+        "votes": 0,
+        "method": dataDict["instructions"],
+        "glass": dataDict["glass"],
+        "equipment": dataDict["equipment"],
+        "creator": ObjectId(session['_id']),
+        "flagged": 0,
+        "votes":{
+            "upvotes":[],
+            "downvotes": []
+        },
+        "created_at": str(datetime.now()),
+        "preferred_spirits":[],
+        "image_url": dataDict["image_url"]
+    })
     return redirect(url_for("index"))
 
 #functions for adding to the DB, without routes

@@ -14,13 +14,13 @@ let getFormDetails = () => {
         valid = false;
     }
     if (document.getElementById('description').value != '') {
-        cocktailDetails.image_url = document.getElementById('description').value;
+        cocktailDetails.description = document.getElementById('description').value;
     }
     else {
         valid = false;
     }
     if (document.getElementById('flavors').value != ''){
-        let flavors = document.getElementById('flavors').value;
+        let flavors = document.getElementById('flavors').value.toLowerCase();
         flavors = flavors.split(", ")
         cocktailDetails.flavors = flavors;
     }
@@ -31,17 +31,20 @@ let getFormDetails = () => {
     
     cocktailDetails.ingredients = []
     for (let i = 0; i < ingredientsTable.length; i++) {
-        let name = ingredientsTable[i].children[1].children[1].value
+        let name = ingredientsTable[i].children[1].children[1].value;
         let quantity = ingredientsTable[i].children[2].children[1].value.split(' ')[0];
-        let units = ingredientsTable[i].children[2].children[1].value.split(' ')[1];
+        let units = "none"
+        if (ingredientsTable[i].children[2].children[1].value.split(' ').length == 2){
+            units = ingredientsTable[i].children[2].children[1].value.split(' ')[1];
+        };
         let type = ingredientsTable[i].querySelectorAll('select')[0].value
         if (name !="" && quantity !="" && units !="" && type !=""){
             cocktailDetails.ingredients.push({
-                name: name,
-                quantity: quantity,
-                units: units,
-                type: type,
-            });
+				name: name.toLowerCase(),
+				quantity: quantity,
+				units: units,
+				type: type,
+			});
         }
     }
     if (cocktailDetails.ingredients.length == 0){
@@ -62,6 +65,21 @@ let getFormDetails = () => {
         valid = false;
     }
 
+    let equipment = document.getElementsByClassName("form-check")
+    let equipArray = []
+
+    for(i = 0; i < equipment.length; i++){
+        if (equipment[i].children[0].checked) {
+            if (equipment[i].children[0].id == 'equip-other'){
+                equipArray.push(document.getElementById("other-equipment-name").value)
+            }else{
+                equipArray.push(equipment[i].children[0].value);
+            }
+            
+		}
+    }
+    cocktailDetails.equipment = equipArray;
+
     if (valid){
         console.log(cocktailDetails)
         let xhr = new XMLHttpRequest();
@@ -69,7 +87,7 @@ let getFormDetails = () => {
         xhr.setRequestHeader('content-type', 'application/json; charset=UTF-8');
         xhr.send(JSON.stringify(cocktailDetails));
         xhr.onloadend = function () {
-            alert("Data Sent")
+            console.log("confirm")
         };
     }
     else{
