@@ -330,7 +330,7 @@ def like_dislike():
 
 if __name__ == '__main__':
     app.run(
-        host=os.environ.get('IP'),
-        port=int(os.environ.get('PORT')),
+        host=os.environ['IP'],
+        port=int(os.environ['PORT']),
         debug=True
     )
