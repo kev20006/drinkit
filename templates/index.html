@@ -35,10 +35,10 @@
                             {% if session['username'] %}
                             <div>
                                 {%  if cocktail._id in user.starred_cocktails %}
-                                    <h3><i class="fas fa-star" data-id="{{cocktail._id}}" data-user="{{session['_id']}}" 
+                                    <h3 class="cocktails"><i class="fas fa-star" data-id="{{cocktail._id}}" data-user="{{session['_id']}}" 
                                             onclick="removeFavorite(this, 'starred_cocktails')" ></i></h3>
                                 {% else %}
-                                    <h3><i class="far fa-star" data-id="{{cocktail._id}}" data-user="{{session['_id']}}" 
+                                    <h3 class="cocktails"><i class="far fa-star" data-id="{{cocktail._id}}" data-user="{{session['_id']}}" 
                                             onclick="addFavorite(this , 'starred_cocktails')"></i></h3>
                                 {% endif %}
                             </div>
@@ -142,7 +142,11 @@
         <script>
             let addFavorite = (trigger, type) =>{
                 let textContent;
-                (trigger.dataset.name && trigger.dataset.name !=="") ?  textContent = trigger.dataset.name : textContent ="";
+                if (type.split("_")[1] == "cocktails") {
+                    textContent = "";
+                } else {
+                    textContent = trigger.dataset.name
+                }
                 let icon = trigger.classList[1]
                 let parentElement = trigger.parentNode 
                 parentElement.innerHTML = textContent;
@@ -160,20 +164,32 @@
                 })
                 .then(()=>{
                     let allTags = document.getElementsByClassName(type.split("_")[1])
-                    for(i = 0; i < allTags.length; i++){
-                        if(allTags[i].children.length == 0 || allTags[i].children[0].dataset.name == trigger.dataset.name){
-                            allTags[i].innerHTML = 
-                            `${textContent}<i class="fas ${icon}" data-id="${trigger.dataset.id}" 
+                    if (type.split("_")[1] == "cocktails") {
+                        parentElement.innerHTML = `<i class="fas ${icon}" data-id="${trigger.dataset.id}"
+                                data-user="${trigger.dataset.user}" data-name="${trigger.dataset.name}"
+                                onclick="removeFavorite(this, '${type}')" ></i>`;
+                    }else{
+                        for (i = 0; i < allTags.length; i++) {
+
+                            if (allTags[i].children.length == 0 || allTags[i].children[0].dataset.name == trigger.dataset.name) {
+                                allTags[i].innerHTML =
+                                    `${textContent}<i class="fas ${icon}" data-id="${trigger.dataset.id}" 
                                 data-user="${trigger.dataset.user}" data-name="${trigger.dataset.name}" 
                                 onclick="removeFavorite(this, '${type}')" ></i>`
+                            }
                         }
                     }
+                    
                 });
             }
 
             let removeFavorite = (trigger, type) => {
                 let textContent;
-                (trigger.dataset.name) ? textContent = trigger.dataset.name : textContent = "";
+                if (type.split("_")[1] == "cocktails"){
+                    textContent = "";
+                }else{
+                    textContent = trigger.dataset.name
+                }
                 let icon = trigger.classList[1]
                 let parentElement = trigger.parentNode 
                 parentElement.innerHTML = textContent;
@@ -191,14 +207,22 @@
                 })
                 .then(()=>{
                     let allTags = document.getElementsByClassName(type.split("_")[1])
-                    for (i = 0; i < allTags.length; i++) {
-                        if (allTags[i].children.length == 0 || allTags[i].children[0].dataset.name == trigger.dataset.name ){
-                            allTags[i].innerHTML = 
-                                `${textContent}<i class="far ${icon}" data-id="${trigger.dataset.id}" 
+                    if (type.split("_")[1] == "cocktails") {
+                        parentElement.innerHTML = `<i class="far ${icon}" data-id="${trigger.dataset.id}" 
                                 data-user="${trigger.dataset.user}" data-name="${trigger.dataset.name}" 
                                 onclick="addFavorite(this, '${type}')" ></i>`
+                    }
+                    else{
+                        for (i = 0; i < allTags.length; i++) {
+                            if (allTags[i].children.length == 0 || allTags[i].children[0].dataset.name == trigger.dataset.name) {
+                                allTags[i].innerHTML =
+                                    `${textContent}<i class="far ${icon}" data-id="${trigger.dataset.id}" 
+                                data-user="${trigger.dataset.user}" data-name="${trigger.dataset.name}" 
+                                onclick="addFavorite(this, '${type}')" ></i>`
+                            }
                         }
                     }
+                    
                 });
             }
 
