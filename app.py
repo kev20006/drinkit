@@ -1,3 +1,4 @@
+import os
 import pymongo
 import json
 
@@ -12,10 +13,13 @@ from passlib.hash  import sha256_crypt
 
 app = Flask(__name__)
 #environment variables hide irl
-mongo_uri = "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
-DBS_NAME =  "bartendr"
-app.secret_key = 'any random string'
+#mongo_uri = "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
+#DBS_NAME =  "bartendr"
+#app.secret_key = 'any random string'
 
+mongo_uri = os.environ.get('MONGO_URI')
+DBS_NAME = os.environ.get('DBS_NAME')
+app.secret_key = os.environ.get('SECRET_KEY')
 
 def aggregate_cocktail_previews(cocktails):
     cocktailDetails = cocktails.aggregate([
@@ -324,8 +328,9 @@ def like_dislike():
     return "success"
         
 
-
-
-
-
-app.run(debug=True)
+if __name__ == '__main__':
+    app.run(
+        host=os.environ.get('IP'),
+        port=int(os.environ.get('PORT')),
+        debug=True
+    )
