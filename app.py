@@ -203,7 +203,7 @@ def add_new_drink_to_db():
         "preferred_spirits":[],
         "image_url": dataDict["image_url"]
     })
-    return redirect(url_for("index"))
+    return "success"
 
 #functions for adding to the DB, without routes
 def add_ingredient_return_id(name, type):

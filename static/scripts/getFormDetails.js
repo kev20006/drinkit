@@ -1,4 +1,7 @@
-let getFormDetails = () => {
+let getFormDetails = (trigger) => {
+    trigger.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    submitting...`
+    trigger.enabled = false;
     let valid = true;
     let cocktailDetails= {}
     if(document.getElementById("name").value != ""){
@@ -81,17 +84,21 @@ let getFormDetails = () => {
     cocktailDetails.equipment = equipArray;
 
     if (valid){
-        console.log(cocktailDetails)
-        let xhr = new XMLHttpRequest();
-        xhr.open('post', '/c/cocktail_processing', true);
-        xhr.setRequestHeader('content-type', 'application/json; charset=UTF-8');
-        xhr.send(JSON.stringify(cocktailDetails));
-        xhr.onloadend = function () {
-            console.log("confirm")
-        };
+        fetch('/c/cocktail_processing', {
+            method: 'POST', // or 'PUT'
+            body: JSON.stringify(cocktailDetails), // data can be `string` or {object}!
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then((res) => {
+            console.log(res)
+            window.location.replace("/");
+        })
     }
     else{
         alert("show errors")
+        trigger.innerHTML = `<i class="fas fa-cocktail"></i>submit drink`
     }
 
     
