@@ -63,7 +63,7 @@ def aggregate_cocktail_previews(cocktails):
                 "image_url": {"$min": "$image_url"},
                 "creator": {"$min": "$creator.username"},
                 "flavors": {"$addToSet": '$flavors'},
-                "ingredient_list":  {"$addToSet": '$ingredient_list'}
+                "ingredient_list":  {"$addToSet": '$ingredient_list'},
             }
         }
     ])
@@ -115,8 +115,26 @@ def logout():
     return redirect(url_for('index'))
 
 
+# /v/ routes for viewing db content
+@app.route('/v/cocktail/<cocktail_id>')
+def view_cocktail(cocktail_id):
+    connection = mongo_connect(mongo_uri)
+    cocktail = aggregate_cocktail_previews(connection["cocktails"])
+    aggregate_details = ""
+    for i in list(cocktail):
+        if i["_id"] == ObjectId(cocktail_id):
+            aggregate_details = i
+    full_details = connection["cocktails"].find_one(
+        {"_id": ObjectId(cocktail_id)} 
+    )
+    user = connection["users"].find_one(
+        {"_id": ObjectId(session['_id'])}
+    )
+    print(aggregate_details)
+    return render_template('viewcocktail.html', cocktail=full_details, agg=aggregate_details, user = user )
 
-#Routes for Creating New Content 
+
+# /c/ Routes for Creating New Content 
 @app.route('/c/new_account', methods=["GET","POST"])
 def new_user():
     """ Add a New User to the database and Hashes their password """
@@ -189,7 +207,6 @@ def add_new_drink_to_db():
         "description": dataDict["description"],
         "flavor_tags": flavorIds,
         "ingredients": ingredientIds,
-        "votes": 0,
         "method": dataDict["instructions"],
         "glass": dataDict["glass"],
         "equipment": dataDict["equipment"],
@@ -234,7 +251,7 @@ def add_flavor_return_id(name):
 
 
 
-#ajax routes
+# /api/ routes for making ajax requests
 @app.route('/api/ingredients/<type>')
 def get_ingredients_by_type(type):
     connection = mongo_connect(mongo_uri)
@@ -258,8 +275,8 @@ def get_flavors():
     flavors = connection["flavors"].find({})
     return dumps(flavors)
 
-#routes to update details
-@app.route("/update/favorite_things/", methods=["POST"])
+# /u/ routes to update details in the database
+@app.route("/u/favorite_things/", methods=["POST"])
 def update_favorite_things():
     data = request.data
     favorite_things = json.loads(data)
@@ -283,7 +300,7 @@ def update_favorite_things():
         )
     return "success"
 
-@app.route("/update/like_dislike", methods = ["POST"])
+@app.route("/u/like_dislike", methods = ["POST"])
 def like_dislike():
     data = request.data
     new_like = json.loads(data)

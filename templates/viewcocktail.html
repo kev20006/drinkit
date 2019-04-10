@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="container">
+    <div class="card">
+        <div class="row my-2 mx-0 px-4 d-flex justify-content-between">
+            <div>
+                <h3> {{ cocktail.name }}</h3>
+            </div>
+            <div><a class="btn btn-outline-dark" href="{{ url_for('index') }}"><i class="fas fa-times"></i></a></div>
+        </div>
+        <div class="row d-flex px-4 justify-content-between">
+            <div class="col-12 col-lg-6">
+                <img src="{{ cocktail.image_url }}" class="img-fluid"/>
+            </div>
+            <div class="col-12 col-lg-6">
+                <strong>Description:</strong>
+                <p>{{ cocktail.description }}</p>
+                <strong>Spirits:</strong>
+                <p>
+                    {% for spirit in agg.ingredient_list %}
+                    {%  if spirit.type == "spirit" %}
+                    <span class="ingredients badge badge-secondary">
+                        {{ spirit.name }}
+                        {% if session['username'] %}
+                        {%  if spirit._id in user.favorite_ingredients %}
+                        <i class="fas fa-heart" data-id="{{spirit._id}}" data-name="{{ spirit.name }}" data-user="{{session['_id']}}"
+                            onclick="removeFavorite(this , 'favorite_ingredients')"></i>
+                        {% else %}
+                        <i class="far fa-heart" data-id="{{spirit._id}}" data-name="{{ spirit.name }}" data-user="{{session['_id']}}"
+                            onclick="addFavorite(this , 'favorite_ingredients')"></i>
+                        {% endif %}
+                        {% endif %}
+                    </span>
+                    {% endif %}
+                    {% endfor %}
+                </p>
+                    <strong>Flavor:</strong>
+                    <p>
+                        {% for flavor in agg.flavors %}
+                        <span class="flavors badge badge-secondary">
+                            {{ flavor.name }}
+                            {% if session['username'] %}
+                            {%  if flavor._id in user.favorite_flavors %}
+                            <i class="fas fa-heart" data-id="{{flavor._id}}" data-name="{{ flavor.name }}" data-user="{{session['_id']}}"
+                                onclick="removeFavorite(this , 'favorite_flavors')"></i>
+                            {% else %}
+                            <i class="far fa-heart" data-id="{{flavor._id}}" data-name="{{ flavor.name }}" data-user="{{session['_id']}}"
+                                onclick="addFavorite(this , 'favorite_flavors')"></i>
+                            {% endif %}
+                            {% endif %}
+                        </span>
+                        {% endfor %}
+                    </p>
+                </p>
+            </div>
+        </div>
+        <hr>
+        <div class="row mx-0 px-sm-4">
+           
+                <h4 class="px-4 ">Ingredients</h4>
+
+         
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ingredient in agg.ingredient_list %}
+                    <tr>
+                        <td>{{ ingredient.name }}</td>
+                        <td>{{ cocktail.ingredients[loop.index0].quantity }} {{ cocktail.ingredients[loop.index0].units }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+        </div>
+        <div class="row mx-0 px-sm-4">
+            <h4 class="px-4">Method</h4>
+            <p>
+                <ol>
+                    {% for instruction in cocktail.method %}
+                    <li>{{ instruction }}</li>
+                    {% endfor %}
+                </ol>
+            </p>
+        </div>
+        <hr>
+        <div class="row mx-0 px-sm-4">
+            <h4 class="px-4">Comments</h4>
+
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+
