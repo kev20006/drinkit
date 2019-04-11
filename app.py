@@ -119,19 +119,17 @@ def logout():
 @app.route('/v/cocktail/<cocktail_id>')
 def view_cocktail(cocktail_id):
     connection = mongo_connect(mongo_uri)
-    cocktail = aggregate_cocktail_previews(connection["cocktails"])
-    aggregate_details = ""
-    for i in list(cocktail):
-        if i["_id"] == ObjectId(cocktail_id):
-            aggregate_details = i
-    full_details = connection["cocktails"].find_one(
+    cocktail = connection["cocktails"].find_one(
         {"_id": ObjectId(cocktail_id)} 
     )
-    user = connection["users"].find_one(
-        {"_id": ObjectId(session['_id'])}
+    print(cocktail)
+    user = ""
+    if session.get('_id'):
+        user = connection["users"].find_one(
+            {"_id": ObjectId(session['_id'])}
     )
-    print(aggregate_details)
-    return render_template('viewcocktail.html', cocktail=full_details, agg=aggregate_details, user = user )
+    
+    return render_template('viewcocktail.html', cocktail=cocktail, user = user )
 
 
 # /c/ Routes for Creating New Content 
@@ -252,8 +250,9 @@ def add_flavor_return_id(name):
 
 
 # /api/ routes for making ajax requests
+@app.route('/api/ingredients/')
 @app.route('/api/ingredients/<type>')
-def get_ingredients_by_type(type):
+def get_ingredients_by_type(type = None):
     connection = mongo_connect(mongo_uri)
     if not type:
         ingredients = connection["ingredients"].find({})
@@ -270,9 +269,13 @@ def spirits_by_type(type):
 
 
 @app.route('/api/flavors/')
-def get_flavors():
+@app.route('/api/flavors/<id>')
+def get_flavors(id = None):
     connection = mongo_connect(mongo_uri)
-    flavors = connection["flavors"].find({})
+    if id:
+        flavors = connection["flavors"].find({"_id": ObjectId(id)})
+    else: 
+        flavors = connection["flavors"].find({})
     return dumps(flavors)
 
 # /u/ routes to update details in the database

@@ -15,86 +15,74 @@
             <div class="col-12 col-lg-6">
                 <strong>Description:</strong>
                 <p>{{ cocktail.description }}</p>
-                <strong>Spirits:</strong>
-                <p>
-                    {% for spirit in agg.ingredient_list %}
-                    {%  if spirit.type == "spirit" %}
-                    <span class="ingredients badge badge-secondary">
-                        {{ spirit.name }}
+                <strong>Ingredients:</strong>
+                <p id="spirit-tags">
+                    {% for ingredient in cocktail.ingredients %}
+                    <span data-id="{{ ingredient.ingredient }}" data-user="{{ session['_id'] }}" class="ingredients badge badge-secondary">
+                        <span>loading..</span>
+                        
                         {% if session['username'] %}
-                        {%  if spirit._id in user.favorite_ingredients %}
-                        <i class="fas fa-heart" data-id="{{spirit._id}}" data-name="{{ spirit.name }}" data-user="{{session['_id']}}"
-                            onclick="removeFavorite(this , 'favorite_ingredients')"></i>
-                        {% else %}
-                        <i class="far fa-heart" data-id="{{spirit._id}}" data-name="{{ spirit.name }}" data-user="{{session['_id']}}"
-                            onclick="addFavorite(this , 'favorite_ingredients')"></i>
-                        {% endif %}
+                            
+                            {%  if ingredient.ingredient in user.favorite_ingredients %}
+                            <i data-action="remove"></i>
+                            {% else %}
+                            <i data-action="add"></i>
+                            {% endif %}
                         {% endif %}
                     </span>
-                    {% endif %}
                     {% endfor %}
                 </p>
                     <strong>Flavor:</strong>
-                    <p>
-                        {% for flavor in agg.flavors %}
-                        <span class="flavors badge badge-secondary">
-                            {{ flavor.name }}
+                    <p id="flavor-tags">
+                        {% for flavor in cocktail.flavor_tags %}
+                        <span data-id="{{ flavor }}" data-user="{{session['_id']}}" class="flavors badge badge-secondary">
+                            <span>loading..</span>
                             {% if session['username'] %}
-                            {%  if flavor._id in user.favorite_flavors %}
-                            <i class="fas fa-heart" data-id="{{flavor._id}}" data-name="{{ flavor.name }}" data-user="{{session['_id']}}"
-                                onclick="removeFavorite(this , 'favorite_flavors')"></i>
-                            {% else %}
-                            <i class="far fa-heart" data-id="{{flavor._id}}" data-name="{{ flavor.name }}" data-user="{{session['_id']}}"
-                                onclick="addFavorite(this , 'favorite_flavors')"></i>
-                            {% endif %}
+                                {%  if flavor in user.favorite_flavors %}
+                                    <i data-action="remove"></i>
+                                {% else %}
+                                    <i data-action="add"></i>
+                                {% endif %}
                             {% endif %}
                         </span>
                         {% endfor %}
                     </p>
+              
+            </div>
+        </div>
+        <hr>
+        <div class="row mx-0 px-sm-4">
+            <div class="col-12 col-md-6 px-sm-4">
+                <h4 class="px-4 ">Ingredients</h4>
+                <ul id="ingredient-list">
+                    {% for ingredient in cocktail.ingredients %}
+                        <li> <span data-id="{{ ingredient.ingredient }}"class="ingredient_name"></span> {{ ingredient.quantity }} {{ ingredient.units }}</li>
+                    {% endfor %}
+                </ul>
+                    
+            </div>
+            <div class="col-12 col-md-6 px-sm-4">
+                <h4 class="px-4">Method</h4>
+                <p>
+                    <ol>
+                        {% for instruction in cocktail.method %}
+                        <li>{{ instruction }}</li>
+                        {% endfor %}
+                    </ol>
                 </p>
             </div>
         </div>
         <hr>
         <div class="row mx-0 px-sm-4">
-           
-                <h4 class="px-4 ">Ingredients</h4>
-
-         
-            <table class="table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Quantity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ingredient in agg.ingredient_list %}
-                    <tr>
-                        <td>{{ ingredient.name }}</td>
-                        <td>{{ cocktail.ingredients[loop.index0].quantity }} {{ cocktail.ingredients[loop.index0].units }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            
-        </div>
-        <div class="row mx-0 px-sm-4">
-            <h4 class="px-4">Method</h4>
-            <p>
-                <ol>
-                    {% for instruction in cocktail.method %}
-                    <li>{{ instruction }}</li>
-                    {% endfor %}
-                </ol>
-            </p>
-        </div>
-        <hr>
-        <div class="row mx-0 px-sm-4">
             <h4 class="px-4">Comments</h4>
-
+            <p>Comments are coming in a future update</p>
         </div>
     </div>
 </main>
 {% endblock %}
+{% block scripts %}
+<script src="/static/scripts/getDetails.js" charset="utf-8"></script>
 
 
+
+{% endblock %}
