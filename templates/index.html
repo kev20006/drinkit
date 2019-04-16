@@ -149,7 +149,7 @@
                         <p> Next thing to be implemented </p>
                     </div>
                 </div>
-                <div style="top:40px;" class="card mt-4">
+                <div class="card mt-4">
                     <div class="card-header">
                         <h5> Favorites  </h5>
                     </div>
@@ -185,7 +185,7 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="card mt-4 sticky-top">
+                <div style="top:40px;" class="card mt-4 sticky-top">
                     <div class="card-content text-center">
                         <p class="mt-4"> Drinkit was made by Kevin Stewart </p>
                         <p class="mb-4"> check it out on github <a href="https://github.com/kev20006/drinkit"><i class="fab fa-github"></i></a></p>
@@ -204,7 +204,6 @@
                         flavorName = data.filter(element =>{
                             return element._id.$oid == li.dataset.id
                         })
-                        console.log(flavorName)
                         if (flavorName[0]){
                             li.innerText = flavorName[0].name
                         }else{
@@ -222,7 +221,6 @@
                             ingredientsName = data.filter(element => {
                                 return element._id.$oid == li.dataset.id
                             })
-                            console.log(flavorName)
                             if (ingredientsName[0]) {
                                 li.innerText = ingredientsName[0].name
                             } else {
