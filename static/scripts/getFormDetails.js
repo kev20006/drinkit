@@ -23,9 +23,8 @@ let getFormDetails = (trigger) => {
         valid = false;
     }
     if (document.getElementById('flavors').value != ''){
-        let flavors = document.getElementById('flavors').value.toLowerCase();
-        flavors = flavors.split(", ")
-        cocktailDetails.flavors = flavors;
+    
+        cocktailDetails.flavors = addedFlavors;
     }
     else {
         valid = false;

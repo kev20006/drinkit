@@ -128,8 +128,8 @@
                 <!-- End of Card -->
             </div>
             <!-- Start of Sticky Column -->
-            <div id="controls" class="col-3 d-none d-md-block">
-                <div class="card sticky-top mt-4">
+            <div id="controls" class="col-3 d-none d-md-block ">
+                <div class="card mt-4">
                     <div  class="card-header">
                         <h5> Welcome to Drinkit</h5>
                     </div>
@@ -141,11 +141,97 @@
                          {% endif %} 
                     </div>
                 </div>
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5> Starred Cocktails </h5>
+                    </div>
+                    <div class="card-content center">
+                        <p> Next thing to be implemented </p>
+                    </div>
+                </div>
+                <div style="top:40px;" class="card mt-4">
+                    <div class="card-header">
+                        <h5> Favorites  </h5>
+                    </div>
+                    <div class="card-content center">
+                        {% if session['username'] %}
+                        <ul id="flavor-list" class="list-group">
+                            <li class="list-group-item d-flex justify-content-around">
+                                <button class="btn btn-link" data-toggle="collapse" 
+                                data-target="#collapse-flavors" aria-expanded="true" aria-controls="collapse-flavors">
+                                    Show Favorite Flavors
+                                </button></strong></li>
+                            <div id="collapse-flavors" class="collapse" aria-labelledby="headingOne">
+                           {% for flavor in user.favorite_flavors %}
+                            <li data-id="{{ flavor }}" class="list-group-item"> {{ flavor }}</li>
+                           {% endfor %}
+                        </div>
+                        </ul>
+                        <ul id="ingredient-list" class="list-group">
+                            <li class="list-group-item d-flex justify-content-around">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-ingredients" aria-expanded="true"
+                                    aria-controls="collapse-ingredients">
+                                    Show Favorite Ingredients
+                                </button></strong></li>
+                            <div id="collapse-ingredients" class="collapse" aria-labelledby="headingOne">
+                            {% for ingredient in user.favorite_ingredients %}
+                            <li data-id="{{ ingredient }}" class="list-group-item">{{ ingredient }} </li>
+                            {% endfor %}
+                            </div>
+                        </ul>
+                        
+                        {% else %}
+                        <p>As a member of drinkit you will be able to immediately jump to recipes related to your favorites ingredients and flavors from this menu</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card mt-4 sticky-top">
+                    <div class="card-content text-center">
+                        <p class="mt-4"> Drinkit was made by Kevin Stewart </p>
+                        <p class="mb-4"> check it out on github <a href="https://github.com/kev20006/drinkit"><i class="fab fa-github"></i></a></p>
+                    </div>
+                </div>
             </div>
             <!-- End of Sticky Column -->
         </div>
         <!-- End of body-->
         <script>
+            fetch('/api/flavors/')
+                .then((response) => response.json())
+                .then(data => {
+                    console.log(data);
+                    [...document.querySelector("#flavor-list").children[1].children].forEach(li =>{
+                        flavorName = data.filter(element =>{
+                            return element._id.$oid == li.dataset.id
+                        })
+                        console.log(flavorName)
+                        if (flavorName[0]){
+                            li.innerText = flavorName[0].name
+                        }else{
+                            li.innerText = "flavor has been removed"
+                        }
+                        
+                    })
+                })
+
+            fetch('/api/ingredients/')
+                    .then((response) => response.json())
+                    .then(data => {
+                        console.log(data);
+                        [...document.querySelector("#ingredient-list").children[1].children].forEach(li => {
+                            ingredientsName = data.filter(element => {
+                                return element._id.$oid == li.dataset.id
+                            })
+                            console.log(flavorName)
+                            if (ingredientsName[0]) {
+                                li.innerText = ingredientsName[0].name
+                            } else {
+                                li.innerText = "ingredients has been removed"
+                            }
+
+                        })
+                    })
+
             let addFavorite = (trigger, type) =>{
                 let textContent;
                 if (type.split("_")[1] == "cocktails") {

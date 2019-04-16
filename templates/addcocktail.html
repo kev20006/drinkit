@@ -27,8 +27,14 @@
             </div>
             <div class="form-group px-4">
                 <label for="flavors">enter a list of decriptors</label>
-                <input id="flavors" name="flavors" type="text" class="form-control" aria-describedby="flavorHelp"
+                <div id="flavors" name="flavors" type="text" class="form-control d-flex flex-wrap" aria-describedby="flavorHelp"
                     placeholder="Flavor Descriptors">
+                    <div class="flavors badge badge-secondary w-xs-50 w-md-30 w-lg-10">
+                        <!-- remove inline styles later!! -->
+                        <input style="width:100%" list="flavor-list" id="flavor-input" type="text" placeholder="add +" onkeydown="addFlavor(event, this)">
+                    </div>
+                </div>
+                <datalist id="flavor-list"></datalist>
                 <small id="flavorHelp" class="form-text text-muted">Enter a comma separated list of flavors i.e. spicy, fruity, creamy</small>
             </div>
             <hr>
@@ -156,6 +162,42 @@
     <script src="/static/scripts/addingredient.js" charset="utf-8"></script>
     <script src="/static/scripts/getFormDetails.js" charset="utf-8"></script>
     <script>
+        let addedFlavors = []
+        fetch('/api/flavors/')
+                .then((response) => response.json())
+                .then(data => {
+                    data.forEach(flavor =>{
+                        newFlavor = document.createElement("option");
+                        newFlavor.textContent = flavor.name;
+                        document.querySelector("#flavor-list").appendChild(newFlavor)
+                    })
+                })
+        
+        let addFlavor = (event, trigger) => {
+            if (event.keyCode == 13 && trigger.value != ""){
+                if (addedFlavors.includes(trigger.value)){
+                   trigger.value = ""; 
+                }else{
+                    let flavor = trigger.value
+                    addedFlavors.push(flavor)
+                    trigger.value = "";
+                    let newTag = document.createElement("div")
+                    newTag.className = "flavors badge badge-secondary"
+                    let crossIcon = document.createElement("i")
+                    crossIcon.addEventListener("click", (e) => {
+                        index = addedFlavors.indexOf(flavor)
+                        addedFlavors = addFlavor.splice(index, 1)
+                        e.currentTarget.parentNode.remove()
+                    })
+                    crossIcon.className = "fas fa-times"
+
+                    newTag.textContent = flavor
+                    newTag.appendChild(crossIcon)
+                    trigger.parentNode.parentNode.appendChild(newTag)
+                }
+                
+            }
+        }
 
         let unlockOther = (trigger) => {
            if(trigger.checked){
