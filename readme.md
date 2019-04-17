@@ -100,6 +100,16 @@ Submitting Cocktails (Registered users):
 
 ## Testing
 
+### Interesting Bugs & Fixes
+
+#### Bug 1: Adding a drink with no flavor tags causes it to fail to render in the app: 
+**Status**: Identified
+This bug stems from an outdated instruction on the input form. Users were asked to input a comma separated list of tags. This interface was changed to generate new tags when the user pressed enter. By not adding tags in this way a number of cocktails were added with no flavor descriptors.
+
+When the aggregate query is performed, it filters out query results that have no flavor tags. Resulting in a number of cocktails being in the database, but never being rendered on the index page.
+
+**Solution**: The large aggregate query that was filtering out cocktails was also causing problems with loading times (it took upwards of 3 seconds to complete on a small dataset). Therefore method of aggregation was changed. The cocktails collection is queried on the server and sent with the index. AJAX is then used to asynchronusly perform the aggregation (adding flavor, user and ingredient information) after the index page as been index page has been loaded. 
+
 ## Deployment
 
 ## Credits
