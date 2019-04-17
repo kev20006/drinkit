@@ -1,9 +1,7 @@
 fetch('/api/flavors/')
     .then((response) => response.json())
     .then(data => {
-        console.log(data);
         let tags = document.getElementById("flavor-tags").children
-        console.log(tags)
         for (i = 0; i < tags.length; i++) {
             let action = ""
             if (tags[i].children[1]) {
@@ -11,7 +9,6 @@ fetch('/api/flavors/')
             }
             let tagContents = data.filter(element => element._id.$oid == tags[i].dataset.id)
             tags[i].innerHTML = tagContents[0].name
-            console.log(tags[i].dataset.user)
             if (tags[i].dataset.user) {
                 if (action == "remove") {
                     tags[i].innerHTML += `<i class="fas fa-heart" data-id="${tagContents[0]._id.$oid}}" data-name="${tagContents[0].name}" data-user="${tags[i].dataset.user}"
@@ -34,7 +31,6 @@ fetch('/api/ingredients/')
             if (tags[i].children[1]) {
                 action = tags[i].children[1].dataset.action
             }
-            console.log(action)
             let tagContents = data.filter(element => element._id.$oid == tags[i].dataset.id)
 
             tags[i].innerHTML = tagContents[0].name

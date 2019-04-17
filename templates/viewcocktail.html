@@ -75,7 +75,29 @@
         <hr>
         <div class="row mx-0 px-sm-4">
             <h4 class="px-4">Comments</h4>
-            <p>Comments are coming in a future update</p>
+            <div class="new-comment col-12">
+                <div class="col-12 mx-0">
+                    Comment as {{ session['username'] }}
+                    <div class="card col-12">
+                        <div class="card-content">
+                            <textarea class="col-12"></textarea>
+                        </div>
+                        <div class="card-footer d-flex ">
+                            <button type="button" class="btn btn-primary ml-auto" 
+                            data-user="{{ session['_id'] }}" data-cocktail="{{ cocktail._id }}"
+                            onclick="addComment(this)">comment</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="row mx-0">
+                    sort by [select box]
+                </div>
+                <div id="comments-area" data-cocktail="{{ cocktail._id }}">
+                    Fetching Comments....
+                </div>      
+            </div>
         </div>
     </div>
 </main>
@@ -83,6 +105,67 @@
 {% block scripts %}
 <script src="/static/scripts/getDetails.js" charset="utf-8"></script>
 
+<script>
+let updateComments = ()=>{
+    let commentContainer = document.querySelector("#comments-area")
+    fetch(`/api/comments/${commentContainer.dataset.cocktail}`)
+        .then((response) => response.json())
+        .then(data => {
+            console.log(data)
+            if (data.length ==0){
+                commentContainer.textContent = "No Comments on this Cocktail"
+            }
+            else{
+                commentContainer.textContent = ""
+                data.forEach(comment => {
+                    if (comment.parent_comment == ""){
+                        commentContainer.innerHTML += `<p> ${comment.comment} </p>`
+                    }
+                })
+            }
+        })
+}
 
+
+let addComment = (trigger) =>{
+    let comment = {}
+    comment.comment = trigger.parentNode.parentNode.children[0].children[0].value
+    comment.cocktail = trigger.dataset.cocktail
+    comment.user_id = trigger.dataset.user
+    if (trigger.dataset.parent){
+        comment.parent = trigger.dataset.parent
+    }
+    fetch("/c/comment", {
+        method: 'post',
+        body: JSON.stringify(comment),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(()=>{
+        updateComments()
+    })
+}
+let template = document.createElement("template")
+template.innerHTML = `
+                <div class="comment">
+                </div>
+                <div class="row mx-0">
+                    <div class="rating col-1 d-flex flex-column">
+                        <span>up</span>
+                        <span>down</span>
+                    </div>
+                    <div class="comment-body col-11">
+                        <p><span class="author">[comment by]</span> - <span class="votes">0</span> votes - <span class="time">timestamp</span></p>
+                        <p class="comment-content"></p>
+                        <p><a>Reply</a> <a>Report</a></p>
+                        <div class="reply">
+                        </div>
+                    </div>
+                </div>
+            </div>
+`
+updateComments()
+</script>
 
 {% endblock %}

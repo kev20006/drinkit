@@ -199,7 +199,6 @@
             fetch('/api/flavors/')
                 .then((response) => response.json())
                 .then(data => {
-                    console.log(data);
                     [...document.querySelector("#flavor-list").children[1].children].forEach(li =>{
                         flavorName = data.filter(element =>{
                             return element._id.$oid == li.dataset.id
@@ -216,7 +215,6 @@
             fetch('/api/ingredients/')
                     .then((response) => response.json())
                     .then(data => {
-                        console.log(data);
                         [...document.querySelector("#ingredient-list").children[1].children].forEach(li => {
                             ingredientsName = data.filter(element => {
                                 return element._id.$oid == li.dataset.id
@@ -318,7 +316,6 @@
 
             let vote = (trigger, type) => {
                 let fetchType = type
-                console.log(trigger.classList)
                 if (trigger.classList.contains("voted")) {
                     fetchType = "remove"
                     trigger.classList.remove("voted")

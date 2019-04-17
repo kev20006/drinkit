@@ -91,7 +91,6 @@ let getFormDetails = (trigger) => {
             }
         })
         .then((res) => {
-            console.log(res)
             window.location.replace("/");
         })
     }

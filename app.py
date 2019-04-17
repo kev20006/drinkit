@@ -13,13 +13,13 @@ from passlib.hash  import sha256_crypt
 
 app = Flask(__name__)
 #environment variables hide irl
-#mongo_uri = "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
-#DBS_NAME =  "bartendr"
-#app.secret_key = 'any random string'
+mongo_uri = "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
+DBS_NAME =  "bartendr"
+app.secret_key = 'any random string'
 
-mongo_uri = os.environ.get('MONGO_URI')
-DBS_NAME = os.environ.get('DBS_NAME')
-app.secret_key = os.environ.get('SECRET_KEY')
+#mongo_uri = os.environ.get('MONGO_URI')
+#DBS_NAME = os.environ.get('DBS_NAME')
+#app.secret_key = os.environ.get('SECRET_KEY')
 
 def aggregate_cocktail_previews(cocktails):
     cocktailDetails = cocktails.aggregate([
@@ -31,7 +31,12 @@ def aggregate_cocktail_previews(cocktails):
                 "as": "creator"
             }
          },
-        {"$unwind": "$flavor_tags"},
+        {"$unwind": 
+            {
+                'path': '$flavor_tags' ,
+                'preserveNullAndEmptyArrays': True
+            }
+        },
         {"$lookup":
             {
                 "from": "flavors",
@@ -40,7 +45,12 @@ def aggregate_cocktail_previews(cocktails):
                 "as": "flavors"
             }
          },
-        {"$unwind": "$flavors"},
+        {"$unwind":
+            {
+                'path': '$flavors',
+                'preserveNullAndEmptyArrays': True
+            }
+         },
         {"$unwind": "$creator"},
         {"$unwind": "$ingredients"},
         {"$lookup":
@@ -80,7 +90,6 @@ def get_id(collection, name):
 def mongo_connect(uri):
     try:
         conn = pymongo.MongoClient(uri)
-        print("DB Connected Successfully")
         return conn["bartendr"]
     except pymongo.errors.ConnectionFailure as e:
         print("Could not connect to MongoDB: %s") % e
@@ -122,7 +131,6 @@ def view_cocktail(cocktail_id):
     cocktail = connection["cocktails"].find_one(
         {"_id": ObjectId(cocktail_id)} 
     )
-    print(cocktail)
     user = ""
     if session.get('_id'):
         user = connection["users"].find_one(
@@ -220,6 +228,32 @@ def add_new_drink_to_db():
     })
     return "success"
 
+
+@app.route('/c/comment', methods=["POST"])
+def add_comment():
+    data = request.data
+    commentsDict = json.loads(data)
+    if not "parent_comment" in commentsDict:
+        commentsDict["parent_comment"] = ""
+    else:
+        commentsDict["parent_comment"] = ObjectId(
+            commentsDict["parent_comment"])
+    connection = mongo_connect(mongo_uri)
+    connection["comments"].insert_one({
+        "user_id": ObjectId(commentsDict["user_id"]),
+        "parent_comment": commentsDict["parent_comment"],
+        "cocktail_id": ObjectId(commentsDict["cocktail"]),
+        "comment": commentsDict["comment"],
+        "votes":{
+            "upvotes": [],
+            "downvotes": []
+        },
+        "reported": 0,
+        "created_at": str(datetime.now())
+    })
+   
+    return "success"
+
 #functions for adding to the DB, without routes
 def add_ingredient_return_id(name, type):
     connection = mongo_connect(mongo_uri)
@@ -278,6 +312,14 @@ def get_flavors(id = None):
         flavors = connection["flavors"].find({})
     return dumps(flavors)
 
+@app.route('/api/comments/<cocktail_id>')
+def get_comments(cocktail_id):
+    connection = mongo_connect(mongo_uri)
+    comments = connection["comments"].find({
+        "cocktail_id": ObjectId(cocktail_id)
+    })
+    return dumps(comments)
+
 # /u/ routes to update details in the database
 @app.route("/u/favorite_things/", methods=["POST"])
 def update_favorite_things():
@@ -307,7 +349,6 @@ def update_favorite_things():
 def like_dislike():
     data = request.data
     new_like = json.loads(data)
-    print(new_like)
     connection = mongo_connect(mongo_uri)
     if new_like["type"] == "up":
         connection["cocktails"].update_one(
@@ -349,6 +390,6 @@ def like_dislike():
         
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 33507))
-    app.run(host='0.0.0.0', port=port)  
-    #app.run(debug="true")
+    #port = int(os.environ.get("PORT", 33507))
+    #app.run(host='0.0.0.0', port=port)  
+    app.run(debug="true")
