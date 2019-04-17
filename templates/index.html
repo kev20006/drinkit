@@ -4,9 +4,9 @@
 
 {% block content %}
     <main class="container">
-        {{% for cocktail in cocktails %}}
+        {% for cocktail in cocktails %}
             {{ cocktail.name }}
-        {{% endfor %}}
+        {% endfor %}
         <div class="row d-md-none my-2 mx-0">
             <div class="card col-12 px-0">
                 <div class="card-header">
