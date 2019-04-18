@@ -13,13 +13,13 @@ from passlib.hash  import sha256_crypt
 
 app = Flask(__name__)
 #environment variables hide irl
-#mongo_uri = "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
-#DBS_NAME =  "bartendr"
-#app.secret_key = 'any random string'
+mongo_uri = "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
+DBS_NAME =  "bartendr"
+app.secret_key = 'any random string'
 
-mongo_uri = os.environ.get('MONGO_URI')
-DBS_NAME = os.environ.get('DBS_NAME')
-app.secret_key = os.environ.get('SECRET_KEY')
+#mongo_uri = os.environ.get('MONGO_URI')
+#DBS_NAME = os.environ.get('DBS_NAME')
+#app.secret_key = os.environ.get('SECRET_KEY')
 
 def aggregate_cocktail_previews(cocktails):
     cocktailDetails = cocktails.aggregate([
@@ -233,15 +233,15 @@ def add_new_drink_to_db():
 def add_comment():
     data = request.data
     commentsDict = json.loads(data)
-    if not "parent_comment" in commentsDict:
-        commentsDict["parent_comment"] = ""
+    if not "parent" in commentsDict:
+        commentsDict["parent"] = ""
     else:
-        commentsDict["parent_comment"] = ObjectId(
-            commentsDict["parent_comment"])
+        commentsDict["parent"] = ObjectId(
+            commentsDict["parent"])
     connection = mongo_connect(mongo_uri)
     connection["comments"].insert_one({
         "user_id": ObjectId(commentsDict["user_id"]),
-        "parent_comment": commentsDict["parent_comment"],
+        "parent": commentsDict["parent"],
         "cocktail_id": ObjectId(commentsDict["cocktail"]),
         "comment": commentsDict["comment"],
         "votes":{
@@ -325,6 +325,7 @@ def get_comments(cocktail_id):
 def update_favorite_things():
     data = request.data
     favorite_things = json.loads(data)
+    print(favorite_things)
     connection = mongo_connect(mongo_uri)
     if(favorite_things["action"] == "add"):
         connection["users"].update_one(
@@ -390,6 +391,6 @@ def like_dislike():
         
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 33507))
-    app.run(host='0.0.0.0', port=port)  
-    #app.run(debug="true")
+    #port = int(os.environ.get("PORT", 33507))
+    #app.run(host='0.0.0.0', port=port)  
+    app.run(debug="true")

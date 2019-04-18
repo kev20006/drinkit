@@ -11,11 +11,11 @@ fetch('/api/flavors/')
             tags[i].innerHTML = tagContents[0].name
             if (tags[i].dataset.user) {
                 if (action == "remove") {
-                    tags[i].innerHTML += `<i class="fas fa-heart" data-id="${tagContents[0]._id.$oid}}" data-name="${tagContents[0].name}" data-user="${tags[i].dataset.user}"
+                    tags[i].innerHTML += `<i class="fas fa-heart" data-id="${tagContents[0]._id.$oid}" data-name="${tagContents[0].name}" data-user="${tags[i].dataset.user}"
                         onclick="removeFavorite(this , 'favorite_flavors')"></i>`
                 }
                 else {
-                    tags[i].innerHTML += `<i class="far fa-heart" data-id="${tagContents[0]._id.$oid}}" data-name="${tagContents[0].name}" data-user="${tags[i].dataset.user}"
+                    tags[i].innerHTML += `<i class="far fa-heart" data-id="${tagContents[0]._id.$oid}" data-name="${tagContents[0].name}" data-user="${tags[i].dataset.user}"
                         onclick="addFavorite(this , 'favorite_flavors')"></i>`
                 }
             }
@@ -37,11 +37,11 @@ fetch('/api/ingredients/')
 
             if (tags[i].dataset.user) {
                 if (action == "remove") {
-                    tags[i].innerHTML += `<i class="fas fa-heart" data-id="${tagContents[0]._id.$oid}}" data-name="${tagContents[0].name}" data-user="${tags[i].dataset.user}"
+                    tags[i].innerHTML += `<i class="fas fa-heart" data-id="${tagContents[0]._id.$oid}" data-name="${tagContents[0].name}" data-user="${tags[i].dataset.user}"
                         onclick="removeFavorite(this , 'favorite_ingredients')"></i>`
                 }
                 else if (action) {
-                    tags[i].innerHTML += `<i class="far fa-heart" data-id="${tagContents[0]._id.$oid}}" data-name="${tagContents[0].name}" data-user="${tags[i].dataset.user}"
+                    tags[i].innerHTML += `<i class="far fa-heart" data-id="${tagContents[0]._id.$oid}" data-name="${tagContents[0].name}" data-user="${tags[i].dataset.user}"
                         onclick="addFavorite(this , 'favorite_ingredients')"></i>`
                 }
             }
