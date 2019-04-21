@@ -21,12 +21,18 @@ app.secret_key = 'any random string'
 #DBS_NAME = os.environ.get('DBS_NAME')
 #app.secret_key = os.environ.get('SECRET_KEY')
 
-def aggregate_cocktail_previews(cocktails):
+def aggregate_cocktail_previews(cocktails, filter):
     """
     function to aggregate information from all the tables
     to create the item previews used on the index page and
     in search results
     """
+    if filter == None or filter == "recent":
+        filter = "created_at"
+    elif filter == "popular":
+        filter = "noOfVotes"
+        
+
     cocktailDetails = cocktails.aggregate([
         {"$lookup":
             {
@@ -75,14 +81,17 @@ def aggregate_cocktail_previews(cocktails):
                 "flavor_tags": {"$min": "$flavor_tags"},
                 "ingredients": {"$min": "$ingredients"},
                 "votes": {"$min": "$votes"},
+                "noOfVotes": {"$min": {"$subtract": [{"$size": "$votes.upvotes"},{"$size": "$votes.downvotes"}]}},
                 "image_url": {"$min": "$image_url"},
                 "creator": {"$min": "$creator.username"},
                 "flavors": {"$addToSet": '$flavors'},
-                "ingredient_list":  {"$addToSet": '$ingredient_list'},
+                "created_at": {"$min": "$created_at"},
+                "ingredient_list":  {"$addToSet": '$ingredient_list'}
             }
-        }
+        },
+            {"$sort": {filter: -1}}
     ])
-
+    
     return cocktailDetails
 
 def get_id(collection, name):
@@ -105,7 +114,8 @@ def mongo_connect(uri):
 
 
 @app.route('/')
-def index():
+@app.route('/<filter>')
+def index(filter = None):
     """
     route to render the homepage
     """
@@ -114,7 +124,7 @@ def index():
     user = None
     if session:   
         user = connection["users"].find_one({"_id": ObjectId(session['_id'])})
-    cocktailPreviews = aggregate_cocktail_previews(cocktails)
+    cocktailPreviews = aggregate_cocktail_previews(cocktails, filter)
     return render_template('index.html', cocktails = cocktailPreviews, user= user)
 
 
@@ -336,6 +346,8 @@ def add_flavor_return_id(name):
 
 
 # /api/ routes for making ajax requests
+
+
 @app.route('/api/ingredients/')
 @app.route('/api/ingredients/<type>')
 def get_ingredients_by_type(type = None):
@@ -409,10 +421,11 @@ def like_dislike():
     "route to upvote and downvote drinks and comments"
     data = request.data
     new_like = json.loads(data)
+    print(new_like)
     connection = mongo_connect(mongo_uri)
     if new_like["type"] == "up":
-        connection["cocktails"].update_one(
-            {"_id": ObjectId(new_like["cocktail_id"])},
+        connection[new_like["collection"]].update_one(
+            {"_id": ObjectId(new_like["object_id"])},
             {"$pull":
                 {
                     "votes.downvotes": new_like["user_id"]
@@ -424,8 +437,8 @@ def like_dislike():
             }
         )
     elif new_like["type"] == "down":
-        connection["cocktails"].update_one(
-            {"_id": ObjectId(new_like["cocktail_id"])},
+        connection[new_like["collection"]].update_one(
+            {"_id": ObjectId(new_like["object_id"])},
             {"$push":
                 {
                     "votes.downvotes": new_like["user_id"]
@@ -437,8 +450,8 @@ def like_dislike():
              }
         )
     else:
-        connection["cocktails"].update_one(
-            {"_id": ObjectId(new_like["cocktail_id"])},
+        connection[new_like["collection"]].update_one(
+            {"_id": ObjectId(new_like["object_id"])},
             {"$pull":
                 {
                     "votes.downvotes": new_like["user_id"],

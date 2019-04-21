@@ -26,6 +26,8 @@
             <h5><strong><i class="fas fa-glass-martini-alt"></i> Drinkit</strong></h5>
         </div>
         <div>
+                <span><a href="{{ url_for('index', filter='recent') }}"><i class="fas fa-hourglass-start"></i></a></span>
+                <span><a href="{{ url_for('index', filter='popular' ) }}"><i class="fas fa-chart-line"></i></a></span>
             {% if session['username'] %}
                 <span>
                     {{ session['username'] }}
@@ -121,6 +123,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+
+    <script src="/static/scripts/utilities.js" charset="utf-8"></script>   
     {% block scripts %}
     {% endblock %}
     <script src="/static/scripts/favorites.js" charset="utf-8"></script>

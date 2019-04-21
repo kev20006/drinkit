@@ -104,41 +104,38 @@
 
 <script>
 
-    function formatDate(date) {
-        let diff = new Date() - date; // the difference in milliseconds
-
-        if (diff < 1000) { // less than 1 second
-            return 'right now';
+    let genCommentHTML =(comment) =>{
+        let currentUser = document.getElementById("spirit-tags").children[0].dataset.user
+        console.log(`current user is: ${currentUser}`)
+        let upVoteButton = document.createElement("i");
+        upVoteButton.className =  "far fa-arrow-alt-circle-up"
+        upVoteButton.setAttribute("data-user", currentUser)
+        upVoteButton.setAttribute("data-id", comment._id.$oid)
+        
+        if(comment.votes.upvotes.includes(currentUser)){
+            upVoteButton.className  += " voted";
+            upVoteButton.addEventListener("click", function (){vote(this, "up", "comments")});
+        }
+        else{
+            upVoteButton.addEventListener("click", function(){vote(this, "up", "comments")});
         }
 
-        let sec = Math.floor(diff / 1000); // convert diff to seconds
-
-        if (sec < 60) {
-            return sec + ' sec. ago';
+        let downVoteButton = document.createElement("i");
+        downVoteButton.className = "far fa-arrow-alt-circle-down"
+        downVoteButton.setAttribute("data-user", currentUser)
+        downVoteButton.setAttribute("data-id", comment._id.$oid)
+        if (comment.votes.downvotes.includes(currentUser)) {
+            downVoteButton.className += " voted";
+            downVoteButton.addEventListener("click", function(){vote(this, "down", "comments")});
+        }
+        else {
+            downVoteButton.addEventListener("click", function(){vote(this, "down", "comments")});
         }
 
-        let min = Math.floor(diff / 60000); // convert diff to minutes
-        if (min < 60) {
-            return min + ' min. ago';
-        }
-
-        // format the date
-        // add leading zeroes to single-digit day/month/hours/minutes
-        let d = date;
-        d = [
-            '0' + d.getDate(),
-            '0' + (d.getMonth() + 1),
-            '' + d.getFullYear(),
-            '0' + d.getHours(),
-            '0' + d.getMinutes()
-        ].map(component => component.slice(-2)); // take last 2 digits of every component
-
-        // join the components into date
-        return d.slice(0, 3).join('.') + ' ' + d.slice(3).join(':');
-    }
-
-
-    genCommentHTML =(comment) =>{
+        let votes = document.createElement("span")
+        votes.className = "votes"
+        
+         
         let commentHTML = document.createElement("div")
         commentHTML.innerHTML = 
             `
@@ -148,10 +145,7 @@
                         <p><span class="author">[comment by]</span> - <span class="time"></span></p>
                         <p class="comment-content"></p>
                         <div class="d-flex justify-content-between">
-                        <div>
-                            <i class="far fa-arrow-alt-circle-down voted"></i> 
-                            <span class="votes"></span>
-                            <i class="far fa-arrow-alt-circle-up voted"></i>
+                        <div class="vote-controls">
                         </div>
                          <div>
                             <button type="button" class="btn btn-outline-primary reply-btn" onclick="reply(this)">Reply</button> 
@@ -175,13 +169,16 @@
             </div>
         `
         commentHTML.querySelector(".comment").id = comment._id.$oid;
-        commentHTML.querySelector(".votes").innerHTML = comment.votes.upvotes.length - comment.votes.downvotes.length;
         commentHTML.querySelector(".author").innerHTML = comment.user_id.$oid;
         commentHTML.querySelector(".comment-content").innerHTML = comment.comment;
         commentHTML.querySelector(".time").innerHTML = formatDate(new Date(comment.created_at));
         commentHTML.querySelector(".reply-button").dataset.parent = comment._id.$oid;
         commentHTML.querySelector(".reply-button").dataset.cocktail = comment.cocktail_id.$oid;
         commentHTML.querySelector(".reply-button").dataset.user = comment.user_id.$oid;
+        if (currentUser) commentHTML.querySelector(".vote-controls").appendChild(upVoteButton);
+        commentHTML.querySelector(".vote-controls").appendChild(votes);
+        commentHTML.querySelector(".votes").innerHTML = comment.votes.upvotes.length - comment.votes.downvotes.length;
+        if (currentUser) commentHTML.querySelector(".vote-controls").appendChild(downVoteButton);
         return commentHTML 
     } 
 

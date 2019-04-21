@@ -1,4 +1,5 @@
-let vote = (trigger, type) => {
+let vote = (trigger, type, collection) => {
+    console.log(trigger)
     let fetchType = type
     if (trigger.classList.contains("voted")) {
         fetchType = "remove"
@@ -32,7 +33,8 @@ let vote = (trigger, type) => {
         body: JSON.stringify({
             "type": fetchType,
             "user_id": trigger.dataset.user,
-            "cocktail_id": trigger.dataset.id,
+            "object_id": trigger.dataset.id,
+            "collection": collection
         }),
         headers: {
             'Content-Type': 'application/json'

@@ -67,7 +67,6 @@
                                     {% endif %}
                                 {% endfor %}
                             </p>
-
                         </div>
                         <div class="row">
                             <strong>Flavor:</strong>
@@ -94,35 +93,35 @@
                     </div>
                     <div class="card-footer">
                         <div class="d-flex justify-content-between">
-                            <div class="mr-2">
+                            <div class="mr-2 text-center">
+                                <p> Upvotes </p>
                                 <h5>
                                     {% if session['username'] %}
                                         {% if user._id|string in cocktail.votes.upvotes %}
-                                            <i class="far fa-arrow-alt-circle-up voted" data-id="{{cocktail._id}}" data-user="{{session['_id']}}"
-                                                onclick="vote(this, 'up')"></i>
+                                            <i class="far fa-arrow-alt-circle-up voted " data-id="{{cocktail._id}}" data-user="{{session['_id']}}"
+                                                onclick="vote(this, 'up', 'cocktails')"></i>
                                         {% else %}
                                             <i class="far fa-arrow-alt-circle-up" data-id="{{cocktail._id}}" data-user="{{session['_id']}}"
-                                                onclick="vote(this, 'up')"></i>
+                                                onclick="vote(this, 'up', 'cocktails')" disabled></i>
                                         {% endif %}
                                     {% endif %}
                                     <span class="vote-count">{{ cocktail.votes.upvotes|length - cocktail.votes.downvotes|length }}</span>
                                     {% if session['username'] %}
                                         {% if user._id|string in cocktail.votes.downvotes %}
                                             <i class="far fa-arrow-alt-circle-down voted" data-id="{{cocktail._id}}" data-user="{{session['_id']}}"
-                                                onclick="vote(this, 'down')"></i>
+                                                onclick="vote(this, 'down', 'cocktails')"></i>
                                         {% else %}
                                             <i class="far fa-arrow-alt-circle-down" data-id="{{cocktail._id}}" data-user="{{session['_id']}}"
-                                                onclick="vote(this, 'down')"></i>
+                                                onclick="vote(this, 'down', 'cocktails')"></i>
                                         {% endif %}
                                     {% endif %}
                                 </h5>
                             </div>
-                            <div class="mr-2">
-                                <p> a drink by {{ cocktail.creator }}</p>
+                            <div class="mr-2 text-right">
+                                <p> a drink by {{ cocktail.creator }}</p><p><small class="timestamp">{{ cocktail.created_at }}</small></p>
                             </div>
                         </div>
                     </div>
-                   
                 </div>
                 {% endfor %}
                 <!-- End of Card -->
@@ -179,7 +178,6 @@
                             {% endfor %}
                             </div>
                         </ul>
-                        
                         {% else %}
                         <p>As a member of drinkit you will be able to immediately jump to recipes related to your favorites ingredients and flavors from this menu</p>
                         {% endif %}
@@ -198,7 +196,12 @@
     </main>
 {% endblock %}
 {% block scripts %}
-<script>
+<script>  
+    
+    [...document.querySelectorAll(".timestamp")].forEach(time =>{
+      time.innerText= formatDate(new Date(time.innerText))
+    })
+
     fetch('/api/flavors/')
         .then((response) => response.json())
         .then(data => {
