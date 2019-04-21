@@ -13,15 +13,20 @@ from passlib.hash  import sha256_crypt
 
 app = Flask(__name__)
 #environment variables hide irl
-#mongo_uri = "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
-#DBS_NAME =  "bartendr"
-#app.secret_key = 'any random string'
+mongo_uri = "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
+DBS_NAME =  "bartendr"
+app.secret_key = 'any random string'
 
-mongo_uri = os.environ.get('MONGO_URI')
-DBS_NAME = os.environ.get('DBS_NAME')
-app.secret_key = os.environ.get('SECRET_KEY')
+#mongo_uri = os.environ.get('MONGO_URI')
+#DBS_NAME = os.environ.get('DBS_NAME')
+#app.secret_key = os.environ.get('SECRET_KEY')
 
 def aggregate_cocktail_previews(cocktails):
+    """
+    function to aggregate information from all the tables
+    to create the item previews used on the index page and
+    in search results
+    """
     cocktailDetails = cocktails.aggregate([
         {"$lookup":
             {
@@ -81,9 +86,13 @@ def aggregate_cocktail_previews(cocktails):
     return cocktailDetails
 
 def get_id(collection, name):
+    """
+    given a name and a collection returns the id
+    """
     item = collection.find_one({"name":name})
     if item != None:
         return item["_id"]
+    return None
 
 
 
@@ -97,6 +106,9 @@ def mongo_connect(uri):
 
 @app.route('/')
 def index():
+    """
+    route to render the homepage
+    """
     connection = mongo_connect(mongo_uri)
     cocktails = connection["cocktails"]
     user = None
@@ -107,8 +119,13 @@ def index():
 
 
 #Login and Logout
+
+
 @app.route('/login/', methods=["GET", "POST"])
 def login():
+    """
+    route to process logins for existing users
+    """
     connection = mongo_connect(mongo_uri)
     userCollection = connection["users"]
     userdetails = userCollection.find_one({"username": request.form["username"]}) 
@@ -120,13 +137,21 @@ def login():
 
 @app.route('/logout/')
 def logout():
+    """
+    route to end current login session for a user
+    """
     session.pop('username', None)
     return redirect(url_for('index'))
 
 
 # /v/ routes for viewing db content
+
+
 @app.route('/v/cocktail/<cocktail_id>')
 def view_cocktail(cocktail_id):
+    """
+    route to view a specific cocktail
+    """
     connection = mongo_connect(mongo_uri)
     cocktail = connection["cocktails"].find_one(
         {"_id": ObjectId(cocktail_id)} 
@@ -140,10 +165,26 @@ def view_cocktail(cocktail_id):
     return render_template('viewcocktail.html', cocktail=cocktail, user = user )
 
 
+@app.route('/v/user_profile/<user_id>')
+def view_user_profile(user_id):
+    """
+    route to view a users profile
+    """
+    connection = mongo_connect(mongo_uri)
+    user = connection["users"].find_one(
+        {"_id": ObjectId(user_id)}
+    )
+    return dumps(user)
+
+
 # /c/ Routes for Creating New Content 
+
+
 @app.route('/c/new_account', methods=["GET","POST"])
 def new_user():
-    """ Add a New User to the database and Hashes their password """
+    """ 
+    Add a New User to the database and Hashes their password 
+    """
     hash = sha256_crypt.hash(request.form["newpassword1"])
     connection = mongo_connect(mongo_uri)
     userCollection = connection["users"]
@@ -165,7 +206,9 @@ def new_user():
 
 @app.route('/c/cocktail', methods=["GET", "POST"])
 def new_drink():
-    """ Add a new cocktail to the database"""
+    """ 
+    render the form for adding a new cocktail to the database
+    """
     if session['username']:
         return render_template('addcocktail.html')
 
@@ -174,6 +217,10 @@ def new_drink():
 
 @app.route('/c/cocktail_processing', methods=["POST"])
 def add_new_drink_to_db():
+    """ 
+    function called from the cocktail form to add a drink to the
+    database using AJAX
+    """
     ingredients = json.loads(get_ingredients_by_type(None))
     flavors = json.loads(get_flavors())
     data = request.data
@@ -231,6 +278,9 @@ def add_new_drink_to_db():
 
 @app.route('/c/comment', methods=["POST"])
 def add_comment():
+    """
+    AJAX route to take a comment as JSON and add it ot the database
+    """
     data = request.data
     commentsDict = json.loads(data)
     if not "parent" in commentsDict:
@@ -251,10 +301,12 @@ def add_comment():
         "reported": 0,
         "created_at": str(datetime.now())
     })
-   
     return "success"
 
+
 #functions for adding to the DB, without routes
+
+
 def add_ingredient_return_id(name, type):
     connection = mongo_connect(mongo_uri)
     ingredients = connection["ingredients"]
@@ -321,8 +373,14 @@ def get_comments(cocktail_id):
     return dumps(comments)
 
 # /u/ routes to update details in the database
+
+
 @app.route("/u/favorite_things/", methods=["POST"])
 def update_favorite_things():
+    """
+    route to add or remove favorite ingredients or flavors to a user
+    - favorite_things["type"] - determines if its an ingredient or a flavor
+    """
     data = request.data
     favorite_things = json.loads(data)
     print(favorite_things)
@@ -348,6 +406,7 @@ def update_favorite_things():
 
 @app.route("/u/like_dislike", methods = ["POST"])
 def like_dislike():
+    "route to upvote and downvote drinks and comments"
     data = request.data
     new_like = json.loads(data)
     connection = mongo_connect(mongo_uri)
@@ -391,6 +450,6 @@ def like_dislike():
         
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 33507))
-    app.run(host='0.0.0.0', port=port)  
-    #app.run(debug="true")
+    #port = int(os.environ.get("PORT", 33507))
+    #app.run(host='0.0.0.0', port=port)  
+    app.run(debug="true")
