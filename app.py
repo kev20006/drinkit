@@ -13,13 +13,13 @@ from passlib.hash  import sha256_crypt
 
 app = Flask(__name__)
 #environment variables hide irl
-mongo_uri = "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
-DBS_NAME =  "bartendr"
-app.secret_key = 'any random string'
+#mongo_uri = "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
+#DBS_NAME =  "bartendr"
+#app.secret_key = 'any random string'
 
-#mongo_uri = os.environ.get('MONGO_URI')
-#DBS_NAME = os.environ.get('DBS_NAME')
-#app.secret_key = os.environ.get('SECRET_KEY')
+mongo_uri = os.environ.get('MONGO_URI')
+DBS_NAME = os.environ.get('DBS_NAME')
+app.secret_key = os.environ.get('SECRET_KEY')
 
 def aggregate_cocktail_previews(cocktails, filter):
     """
@@ -83,7 +83,7 @@ def aggregate_cocktail_previews(cocktails, filter):
                 "votes": {"$min": "$votes"},
                 "noOfVotes": {"$min": {"$subtract": [{"$size": "$votes.upvotes"},{"$size": "$votes.downvotes"}]}},
                 "image_url": {"$min": "$image_url"},
-                "creator": {"$min": "$creator.username"},
+                "creator": {"$min": "$creator"},
                 "flavors": {"$addToSet": '$flavors'},
                 "created_at": {"$min": "$created_at"},
                 "ingredient_list":  {"$addToSet": '$ingredient_list'}
@@ -184,7 +184,8 @@ def view_user_profile(user_id):
     user = connection["users"].find_one(
         {"_id": ObjectId(user_id)}
     )
-    return dumps(user)
+    print(user)
+    return render_template('userprofile.html', user=user)
 
 
 # /c/ Routes for Creating New Content 
@@ -384,6 +385,15 @@ def get_comments(cocktail_id):
     })
     return dumps(comments)
 
+
+@app.route('/api/cocktails/<user_id>')
+def get_cocktails_by_user(user_id):
+    connection = mongo_connect(mongo_uri)
+    cocktails = connection["cocktails"].find({
+        "creator": ObjectId(user_id)
+    })
+    return dumps(cocktails)
+
 # /u/ routes to update details in the database
 
 
@@ -463,6 +473,6 @@ def like_dislike():
         
 
 if __name__ == '__main__':
-    #port = int(os.environ.get("PORT", 33507))
-    #app.run(host='0.0.0.0', port=port)  
-    app.run(debug="true")
+    port = int(os.environ.get("PORT", 33507))
+    app.run(host='0.0.0.0', port=port)  
+    #app.run(debug="true")

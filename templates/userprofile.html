@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="container">
+    <div id="user-card" data-sessionid="{{session['_id']}}" data-id="{{ user._id|string }}" class="card my-4">
+        <div class="row my-2 mx-0 px-4 d-flex justify-content-between">
+            <div>
+                <h3> {{ user.username }}</h3>
+            </div>
+            <div><a class="btn btn-outline-dark" href="{{ url_for('index') }}"><i class="fas fa-times"></i></a></div>
+        </div>
+        <div class="row">
+            <div class =" col-12 col-md-4 text-center">
+                {% if user._id|string == session["_id"]|string %}
+                <p>You have not yet added a profile</p>
+                {% else %}
+                <p>This user does not have a profile</p>
+                {% endif %}
+            </div>
+            <div class=" col-12 col-md-8">
+                <p>{{ user.username }}'s cocktails</p>
+                <div id="users-cocktails" class="row mx-0">
+                    <p>Loading cocktails...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+{% block scripts %}
+<script>
+
+let userId = document.querySelector("#user-card").dataset.id
+let sessionId = document.querySelector("#user-card").dataset.sessionid
+
+
+let generateMiniCocktailCard = (cocktail) =>{
+    let template = document.createElement("div")
+    template.className = "card col-12 col-md-6"
+    template.innerHTML = `
+        <div class="d-flex w-100">
+            <div class="image-wrapper mr-2">
+                <img class="img-thumbnail rounded-circle" style="height:100px; width:100px"
+                    src="https://d32miag6ta013h.cloudfront.net/master_cocktails/1349/en-gl/small/525x525_roman-cosmo-martini-cocktail.jpg" />
+            </div>
+            <div class="w-100 text-right pr-2">
+                <h5 class="name"><a><strong></strong></a></h5>
+                <p>Date</p>
+                <div class="contols d-flex justify-content-end"></div>
+            </div>
+  
+            
+        </div>
+    `
+    console.log(template)
+    template.querySelector(".image-wrapper img").src = cocktail.image_url;
+    template.querySelector(".name a").href= `/v/cocktail/${cocktail._id.$oid}`;
+    template.querySelector(".name strong").innerText = cocktail.name;
+    template.querySelector (".name").parentNode.children[1].innerText =  formatDate(new Date(cocktail.created_at));
+    console.log(`${userId} == ${sessionId}`)
+    if (userId == sessionId){
+        let editButton = document.createElement("button");
+        editButton.className = "btn btn-primary btn-sm" 
+        editButton.innerHTML = `edit <i class="fas fa-pen"></i>`;
+
+        let deleteButton = document.createElement("button");
+        deleteButton.className = "btn btn-danger btn-sm"; 
+        deleteButton.innerHTML = `delete <i class="fas fa-trash"></i>`;
+        template.querySelector(".contols").appendChild(editButton);
+        template.querySelector(".contols").appendChild(deleteButton);
+    }              
+    return template           
+}
+
+fetch(`/api/cocktails/${userId}`)
+    .then((response) => response.json())
+    .then(data => {
+        document.querySelector("#users-cocktails").innerHTML = ""
+        data.forEach(cocktail =>{
+            document.querySelector("#users-cocktails").appendChild(generateMiniCocktailCard(cocktail))
+        })
+    })
+</script>
+
+{% endblock %}

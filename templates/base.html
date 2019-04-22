@@ -23,19 +23,19 @@
     <nav class="navbar navbar-light bg-light justify-content-between">
         <div class="container">
         <div>
-            <h5><strong><i class="fas fa-glass-martini-alt"></i> Drinkit</strong></h5>
+            <h5><a href="{{ url_for('index') }}"><strong><i class="fas fa-glass-martini-alt"></i> Drinkit</strong></a></h5>
         </div>
         <div>
-                <span><a href="{{ url_for('index', filter='recent') }}"><i class="fas fa-hourglass-start"></i></a></span>
-                <span><a href="{{ url_for('index', filter='popular' ) }}"><i class="fas fa-chart-line"></i></a></span>
+                <span class="btn btn-sm btn-outline-primary"><a href="{{ url_for('index', filter='recent') }}"><i class="fas fa-hourglass-start"></i></a></span>
+                <span class="btn btn-sm btn-outline-primary"><a href="{{ url_for('index', filter='popular' ) }}"><i class="fas fa-chart-line"></i></a></span>
             {% if session['username'] %}
-                <span>
-                    {{ session['username'] }}
+                <span class="btn btn-sm btn-outline-primary">
+                    <a href="{{ url_for('view_user_profile', user_id=session['_id']) }}">{{ session['username'] }}</a>
                 </span>
-                <a href="{{ url_for('logout') }}"><span class="btn btn-outline-primary" >Log Out</span></a>
+                <a href="{{ url_for('logout') }}"><span class="btn btn-sm btn-outline-primary" >Log Out</span></a>
             {% else %}
-                <span class="btn btn-outline-primary" data-toggle="modal" data-target="#login">Login</span>
-                <span class="btn btn-outline-primary" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
+                <span class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#login">Login</span>
+                <span class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
             {% endif %}
         </div>
         </div>
