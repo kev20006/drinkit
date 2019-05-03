@@ -4,6 +4,8 @@ is a reddit inspired cocktail recipe book application. It is a platform for mixo
 
 This project uses mongodb to store and manageuser accounts and cocktail information. The App is served using the flask framework.
 
+[Drinkit is hosted here](http://drink-it.herokuapp.com/)
+
 ## UX - The Idea
 This project is the result of two idea's mashed together. When i first thought about making a data-driven web app my very first thought was simply (I say simply....) a clone of reddit. No other web app that I can think of handles such a varied array of user driven content so simply intuitvely. At the same time I was prototyping a recipe book app using a tinder inspired interface, i.e. based on preferences it would show a user reciepes, that they could swipe left or right on, I thought this was quite a fun idea, but lacked the user driven content that a data-driven app really needed. So from these two ideas drinkit (working title) was born. 
 
