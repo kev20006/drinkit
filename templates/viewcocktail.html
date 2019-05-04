@@ -105,6 +105,7 @@
 <script>
 
     let genCommentHTML =(comment) =>{
+        console.log(comment)
         let currentUser = document.getElementById("spirit-tags").children[0].dataset.user
         console.log(`current user is: ${currentUser}`)
         let upVoteButton = document.createElement("i");
@@ -169,12 +170,12 @@
             </div>
         `
         commentHTML.querySelector(".comment").id = comment._id.$oid;
-        commentHTML.querySelector(".author").innerHTML = comment.user_id.$oid;
+        commentHTML.querySelector(".author").innerHTML = comment.user_info[0].username;
         commentHTML.querySelector(".comment-content").innerHTML = comment.comment;
         commentHTML.querySelector(".time").innerHTML = formatDate(new Date(comment.created_at));
         commentHTML.querySelector(".reply-button").dataset.parent = comment._id.$oid;
         commentHTML.querySelector(".reply-button").dataset.cocktail = comment.cocktail_id.$oid;
-        commentHTML.querySelector(".reply-button").dataset.user = comment.user_id.$oid;
+        commentHTML.querySelector(".reply-button").dataset.user = currentUser;
         if (currentUser) commentHTML.querySelector(".vote-controls").appendChild(upVoteButton);
         commentHTML.querySelector(".vote-controls").appendChild(votes);
         commentHTML.querySelector(".votes").innerHTML = comment.votes.upvotes.length - comment.votes.downvotes.length;

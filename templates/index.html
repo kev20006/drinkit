@@ -140,14 +140,20 @@
                          {% endif %} 
                     </div>
                 </div>
+                {% if session['username'] %}
                 <div class="card mt-4">
                     <div class="card-header">
                         <h5> Starred Cocktails </h5>
                     </div>
                     <div class="card-content center">
-                        <p> Next thing to be implemented </p>
+                        <ul id = "starred-list" class="list-group">
+                        {% for starred in user.starred_cocktails %}
+                            <li data-id="{{ starred }}" class="list-group-item">{{ starred }}</li>
+                        {% endfor %}
+                        </ul>
                     </div>
                 </div>
+                {% endif %}
                 <div class="card mt-4">
                     <div class="card-header">
                         <h5> Favorites  </h5>
@@ -161,10 +167,10 @@
                                     Show Favorite Flavors
                                 </button></strong></li>
                             <div id="collapse-flavors" class="collapse" aria-labelledby="headingOne">
-                           {% for flavor in user.favorite_flavors %}
-                            <li data-id="{{ flavor }}" class="list-group-item"> {{ flavor }}</li>
-                           {% endfor %}
-                        </div>
+                                {% for flavor in user.favorite_flavors %}
+                                    <li data-id="{{ flavor }}" class="list-group-item">{{ flavor }}</li>
+                                {% endfor %}
+                            </div>
                         </ul>
                         <ul id="ingredient-list" class="list-group">
                             <li class="list-group-item d-flex justify-content-around">
@@ -233,5 +239,20 @@
 
             })
         })
+    
+    let starred_ids = [...document.querySelector("#starred-list").children].map(element => element.innerText);
+    document.querySelector("#starred-list").innerHTML = "loading";
+    Promise.all(starred_ids.map( id => fetch(`/api/cocktail/${id}`)))
+        .then(response => Promise.all(response.map(r => r.json()))) 
+        .then(data => {
+            document.querySelector("#starred-list").innerHTML= "";
+            data.forEach(cocktail => {
+                let listItem =  document.createElement("li");
+                listItem.classList = "list-group-item";
+                listItem.innerHTML = `<a href="/v/cocktail/${cocktail._id.$oid}">${cocktail.name}</a>`;
+                document.querySelector("#starred-list").appendChild(listItem);
+            })
+        })
+
 </script>
 {% endblock %}
