@@ -39,7 +39,7 @@
                     placeholder="Flavor Descriptors">
                     <div class="flavors badge badge-secondary mx-2 px-2 w-xs-50 w-md-30 w-lg-10">
                         <!-- remove inline styles later!! -->
-                        <input style="width:100%" list="flavor-list" id="flavor-input" type="text" placeholder="add +"  onkeypress="addFlavor(event, this)">
+                        <input style="width:100%" list="flavor-list" id="flavor-input" type="text" placeholder="add +"  onkeydown="addFlavor(event, this)">
                     </div>
                 </div>
                 <datalist id="flavor-list"></datalist>
@@ -184,7 +184,8 @@
                 })
         
         let addFlavor = (event, trigger) => {
-            if ((event.keyCode == 13 || event.keyCode == 44) && trigger.value != ""){
+            console.log(event.keyCode)
+            if ((event.keyCode == 13 || event.keyCode == 188) && trigger.value != ""){
                 if (addedFlavors.includes(trigger.value)){
                    trigger.value = ""; 
                 }else{
@@ -215,7 +216,7 @@
                     })
                     newInput = document.createElement("div")
                     newInput.classList = "flavors badge badge-secondary mx-2 px-2 w-xs-50 w-md-30 w-lg-10"
-                    newInput.innerHTML = `<input style="width:100%" list="flavor-list" id="flavor-input" type="text" placeholder="add +"  onkeypress="addFlavor(event, this)">`
+                    newInput.innerHTML = `<input style="width:100%" list="flavor-list" id="flavor-input" type="text" placeholder="add +"  onkeydown="addFlavor(event, this)">`
                     document.querySelector("#flavors").appendChild(newInput)
                 }    
             }
