@@ -10,7 +10,7 @@
         </div>
         <div class="row d-flex px-4 justify-content-between">
             <div class="col-12 col-lg-6">
-                <img src="{{ cocktail.image_url }}" class="img-fluid"/>
+                <img src="{{ cocktail.image_url }}" class="img-fluid" onerror="this.onerror=null;this.src='../../static/images/placeholder.jpg';" >
             </div>
             <div class="col-12 col-lg-6">
                 <strong>Description:</strong>

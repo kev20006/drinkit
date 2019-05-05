@@ -10,38 +10,47 @@
         </div>
         <form >
             <div class="form-group px-4">
-                <label for="name">Type full name of cocktail</label>
+                <label for="name">Type full name of cocktail*</label>
+                <p><small id="name-error" class="text-danger"></small></p>
                 <input id="name" name="name" type="text" class="form-control" 
                     placeholder="Name of Cocktail">
             </div>
-            <div class="form-group px-4">
-                <label for="image-url">Attach image url</label>
-                <input id="image-url" name="image-url" type="text" class="form-control" 
-                    placeholder="cocktail url">
+            <div class="row mx-0">
+                <div class="col-12 col-md-4">
+                    <label for="image-preview">Image Preview</label>
+                    <img id="image-preview" src="" class="img-fluid img-thumbnail" onerror="this.onerror=null;this.src='../static/images/placeholder.jpg';">
+                </div>
+                <div class="form-group px-4 col">
+                    <label for="image-url">Please enter an image url*</label>
+                    <p><small id="image-error" class="text-danger"></small></p>
+                    <input id="image-url" name="image-url" type="text" class="form-control" placeholder="cocktail url" onchange="updatePreview(this)">
+                </div>
             </div>
             <div class="form-group px-4">
-                <label for="description">Describe your cocktail</label>
+                <label for="description">Describe your cocktail*</label>
+                <p><small id="description-error" class="text-danger"></small></p>
                 <textarea id="description" name="description" class="form-control"
                     placeholder="describe your cocktail"></textarea>
                 
             </div>
             <div class="form-group px-4">
-                <label for="flavors">enter a list of decriptors</label>
+                <label for="flavors">Enter a list of decriptors</label>
                 <div id="flavors" name="flavors" type="text" class="d-flex flex-wrap" aria-describedby="flavorHelp"
                     placeholder="Flavor Descriptors">
                     <div class="flavors badge badge-secondary mx-2 px-2 w-xs-50 w-md-30 w-lg-10">
                         <!-- remove inline styles later!! -->
-                        <input style="width:100%" list="flavor-list" id="flavor-input" type="text" placeholder="add +" onkeydown="addFlavor(event, this)">
+                        <input style="width:100%" list="flavor-list" id="flavor-input" type="text" placeholder="add +"  onkeypress="addFlavor(event, this)">
                     </div>
                 </div>
                 <datalist id="flavor-list"></datalist>
-                <small id="flavorHelp" class="form-text text-muted">Press Enter after each descriptor to add it to the list</small>
+                <small id="flavorHelp" class="form-text text-muted">please press space or enter after each descriptor</small>
             </div>
             <hr>
             <div id="ingredients">
                 <div class="row d-flex justify-content-between mx-0 px-4">
                     <div >
                         <h4>Ingredients:</h4>
+                        <p><small id="ingredients-error" class="text-danger"></small></p>
                     </div>
                     <div>
                         <h4><a class="btn btn-outline-dark" onclick="addMore()"><i id="add-1" class="far fa-plus-square"></i></a></h4>
@@ -82,7 +91,7 @@
                     <div class="form-group">
                         <label for="glass">Select Your Glass</label>
                         <select id="glass" name="glass" class="form-control">
-                            <option value="" selected disabled>Choose your option</option>
+                            <option value="" value="any" selected>Any</option>
                             <option value="collins">Collins</option>
                             <option value="martini">Martini</option>
                             <option value="hurricane">Hurricane</option>
@@ -90,7 +99,6 @@
                             <option value="lowball">Lowball/Rocks</option>
                             <option value="highball">Highball</option>
                             <option value="other">Other</option>
-                            <option value="any">Any</option>
                         </select>
                     </div>
                 </div>
@@ -133,7 +141,9 @@
             </div>
             <div class="row d-flex justify-content-between mx-0 px-4">
                 <div>
-                    Enter step by step instructions how to make your cocktail below.
+
+                    <p>Enter step by step instructions how to make your cocktail below.</p>
+                    <p><small id="instructions-error" class="text-danger"></small></p>
                 </div>
                 <div><i id="add-step" class="far fa-plus-square" onclick="newStep()"></i></div>
                
@@ -174,28 +184,40 @@
                 })
         
         let addFlavor = (event, trigger) => {
-            if (event.keyCode == 13 && trigger.value != ""){
+            if ((event.keyCode == 13 || event.keyCode == 44) && trigger.value != ""){
                 if (addedFlavors.includes(trigger.value)){
                    trigger.value = ""; 
                 }else{
                     let flavor = trigger.value
                     addedFlavors.push(flavor)
-                    trigger.value = "";
-                    let newTag = document.createElement("div")
-                    newTag.className = "flavors badge badge-secondary"
-                    let crossIcon = document.createElement("i")
-                    crossIcon.addEventListener("click", (e) => {
-                        index = addedFlavors.indexOf(flavor)
-                        addedFlavors = addFlavor.splice(index, 1)
-                        e.currentTarget.parentNode.remove()
+                    document.querySelector("#flavors").innerHTML = ""
+                    console.log(addedFlavors)
+                    addedFlavors.forEach(flavor=>{
+                        console.log(flavor)
+                        let newTag = document.createElement("div")
+                        newTag.className = "flavors badge badge-secondary d-flex my-0 mx-1"
+                        let crossIcon = document.createElement("i")
+                        crossIcon.addEventListener("click", (e) => {
+                            console.log(addedFlavors)
+                            addedFlavors = addedFlavors.filter(element =>{
+                                return element != flavor
+                            })
+                            console.log(addedFlavors)
+                            e.currentTarget.parentNode.remove()
+                        })
+                        crossIcon.className = "fas fa-times ml-4 mr-1"
+                        let flavorText = document.createElement("p")
+                        flavorText.className = "ml-1"
+                        flavorText.textContent = flavor
+                        newTag.appendChild(flavorText);
+                        newTag.appendChild(crossIcon);
+                        document.querySelector("#flavors").appendChild(newTag)
                     })
-                    crossIcon.className = "fas fa-times"
-
-                    newTag.textContent = flavor
-                    newTag.appendChild(crossIcon)
-                    trigger.parentNode.parentNode.appendChild(newTag)
-                }
-                
+                    newInput = document.createElement("div")
+                    newInput.classList = "flavors badge badge-secondary mx-2 px-2 w-xs-50 w-md-30 w-lg-10"
+                    newInput.innerHTML = `<input style="width:100%" list="flavor-list" id="flavor-input" type="text" placeholder="add +"  onkeypress="addFlavor(event, this)">`
+                    document.querySelector("#flavors").appendChild(newInput)
+                }    
             }
         }
 
@@ -221,7 +243,15 @@
             stepByStep.append(div);
             div.focus()
         }
-
+        
+        let updatePreview = (trigger) => {
+            document.querySelector("#image-preview").src = trigger.value
+            document.querySelector("#image-preview").onerror = ()=>{ 
+                this.onerror = null;
+                document.querySelector("#image-error").textContent = "Invalid image URL placeholder will be used";
+                document.querySelector("#image-preview").src ='../static/images/placeholder.jpg';
+            };
+        }
 
 
     </script>

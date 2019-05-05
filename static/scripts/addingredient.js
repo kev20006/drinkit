@@ -13,7 +13,7 @@ let getIngredients = (trigger) =>{
             let select = document.createElement("select")
             select.id = `ingredient-select-${idNumber}`;
             select.classList = "form-control"
-            select.innerHTML = '<option disabled selected>Choose your option</option>';
+            select.innerHTML = '';
             data.forEach(element => {
                 select.innerHTML += `<option value="${element.name}">${element.name}</option>`;
             })
@@ -59,7 +59,7 @@ let addMore = () =>{
             <div class="col-md-4">
                 <label for="type-selector-${nextIndex}">Type of Ingredient</label>
                 <select id="type-selector-${nextIndex}" class="form-control" onchange="getIngredients(this);">
-                    <option disabled selected>Choose your option</option>
+                    <option disabled>Choose your option</option>
                     <option value="spirit">Spirit</option>
                     <option value="garnish">Garnish</option>
                     <option value="mixer">Mixer</option>
