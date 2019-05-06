@@ -14,9 +14,14 @@ from passlib.hash  import sha256_crypt
 app = Flask(__name__)
 
 
-mongo_uri = os.environ.get('MONGO_URI')
-DBS_NAME = os.environ.get('DBS_NAME')
-app.secret_key = os.environ.get('SECRET_KEY')
+#environment variables hide irl
+mongo_uri = "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
+DBS_NAME =  "bartendr"
+app.secret_key = 'any random string'
+
+#mongo_uri = os.environ.get('MONGO_URI')
+#DBS_NAME = os.environ.get('DBS_NAME')
+#app.secret_key = os.environ.get('SECRET_KEY')
 
 def aggregate_cocktail_previews(cocktails, filter):
     """
@@ -314,7 +319,6 @@ def add_comment():
 
 #functions for adding to the DB, without routes
 
-
 def add_ingredient_return_id(name, type):
     connection = mongo_connect(mongo_uri)
     ingredients = connection["ingredients"]
@@ -495,9 +499,35 @@ def like_dislike():
             }
         )
     return "success"
-        
+
+
+@app.route('/u/cocktail/<cocktail_id>')
+def update_cocktail(cocktail_id):
+    """
+    route to update a cocktails details
+    """
+    connection = mongo_connect(mongo_uri)
+    cocktail = connection["cocktails"].aggregate([
+        {"$match": {"_id": ObjectId(cocktail_id)}},
+        {"$lookup": {
+            "from": "ingredients",
+            "localField": "ingredients.ingredient",
+            "foreignField":"_id",
+            "as": "ingredient-details"
+            }
+        },
+        {"$limit": 1}
+        ]
+    )
+    cocktailDetails = {}
+    for i in cocktail:
+        cocktailDetails = i
+    print(cocktailDetails)
+    return render_template('editcocktail.html', cocktail=cocktailDetails)
+
+
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 33507))
-    app.run(host='0.0.0.0', port=port)  
-    #app.run(debug="true")
+    #port = int(os.environ.get("PORT", 33507))
+    #app.run(host='0.0.0.0', port=port)  
+    app.run(debug="true")

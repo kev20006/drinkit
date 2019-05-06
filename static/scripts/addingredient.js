@@ -53,6 +53,8 @@ let addMore = () =>{
     let ingredients = document.getElementById('ingredients-table');
     let nextIndex = parseInt(ingredients.children[ingredients.children.length - 1].id.split("-")[2]) +1
     let newRow = document.createElement("div")
+    let help = document.querySelector("#flavorHelp")
+    help.parentNode.removeChild(help);
     newRow.id = `ingredients-row-${nextIndex}`;
     newRow.classList = 'row mx-0 px-4';
     newRow.innerHTML = `
@@ -73,9 +75,6 @@ let addMore = () =>{
                 <div class="col-md-4">
                     <label for="quantity-${nextIndex}">quantity</label>
                     <input id="quantity-${nextIndex}" class="form-control" type="text" placeholder="quantity" onkeydown="next(this, event, addMore)">
-                    <small id="flavorHelp" class="form-text text-muted">
-                        please leave a space between quantity and units eg. 2 oz, 30 ml, 2 slices
-                    </small>
                 </div>
                 <hr>
     `;
