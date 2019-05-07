@@ -118,7 +118,7 @@
                                 </h5>
                             </div>
                             <div class="mr-2 text-right">
-                                <p> a drink by <a href="{{ url_for('view_user_profile', user_id=cocktail.creator._id) }}">{{ cocktail.creator.username }}</a></p><p><small class="timestamp">{{ cocktail.created_at }}</small></p>
+                                <p><small> a drink by <a href="{{ url_for('view_user_profile', user_id=cocktail.creator._id) }}">{{ cocktail.creator.username }}</a></small></p><p><small class="timestamp">{{ cocktail.created_at }}</small></p>
                             </div>
                         </div>
                     </div>

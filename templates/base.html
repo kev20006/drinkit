@@ -13,6 +13,10 @@
     <!--Import Bootstrap-->
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
     <style>
+
+        main{
+            margin-top:50px;
+        }
         .voted {
             color: #007bff
         }
@@ -20,24 +24,38 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-light bg-light justify-content-between">
-        <div class="container">
-        <div>
-            <h5><a href="{{ url_for('index') }}"><strong><i class="fas fa-glass-martini-alt"></i> Drinkit</strong></a></h5>
+    <nav id="nav" class="navbar navbar-light bg-light justify-content-between fixed-top">
+        <div class="d-flex">
+            <div class="d-flex">
+                <h5>
+                    <a href="{{ url_for('index') }}">
+                        <strong>
+                            <i class="fas fa-glass-martini-alt"></i> 
+                            <span class="d-none d-md-inline">Drinkit</span>
+                        </strong>
+                    </a>
+                </h5>
+            </div>
         </div>
-        <div>
-                <span class="btn btn-sm btn-outline-primary"><a href="{{ url_for('index', filter='recent') }}"><i class="fas fa-hourglass-start"></i></a></span>
-                <span class="btn btn-sm btn-outline-primary"><a href="{{ url_for('index', filter='popular' ) }}"><i class="fas fa-chart-line"></i></a></span>
+        <div class="w-50 d-flex py-0">
+            <input type="text" class="form-control" id="search" placeholder="Search Drinks" style="font-family:Arial, FontAwesome">
+            <span class="btn btn-sm btn-outline-dark"><i class="fas fa-search"></i></span>
+        </div>
+        <div class="d-flex">   
+                <span class="btn btn-sm btn-outline-dark d-none d-md-block"><a href="{{ url_for('index', filter='recent') }}"><i class="fas fa-hourglass-start"></i></a></span>
+                <span class="btn btn-sm btn-outline-dark d-none d-md-block"><a href="{{ url_for('index', filter='popular' ) }}"><i class="fas fa-chart-line"></i></a></span>
+                <span class="btn btn-sm btn-outline-dark d-md-none"><a><i class="fas fa-filter"></i></a></span>
             {% if session['username'] %}
-                <span class="btn btn-sm btn-outline-primary">
+                <span class="btn btn-sm btn-outline-dark d-none d-md-block">
                     <a href="{{ url_for('view_user_profile', user_id=session['_id']) }}">{{ session['username'] }}</a>
                 </span>
-                <a href="{{ url_for('logout') }}"><span class="btn btn-sm btn-outline-primary" >Log Out</span></a>
+                <span class="btn btn-sm btn-outline-dark d-none d-md-block" ><a href="{{ url_for('logout') }}">Log Out</a></span>
+                <span class="btn btn-sm btn-outline-dark d-md-none"><i class="fas fa-user"></i></span>
             {% else %}
-                <span class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#login">Login</span>
-                <span class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
+                <span class="btn btn-sm btn-outline-dark d-none d-md-block" data-toggle="modal" data-target="#login">Login</span>
+                <span class="btn btn-sm btn-outline-dark d-none d-md-block" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
+                <span class="btn btn-sm btn-outline-dark d-md-none"><i class="fas fa-user"></i></span>
             {% endif %}
-        </div>
         </div>
     </nav>
     {% block content %}
@@ -142,6 +160,17 @@
                 return true;
             }
         }
+        /* When the user scrolls down, hide the navbar. When the user scrolls up, show the navbar */
+            var prevScrollpos = window.pageYOffset;
+            window.onscroll = function () {
+                var currentScrollPos = window.pageYOffset;
+                if (prevScrollpos > currentScrollPos) {
+                    document.getElementById("nav").style.top = "0";
+                } else {
+                    document.getElementById("nav").style.top = "-50px";
+                }
+                prevScrollpos = currentScrollPos;
+            }
     </script>
 </body>
 </html>
