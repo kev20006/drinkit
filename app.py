@@ -524,6 +524,66 @@ def update_cocktail(cocktail_id):
     return render_template('editcocktail.html', cocktail=cocktailDetails)
 
 
+@app.route('/u/cocktail_processing', methods=["POST"])
+def update_drink_in_db():
+    """ 
+    function called from the cocktail form to add a drink to the
+    database using AJAX
+    """
+    ingredients = json.loads(get_ingredients_by_type(None))
+    flavors = json.loads(get_flavors())
+    data = request.data
+    dataDict = json.loads(data)
+    flavorIds = []
+    for i in dataDict["flavors"]:
+        if any(j["name"] == i for j in flavors):
+            for j in flavors:
+                if j["name"] == i:
+                    flavorIds.append(ObjectId(j["_id"]["$oid"]))
+        else:
+            flavorIds.append(
+                ObjectId(add_flavor_return_id(i))
+            )
+
+    ingredientIds = []
+    for i in dataDict["ingredients"]:
+        if any(j["name"] == i["name"] for j in ingredients):
+            for j in ingredients:
+                if j["name"] == i["name"]:
+                    ingredients_id = j["_id"]["$oid"]
+        else:
+                ingredients_id = add_ingredient_return_id(i["name"], i["type"])
+
+        ingredientIds.append(
+            {
+                "ingredient": ObjectId(ingredients_id),
+                "quantity": i['quantity'],
+                "units": i['units'],
+                "type": i['type']
+            })
+
+    connection = mongo_connect(mongo_uri)
+
+    connection["cocktails"].updateOne(
+        {"_id": ObjectId(dataDict["id"])},
+        {"name": dataDict["name"],
+        "description": dataDict["description"],
+        "flavor_tags": flavorIds,
+        "ingredients": ingredientIds,
+        "method": dataDict["instructions"],
+        "glass": dataDict["glass"],
+        "equipment": dataDict["equipment"],
+        "creator": ObjectId(session['_id']),
+        "flagged": 0,
+        "votes": {
+            "upvotes": [],
+            "downvotes": []
+        },
+        "created_at": str(datetime.now()),
+        "preferred_spirits": [],
+        "image_url": dataDict["image_url"]
+    })
+    return "success"
 
 if __name__ == '__main__':
     #port = int(os.environ.get("PORT", 33507))

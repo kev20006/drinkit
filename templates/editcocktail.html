@@ -17,8 +17,7 @@
             <div class="row mx-0">
                 <div class="col-12 col-md-4">
                     <label for="image-preview">Image Preview</label>
-                    <img id="image-preview" src="{{cocktail.image_url}}" class="img-fluid img-thumbnail"
-                        onerror="this.onerror=null;this.src='../../static/images/placeholder.jpg';">
+                    <img id="image-preview" src="{{cocktail.image_url}}" class="img-fluid img-thumbnail">
                 </div>
                 <div class="form-group px-4 col">
                     <label for="image-url">Please enter an image url*</label>
@@ -64,7 +63,7 @@
                 </div>
                 <div id="ingredients-table">
                     {% for i in cocktail["ingredient-details"] %}
-                    <div id="ingredients-row-1" class="row mx-0 px-4">
+                    <div id="ingredients-row-{{loop.index + 1}}" class="row mx-0 px-4">
                         <div class="col-md-4">
                             <label for="type-selector-{{loop.index + 1}}">Type of Ingredient</label>
                             <select id="type-selector-{{loop.index + 1}}" name="type-selector-{{loop.index + 1}}" class="form-control"
@@ -89,7 +88,6 @@
                         </div>
                         <hr>
                     </div>
-                    <hr>
                     {% endfor %}
                 </div>
                 <div class="row mx-0 d-flex justify-content-end">
@@ -181,7 +179,7 @@
                 <div id="step-by-step" class="col-12">
                     {% for step in cocktail.method %}
                     <div id="step-{{loop.index + 1}}" name="step-{{loop.index + 1}}" class="form-group">
-                        <input class="form-control" type="text" placeholder="{{ step }}">
+                        <input class="form-control" type="text" value="{{ step }}">
                     </div>
                     {% endfor%}
                     <div id="step-{{cocktail.method|length + 1}}" name="step-{{cocktail.method|length + 1}}" class="form-group">
@@ -194,7 +192,7 @@
 
                 <button type="button" class="btn btn-dark" class="mb-5"><i class="fas fa-times left"></i>cancel</button>
                 <button id="add-cocktail" type="button" class="btn btn-dark" class="mb-5"
-                    onclick="getFormDetails(this)"><i class="fas fa-cocktail"></i>update drink</button>
+                    onclick="getFormDetails(this, 'update')"><i class="fas fa-cocktail"></i>update drink</button>
             </div>
         </form>
     </div>

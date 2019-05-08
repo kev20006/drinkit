@@ -1,9 +1,17 @@
-let getFormDetails = (trigger) => {
+let getFormDetails = (trigger, type) => {
     trigger.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
     submitting...`
     trigger.enabled = false;
     let valid = true;
+    let fetchString
     let cocktailDetails= {}
+    if (type=="update"){
+        cocktailDetails.id = document.querySelector("#name").dataset.id
+        fetchString = "/u/cocktail_processing"
+    }
+    else{
+        fetchString = "/c/cocktail_processing"
+    }
     if(document.getElementById("name").value != ""){
         document.querySelector("#name-error").textContent = ""
         cocktailDetails.name = document.getElementById('name').value; 
@@ -89,7 +97,7 @@ let getFormDetails = (trigger) => {
     cocktailDetails.equipment = equipArray;
 
     if (valid){
-        fetch('/c/cocktail_processing', {
+        fetch(fetchString, {
             method: 'POST', 
             body: JSON.stringify(cocktailDetails), 
             headers: {
