@@ -8,19 +8,11 @@
     <!--Import Font Awesome-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
         integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <!--Import Google Icon Font-->
+    <!--Import Google Fonts-->
     
     <!--Import Bootstrap-->
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-    <style>
-
-        main{
-            margin-top:50px;
-        }
-        .voted {
-            color: #007bff
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/css/main.css') }}">
 </head>
 
 <body>
@@ -44,23 +36,44 @@
         <div class="d-flex">   
                 <span class="btn btn-sm btn-outline-dark d-none d-md-block"><a href="{{ url_for('index', filter='recent') }}"><i class="fas fa-hourglass-start"></i></a></span>
                 <span class="btn btn-sm btn-outline-dark d-none d-md-block"><a href="{{ url_for('index', filter='popular' ) }}"><i class="fas fa-chart-line"></i></a></span>
-                <span class="btn btn-sm btn-outline-dark d-md-none"><a><i class="fas fa-filter"></i></a></span>
             {% if session['username'] %}
                 <span class="btn btn-sm btn-outline-dark d-none d-md-block">
                     <a href="{{ url_for('view_user_profile', user_id=session['_id']) }}">{{ session['username'] }}</a>
                 </span>
                 <span class="btn btn-sm btn-outline-dark d-none d-md-block" ><a href="{{ url_for('logout') }}">Log Out</a></span>
-                <span class="btn btn-sm btn-outline-dark d-md-none"><i class="fas fa-user"></i></span>
             {% else %}
                 <span class="btn btn-sm btn-outline-dark d-none d-md-block" data-toggle="modal" data-target="#login">Login</span>
                 <span class="btn btn-sm btn-outline-dark d-none d-md-block" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
-                <span class="btn btn-sm btn-outline-dark d-md-none"><i class="fas fa-user"></i></span>
             {% endif %}
+            <span class="btn btn-sm btn-outline-dark d-md-none navbar-toggler" data-toggle="collapse" data-target="#context-menu"><a><i class="fas fa-bars"></i></a></span>
+        </div>
+        <div id="context-menu" class="collapse navbar-collapse">
+            <div class="d-flex flex-column">
+                <strong>Sort:</strong>
+                <span class="btn btn-sm btn-outline-dark"><a href="{{ url_for('index', filter='recent') }}"><i
+                            class="fas fa-hourglass-start"></i>Most Recent</a></span>
+                <span class="btn btn-sm btn-outline-dark"><a href="{{ url_for('index', filter='popular' ) }}"><i
+                            class="fas fa-chart-line"></i>Most Popular</a></span>
+                <hr>
+                <strong>Users:</strong>
+                {% if session['username'] %}
+                <span class="btn btn-sm btn-outline-dark d-md-block">
+                    <a href="{{ url_for('view_user_profile', user_id=session['_id']) }}">{{ session['username'] }}</a>
+                </span>
+                <span class="btn btn-sm btn-outline-dark d-md-block"><a href="{{ url_for('logout') }}">Log Out</a></span>
+                {% else %}
+                <span class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#login">Login</span>
+                <span class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
+                {% endif %}
+            </div>
         </div>
     </nav>
+
+   
+
     {% block content %}
     {% endblock %}
-      <!-- Login Modal -->
+    <!-- Login Modal -->
     <div id="login" class="modal fade" aria-labelledby="login" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -171,6 +184,9 @@
                 }
                 prevScrollpos = currentScrollPos;
             }
+        document.querySelector("#filter").addEventListener("click", ()=>{
+
+        })
     </script>
 </body>
 </html>
