@@ -37,7 +37,7 @@
                 <label for="flavors">Enter a list of decriptors</label>
                 <div id="flavors" name="flavors" type="text" class="d-flex flex-wrap" aria-describedby="flavorHelp">
                     {% for i in cocktail.flavor_tags %}
-                        <div id="{{ i }}" class="flavors badge badge-secondary mx-2 px-2 w-xs-50 w-md-30 w-lg-10">loading tags..</div>
+                        <div id="{{ i }}" class="flavors badge badge-secondary d-flex mx-2 px-2 w-xs-50 w-md-30 w-lg-10">loading tags..</div>
                     {% endfor %}
                     <div class="flavors badge badge-secondary mx-2 px-2 w-xs-50 w-md-30 w-lg-10">
                         <!-- remove inline styles later!! -->
@@ -205,16 +205,40 @@
 <script src="/static/scripts/getFormDetails.js" charset="utf-8"></script>
 <script>
     let addedFlavors = []
+    let flavorTags = [...document.querySelector("#flavors").children].map(element =>{
+        console.log(element)
+        return element.id
+    })
+    console.log(flavorTags)
+    
     fetch('/api/flavors/')
         .then((response) => response.json())
         .then(data => {
             data.forEach(flavor => {
+                if (flavorTags.includes(flavor._id.$oid)){
+                    document.getElementById(flavor._id.$oid).innerHTML = ""
+                    let crossIcon = document.createElement("i")
+                    crossIcon.addEventListener("click", (e) => {
+                        addedFlavors = addedFlavors.filter(element => {
+                            return element != flavor.name
+                        })
+                        console.log(addedFlavors)
+                        e.currentTarget.parentNode.remove()
+                    })
+                    crossIcon.className = "fas fa-times ml-4 mr-1"
+                    let flavorText = document.createElement("p")
+                    flavorText.className = "ml-1"
+                    flavorText.textContent = flavor.name
+                    document.getElementById(flavor._id.$oid).appendChild(flavorText)
+                    document.getElementById(flavor._id.$oid).appendChild(crossIcon)
+                }
                 newFlavor = document.createElement("option");
                 newFlavor.textContent = flavor.name;
                 document.querySelector("#flavor-list").appendChild(newFlavor)
             })
         })
 
+    
     let addFlavor = (event, trigger) => {
         console.log(event.keyCode)
         if ((event.keyCode == 13 || event.keyCode == 188) && trigger.value != "") {

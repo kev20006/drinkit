@@ -13,7 +13,6 @@ from passlib.hash  import sha256_crypt
 
 app = Flask(__name__)
 
-
 mongo_uri = os.environ.get('MONGO_URI')
 DBS_NAME = os.environ.get('DBS_NAME')
 app.secret_key = os.environ.get('SECRET_KEY')
@@ -561,26 +560,49 @@ def update_drink_in_db():
 
     connection = mongo_connect(mongo_uri)
 
-    connection["cocktails"].updateOne(
+    connection["cocktails"].update_one(
         {"_id": ObjectId(dataDict["id"])},
-        {"name": dataDict["name"],
-        "description": dataDict["description"],
-        "flavor_tags": flavorIds,
-        "ingredients": ingredientIds,
-        "method": dataDict["instructions"],
-        "glass": dataDict["glass"],
-        "equipment": dataDict["equipment"],
-        "creator": ObjectId(session['_id']),
-        "flagged": 0,
-        "votes": {
-            "upvotes": [],
-            "downvotes": []
-        },
-        "created_at": str(datetime.now()),
-        "preferred_spirits": [],
-        "image_url": dataDict["image_url"]
-    })
+        {"$set": 
+            {"name": dataDict["name"],
+            "description": dataDict["description"],
+            "flavor_tags": flavorIds,
+            "ingredients": ingredientIds,
+            "method": dataDict["instructions"],
+            "glass": dataDict["glass"],
+            "equipment": dataDict["equipment"],
+            "creator": ObjectId(session['_id']),
+            "updated_at": str(datetime.now()),
+            "preferred_spirits": [],
+            "image_url": dataDict["image_url"]}
+        }
+    )
     return "success"
+
+#delete routes
+@app.route('/d/delete_cocktail', methods=["POST"])
+def delete_cocktail():
+    """
+    Method to delete cocktail from the database
+    """
+    data = request.data
+    cocktail = json.loads(data)
+    print(cocktail)
+    connection = mongo_connect(mongo_uri)
+    connection["cocktails"].delete_one({
+        "_id":ObjectId(cocktail["object_id"])
+    })
+    return "done!"
+
+#def clear_redundant_ingredients():
+    """
+    Function to check if any ingredients are no longer used
+    and remove them from the DB
+    """
+
+#def clear_redundant_flavors();
+    """
+    Function to remove any unusued ingredients
+    """
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 33507))

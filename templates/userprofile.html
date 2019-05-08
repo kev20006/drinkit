@@ -40,7 +40,7 @@ let generateMiniCocktailCard = (cocktail) =>{
         <div class="d-flex w-100">
             <div class="image-wrapper mr-2">
                 <img class="img-thumbnail rounded-circle" style="height:100px; width:100px"
-                    src="https://d32miag6ta013h.cloudfront.net/master_cocktails/1349/en-gl/small/525x525_roman-cosmo-martini-cocktail.jpg" />
+                    src="" />
             </div>
             <div class="w-100 text-right pr-2">
                 <h5 class="name"><a><strong></strong></a></h5>
@@ -68,6 +68,22 @@ let generateMiniCocktailCard = (cocktail) =>{
         let deleteButton = document.createElement("button");
         deleteButton.className = "btn btn-danger btn-sm"; 
         deleteButton.innerHTML = `delete <i class="fas fa-trash"></i>`;
+        deleteButton.addEventListener("click", (e)=>{
+            fetch("/d/delete_cocktail", 
+                {
+                    method: 'post',
+                    body: JSON.stringify({
+                        "object_id": cocktail._id.$oid
+                    }),
+                    headers: {
+                    'Content-Type': 'application/json'
+                    }   
+                })
+            .then(() => {
+                window.location.reload();
+            })
+        })
+            
         template.querySelector(".contols").appendChild(editButton);
         template.querySelector(".contols").appendChild(deleteButton);
     }              
