@@ -1,15 +1,4 @@
-
-
-#nav{
-    box-shadow: 4px 4px 4px rgba(0,0,0, 0.1)
-}
-
-.card{
-    box-shadow: 1px 1px 3px rgba(0,0,0, 0.1);
-    &:hover{
-        box-shadow: 4px 4px 5px  rgba(0,0,0, 0.1);
-    }
-}
+@import 'components/navbar', 'components/cards';
 
  main{
     margin-top:60px;

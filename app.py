@@ -594,10 +594,8 @@ def delete_cocktail():
     return "done!"
 
 #def clear_redundant_ingredients():
-    """
-    Function to check if any ingredients are no longer used
-    and remove them from the DB
-    """
+    """Function to check if any ingredients are no longer used
+    and remove them from the DB"""
 
 #def clear_redundant_flavors();
     """

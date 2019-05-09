@@ -1,0 +1,59 @@
+#nav{
+    border-bottom: 4px solid blue;
+    .nav-logo{
+        background-color: hotpink;
+        box-shadow: 4px 4px black;
+        color: white !important;
+        transform: scale(1.3) rotate(2deg);
+        padding: 0px 10px;
+        a{
+            color:white;
+            text-shadow: 2px 2px black;
+        }
+    }
+
+    .nav-search{
+        border: 4px solid black;
+        input[type=text]{
+            width: 100%;
+            border:none;
+        }
+    }
+
+    .nav-button{    
+        //loop through each cloud
+        @for $i from 1 through 5 {
+            $x-coord:#{random(9) - 5}px;
+            $y-coord:#{random(9) - 5}px;
+            $rotate:#{random(6) - 3}deg;
+            &-#{$i} {
+                //animation shorthand( animation-name, duration, timing-function, delay, iteration-count)
+                position:relative;
+                padding:0px 10px;
+                background-color: blue;
+                border-radius: 0;
+                margin: 4px;
+                box-shadow: $x-coord $y-coord hotpink;
+                transform: rotate($rotate);
+                color:white; 
+                a{
+                    color:white;
+                }
+                &:hover{
+                    box-shadow: none;
+                    left:$x-coord;
+                    top: $y-coord;
+                }
+            }
+        } 
+
+        
+    }
+
+
+
+    .btn-active{
+        background-color: hotpink;
+        box-shadow: -4px 3px blue;
+    }
+}
