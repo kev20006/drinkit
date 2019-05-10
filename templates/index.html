@@ -134,7 +134,7 @@
             <!-- Start of Sticky Column -->
             <div id="controls" class="col-4 d-none d-md-block ">
                 <div class="card mt-4">
-                    <div  class="card-header">
+                    <div  class="card-header pink">
                         <h5> Welcome to Drinkit</h5>
                     </div>
                     <div class="card-content center">
@@ -147,7 +147,7 @@
                 </div>
                 {% if session['username'] %}
                 <div class="card mt-4">
-                    <div class="card-header">
+                    <div class="card-header blue">
                         <h5> Starred Cocktails </h5>
                     </div>
                     <div class="card-content center">
@@ -160,7 +160,7 @@
                 </div>
                 {% endif %}
                 <div class="card mt-4">
-                    <div class="card-header">
+                    <div class="card-header pink">
                         <h5> Favorites  </h5>
                     </div>
                     <div class="card-content center">
@@ -228,6 +228,7 @@
                 })
                 if (flavorName[0]) {
                     li.innerText = flavorName[0].name
+                    li.innerHTML = `<a href="/v/flavor/${flavorName[0].name}">${flavorName[0].name}</a>`;
                 } else {
                     li.innerText = "flavor has been removed"
                 }
@@ -243,7 +244,8 @@
                     return element._id.$oid == li.dataset.id
                 })
                 if (ingredientsName[0]) {
-                    li.innerText = ingredientsName[0].name
+                    li.innerHTML = `<a href="/v/ingredient/${ingredientsName[0].name}">${ingredientsName[0].name}</a>`;
+                    
                 } else {
                     li.innerText = "ingredients has been removed"
                 }

@@ -46,23 +46,23 @@
             {% endif %}
             <span class="nav-button-5 d-md-none navbar-toggler" data-toggle="collapse" data-target="#context-menu"><a><i class="fas fa-bars"></i></a></span>
         </div>
-        <div id="context-menu" class="collapse navbar-collapse">
+        <div id="context-menu" class="collapse navbar-collapse pt-3 d-md-none">
             <div class="d-flex flex-column">
-                <strong>Sort:</strong>
-                <span class="btn btn-sm btn-outline-dark"><a href="{{ url_for('index', filter='recent') }}"><i
+                <strong>SORT:</strong>
+                <span class="nav-button-2 d-md-none btn-active"><a href="{{ url_for('index', filter='recent') }}"><i
                             class="fas fa-hourglass-start"></i>Most Recent</a></span>
-                <span class="btn btn-sm btn-outline-dark"><a href="{{ url_for('index', filter='popular' ) }}"><i
+                <span class="nav-button-2 d-md-none"><a href="{{ url_for('index', filter='popular' ) }}"><i
                             class="fas fa-chart-line"></i>Most Popular</a></span>
                 <hr>
-                <strong>Users:</strong>
+                <strong>USERS:</strong>
                 {% if session['username'] %}
-                <span class="btn btn-sm btn-outline-dark d-md-block">
+                <span class="nav-button-2 d-md-none">
                     <a href="{{ url_for('view_user_profile', user_id=session['_id']) }}">{{ session['username'] }}</a>
                 </span>
-                <span class="btn btn-sm btn-outline-dark d-md-block"><a href="{{ url_for('logout') }}">Log Out</a></span>
+                <span class="nav-button-2 d-md-none"><a href="{{ url_for('logout') }}">Log Out</a></span>
                 {% else %}
-                <span class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#login">Login</span>
-                <span class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
+                <span class="nav-button-2 d-md-none" data-toggle="modal" data-target="#login">Login</span>
+                <span class="nav-button-2 d-md-none" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
                 {% endif %}
             </div>
         </div>
@@ -81,14 +81,14 @@
                 <form action="{{ url_for('login') }}" method="POST">
                     <div class="form-group">
                         <label for="username">Please Enter Your Username</label>
-                        <input id="username" class="form-control" name="username" type="text" aria-describedby="username"
+                        <input id="username" class="modal-input" name="username" type="text" aria-describedby="username"
                             placeholder="Enter Username" required>
                     </div>
                     <div class="form-group">
                         <label for="password">Please Enter Your Password</label>
-                        <input id="password" name="password" class="form-control" type="password" placeholder="Password">
+                        <input id="password" name="password" class="modal-input" type="password" placeholder="Password">
                     </div>
-                    <button class="btn btn-primary" type="submit">Sign in</button>
+                    <button class="modal-btn" type="submit">Sign in</button>
                 </form>
             </div>
         </div>
@@ -113,17 +113,17 @@
                 <div class="row mx-0 px-2">
                     <form action="{{ url_for('new_user') }}" method="POST" onsubmit="validatePasswords()">
                         <div class="form-group">
-                            <input id="new-username" name="newusername" class="form-control" type="text" placeholder="new username" required>
                             <label for="new-username">Please Enter Your Desired Username</label>
+                            <input id="new-username" name="newusername" class="modal-input" type="text" placeholder="new username" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="new-password1">Please Enter Your Password</label>
-                            <input id="new-password1" name="newpassword1"  class="form-control" type="password" placeholder="password" >
+                            <input id="new-password1" name="newpassword1" class="modal-input" type="password" placeholder="password" >
                         </div>
                         <div class="form-group">
                             <label for="new-password2">Please Re-Enter Your Password</label>
-                            <input id="new-password2" name="newpassword2" type="password"  class="form-control" type="password" placeholder="password">
+                            <input id="new-password2" name="newpassword2" class="modal-input" type="password" placeholder="password">
                         </div>
                         <div class="row">
                             <div class="col-12">
@@ -131,7 +131,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button class="btn waves-effect waves-light" type="submit">Join Today</button>
+                            <button class="modal-btn" type="submit">Join Today</button>
                         </div>
                     </form>
                 </div>

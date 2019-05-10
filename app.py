@@ -152,6 +152,33 @@ def logout():
 
 # /v/ routes for viewing db content
 
+@app.route('/v/<type>/<keyword>')
+@app.route('/v/<type>/<keyword>/<filter>')
+def view_by_type(type, keyword, filter=None):
+    """
+    route to render a subsection of the cocktails
+    """
+    connection = mongo_connect(mongo_uri)
+    cocktails = connection["cocktails"]
+    user = None
+    if session:
+        user = connection["users"].find_one({"_id": ObjectId(session['_id'])})
+    
+    cocktailPreviews = aggregate_cocktail_previews(cocktails, filter)
+    outputCocktails = []
+    for i in cocktailPreviews:
+     
+        if type == "ingredient":
+            for ingredient in i["ingredient_list"]:
+                if ingredient["name"] == keyword:
+                    outputCocktails.append(i)   
+        elif type == "flavor":
+            if any(flavor["name"] == keyword for flavor in i["flavors"]):
+                outputCocktails.append(i)
+
+    print(len(outputCocktails))
+    return render_template('filtered.html', cocktails=outputCocktails, user=user, urlString="v/{}/{}".format(type,keyword))
+
 
 @app.route('/v/cocktail/<cocktail_id>')
 def view_cocktail(cocktail_id):
@@ -169,6 +196,7 @@ def view_cocktail(cocktail_id):
     )
     
     return render_template('viewcocktail.html', cocktail=cocktail, user = user )
+
 
 
 @app.route('/v/user_profile/<user_id>')
