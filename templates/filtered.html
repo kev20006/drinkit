@@ -194,62 +194,6 @@
 </main>
 {% endblock %}
 {% block scripts %}
-<script>
-    [...document.querySelectorAll(".pink")].forEach(element => {
-        element.style.transform = `rotate(${Math.floor(Math.random() * (6)) - 3}deg)`
-    });
-    [...document.querySelectorAll(".blue")].forEach(element => {
-        element.style.transform = `rotate(${Math.floor(Math.random() * (6)) - 3}deg)`
-    });
-
-    [...document.querySelectorAll(".timestamp")].forEach(time => {
-        time.innerText = formatDate(new Date(time.innerText))
-    });
-
-    fetch('/api/flavors/')
-        .then((response) => response.json())
-        .then(data => {
-            [...document.querySelector("#flavor-list").children[1].children].forEach(li => {
-                flavorName = data.filter(element => {
-                    return element._id.$oid == li.dataset.id
-                })
-                if (flavorName[0]) {
-                    li.innerHTML = `<a href="/v/flavor/${flavorName[0].name}">${flavorName[0].name}</a>`;
-                } else {
-                    li.innerText = "flavor has been removed"
-                }
-
-            })
-        })
-
-    fetch('/api/ingredients/')
-        .then((response) => response.json())
-        .then(data => {
-            [...document.querySelector("#ingredient-list").children[1].children].forEach(li => {
-                ingredientsName = data.filter(element => {
-                    return element._id.$oid == li.dataset.id
-                })
-                if (ingredientsName[0]) {
-                    li.innerHTML = `<a href="/v/ingredient/${ingredientsName[0].name}">${ingredientsName[0].name}</a>`;
-                } else {
-                    li.innerText = "ingredients has been removed"
-                }
-
-            })
-        })
-
-    let starred_ids = [...document.querySelector("#starred-list").children].map(element => element.innerText);
-    document.querySelector("#starred-list").innerHTML = "loading";
-    Promise.all(starred_ids.map(id => fetch(`/api/cocktail/${id}`)))
-        .then(response => Promise.all(response.map(r => r.json())))
-        .then(data => {
-            document.querySelector("#starred-list").innerHTML = "";
-            data.forEach(cocktail => {
-                let listItem = document.createElement("li");
-                listItem.classList = "list-group-item";
-                listItem.innerHTML = `<a href="/v/cocktail/${cocktail._id.$oid}">${cocktail.name}</a>`;
-                document.querySelector("#starred-list").appendChild(listItem);
-            })
-        });
-</script>
+    <script src="/static/scripts/randomiseAngles.js" charset="utf-8"></script>
+    <script src="/static/scripts/updateAside.js" charset="utf-8"></script>
 {% endblock %}

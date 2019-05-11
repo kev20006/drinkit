@@ -5,15 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Drink-it</title>
-    <!--Import Font Awesome-->
+    <!-- Import Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
-        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <!--Import Google Fonts-->
-    
+        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> 
     <!--Import Bootstrap-->
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/css/main.css') }}">
 </head>
+
+<style>
+    #search {
+        padding-top: 10%;
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        z-index: 1500;
+        top: 0;
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    #search h1 {
+        display: inline-block;
+    }
+
+    #search input {
+        border: None;
+        border-bottom: 3px solid black;
+        display: block;
+        margin: 0 auto;
+        width: 95%;
+        padding: 0px 5px;
+    }
+
+    #search input:hover {
+        box-shadow: 5px 5px hotpink;
+    }
+
+    #search input:focus {
+        outline: none;
+        box-shadow: -5px -5px blue, 3px 3px hotpink;
+    }
+</style>
 
 <body>
     <nav id="nav" class="navbar navbar-light bg-light justify-content-between fixed-top">
@@ -28,11 +60,20 @@
                 </h5>
            
         </div>
+
         <div class="w-50 d-flex py-0 nav-search">
-            <input type="text" id="search" placeholder="Search Drinks">
-            <span><i class="fas fa-search"></i></span>
+            <select type="text" id="type-filter">
+                <option disabled> popular flavors </option>
+                <option>Spirits</option>
+                <option>Mixers</option>
+                <option>Garnish</option>
+                <option>Other</option>
+            </select>
+            <span class="nav-button-3 mr-2" onclick="advancedFilter()"><i class="fas fa-filter"></i></span>
         </div>
-        <div class="d-flex">   
+
+        <div class="d-flex">
+                <span class="nav-button-3" onclick="toggleSearch()"><i class="fas fa-search"></i></span>
                 <span class="nav-button-1 btn-active d-none d-md-block"><a href="{{ url_for('index', filter='recent') }}"><i class="fas fa-hourglass-start"></i></a></span>
                 <span class="nav-button-2 d-none d-md-block"><a href="{{ url_for('index', filter='popular' ) }}"><i class="fas fa-chart-line"></i></a></span>
             {% if session['username'] %}
@@ -44,13 +85,13 @@
                 <span class="nav-button-4 d-none d-md-block" data-toggle="modal" data-target="#login">Login</span>
                 <span class="nav-button-4 d-none d-md-block" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
             {% endif %}
-            <span class="nav-button-5 d-md-none navbar-toggler" data-toggle="collapse" data-target="#context-menu"><a><i class="fas fa-bars"></i></a></span>
+                <span class="nav-button-5 d-md-none navbar-toggler ml-2" data-toggle="collapse" data-target="#context-menu"><a><i class="fas fa-bars"></i></a></span>
         </div>
         <div id="context-menu" class="collapse navbar-collapse pt-3 d-md-none">
             <div class="d-flex flex-column">
                 <strong>SORT:</strong>
-                <span class="nav-button-2 d-md-none btn-active"><a href="{{ url_for('index', filter='recent') }}"><i
-                            class="fas fa-hourglass-start"></i>Most Recent</a></span>
+                <span class="nav-button-2 d-md-none btn-active"><a href="{{ url_for('index', filter='recent') }}">
+                    <i class="fas fa-hourglass-start"></i>Most Recent</a></span>
                 <span class="nav-button-2 d-md-none"><a href="{{ url_for('index', filter='popular' ) }}"><i
                             class="fas fa-chart-line"></i>Most Popular</a></span>
                 <hr>
@@ -61,14 +102,12 @@
                 </span>
                 <span class="nav-button-2 d-md-none"><a href="{{ url_for('logout') }}">Log Out</a></span>
                 {% else %}
-                <span class="nav-button-2 d-md-none" data-toggle="modal" data-target="#login">Login</span>
-                <span class="nav-button-2 d-md-none" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
+                <span class="nav-button-2 d-block d-md-none" data-toggle="modal" data-target="#login">Login</span>
+                <span class="nav-button-2 d-block d-md-none" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
                 {% endif %}
             </div>
         </div>
     </nav>
-
-   
 
     {% block content %}
     {% endblock %}
@@ -144,6 +183,22 @@
         </div>
     </div>
 
+    <div id="search" class="d-none">
+        <div class="container">
+            <div class="d-flex justify-content-between">
+                <h1 class="pink">Cocktail Search</h1>
+                <h1 class="blue" onclick="toggleSearch()"><i class="fas fa-times"></i></h1>
+            </div>
+    
+            <h3><input placeholder="enter search term" /></h3>
+            <div id="results">
+                <h3>No Results Found</h3>
+            </div>
+        </div>
+    
+    </div>
+
+
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
@@ -155,34 +210,15 @@
         crossorigin="anonymous"></script>
 
     <script src="/static/scripts/utilities.js" charset="utf-8"></script>   
-    {% block scripts %}
-    {% endblock %}
     <script src="/static/scripts/favorites.js" charset="utf-8"></script>
     <script src="/static/scripts/votes.js" charset="utf-8"></script>
+    <script src="/static/scripts/validatePasswords.js" charset="utf-8"></script>
+    {% block scripts %}
+    {% endblock %}
     <script>
-        validatePasswords = ()=>{
-            let password1 = document.getElementById("new-password1").value;
-            let password2 = document.getElementById("new-password2").value;
-            if (password1 != password2){
-                event.preventDefault();
-                document.getElementById("new-password1").value = "";
-                document.getElementById("new-password2").value = "";
-                document.getElementById("password-error").innerHTML= `<strong class="red-text darken-2">Passwords did not match</strong>`;
-            }else{
-                return true;
-            }
+        const toggleSearch = () =>{
+            document.querySelector("#search").classList.toggle("d-none");
         }
-        /* When the user scrolls down, hide the navbar. When the user scrolls up, show the navbar */
-            var prevScrollpos = window.pageYOffset;
-            window.onscroll = function () {
-                var currentScrollPos = window.pageYOffset;
-                if (prevScrollpos > currentScrollPos) {
-                    document.getElementById("nav").style.top = "0";
-                } else {
-                    document.getElementById("nav").style.top = "-50px";
-                }
-                prevScrollpos = currentScrollPos;
-            }
     </script>
 </body>
 </html>
