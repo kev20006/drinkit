@@ -43,7 +43,7 @@ Promise.all(starred_ids.map(id => fetch(`/api/cocktail/${id}`)))
         data.forEach(cocktail => {
             let listItem = document.createElement("li");
             listItem.classList = "list-group-item";
-            listItem.innerHTML = `<a href="/v/cocktail/${cocktail._id.$oid}">${cocktail.name}</a>`;
+            listItem.innerHTML = `<a href="/v/cocktail/${cocktail._id.$oid}s>${cocktail.name}</a>`;
             document.querySelector("#starred-list").appendChild(listItem);
         })
     });
