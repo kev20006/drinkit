@@ -11,7 +11,8 @@ fetch('/api/flavors/')
                 li.innerText = flavorName[0].name
                 li.innerHTML = `<a href="/v/flavor/${flavorName[0].name}">${flavorName[0].name}</a>`;
             } else {
-                li.innerText = "flavor has been removed"
+                removeItemFromDb("flavor", li.textContent)
+                li.parentNode.removeChild(li)
             }
 
         })
@@ -28,11 +29,28 @@ fetch('/api/ingredients/')
                 li.innerHTML = `<a href="/v/ingredient/${ingredientsName[0].name}">${ingredientsName[0].name}</a>`;
 
             } else {
-                li.innerText = "ingredients has been removed"
+                removeItemFromDb("ingredient", li.textContent)
+                li.parentNode.removeChild(li)
             }
 
         })
     })
+
+removeItemFromDb = (type, itemId) =>{
+    fetch("/u/favorite_things/", {
+        method: 'post',
+        body: JSON.stringify({
+            "type": type,
+            "user": document.getElementsByTagName("main")[0].dataset.id,
+            "item_id": itemId,
+            "action": "remove"
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
 
 let starred_ids = [...document.querySelector("#starred-list").children].map(element => element.innerText);
 document.querySelector("#starred-list").innerHTML = "loading";
@@ -43,7 +61,7 @@ Promise.all(starred_ids.map(id => fetch(`/api/cocktail/${id}`)))
         data.forEach(cocktail => {
             let listItem = document.createElement("li");
             listItem.classList = "list-group-item";
-            listItem.innerHTML = `<a href="/v/cocktail/${cocktail._id.$oid}s>${cocktail.name}</a>`;
+            listItem.innerHTML = `<a href="/v/cocktail/${cocktail._id.$oid}">${cocktail.name}</a>`;
             document.querySelector("#starred-list").appendChild(listItem);
         })
     });

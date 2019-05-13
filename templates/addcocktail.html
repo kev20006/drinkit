@@ -37,7 +37,7 @@
                 <label for="flavors">Enter a list of decriptors</label>
                 <div id="flavors" name="flavors" type="text" class="d-flex flex-wrap" aria-describedby="flavorHelp"
                     placeholder="Flavor Descriptors">
-                    <div class="flavors badge badge-secondary mx-2 px-2 w-xs-50 w-md-30 w-lg-10">
+                    <div class="flavors mx-2 w-xs-50 w-md-30 w-lg-10">
                         <!-- remove inline styles later!! -->
                         <input style="width:100%" list="flavor-list" id="flavor-input" type="text" placeholder="add +"  onkeydown="addFlavor(event, this)">
                     </div>
@@ -185,6 +185,7 @@
         
         let addFlavor = (event, trigger) => {
             console.log(event.keyCode)
+            alert(event.keyCode)
             if ((event.keyCode == 13 || event.keyCode == 188) && trigger.value != ""){
                 if (addedFlavors.includes(trigger.value)){
                    trigger.value = ""; 
@@ -196,7 +197,7 @@
                     addedFlavors.forEach(flavor=>{
                         console.log(flavor)
                         let newTag = document.createElement("div")
-                        newTag.className = "flavors badge badge-secondary d-flex my-0 mx-1"
+                        newTag.className = "flavors align-items-center d-flex my-0 mx-1"
                         let crossIcon = document.createElement("i")
                         crossIcon.addEventListener("click", (e) => {
                             console.log(addedFlavors)
@@ -206,9 +207,9 @@
                             console.log(addedFlavors)
                             e.currentTarget.parentNode.remove()
                         })
-                        crossIcon.className = "fas fa-times ml-4 mr-1"
+                        crossIcon.className = "fas fa-times ml-4 mr-1 my-0"
                         let flavorText = document.createElement("p")
-                        flavorText.className = "ml-1"
+                        flavorText.className = "ml-1 my-0"
                         flavorText.textContent = flavor
                         newTag.appendChild(flavorText);
                         newTag.appendChild(crossIcon);
