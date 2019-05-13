@@ -13,13 +13,13 @@ from passlib.hash  import sha256_crypt
 
 app = Flask(__name__)
 
-mongo_uri = "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
-DBS_NAME = "bartendr"
-app.secret_key = 'any random string'
+#mongo_uri = "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
+#DBS_NAME = "bartendr"
+#app.secret_key = 'any random string'
 
-#mongo_uri = os.environ.get('MONGO_URI')
-#DBS_NAME = os.environ.get('DBS_NAME')
-#app.secret_key = os.environ.get('SECRET_KEY')
+mongo_uri = os.environ.get('MONGO_URI')
+DBS_NAME = os.environ.get('DBS_NAME')
+app.secret_key = os.environ.get('SECRET_KEY')
 
 def aggregate_cocktail_previews(cocktails, filter):
     """
@@ -635,6 +635,6 @@ def delete_cocktail():
     """
 
 if __name__ == '__main__':
-    #port = int(os.environ.get("PORT", 33507))
-    #app.run(host='0.0.0.0', port=port)  
-    app.run(debug="true")
+    port = int(os.environ.get("PORT", 33507))
+    app.run(host='0.0.0.0', port=port)  
+    #app.run(debug="true")
