@@ -38,11 +38,11 @@
                 <div id="flavors" name="flavors" class="d-flex flex-wrap" aria-describedby="flavorHelp">
                     <div class="flavors mx-2 w-xs-50 w-md-30 w-lg-10">
                         <!-- remove inline styles later!! -->
-                        <input style="width:100%" list="flavor-list" id="flavor-input" placeholder="add +"  onkeypress="addFlavor(event, this)">
+                        <input style="width:100%" list="flavor-list" id="flavor-input" placeholder="add +"  oninput="addFlavor(this)">
                     </div>
                 </div>
                 <datalist id="flavor-list"></datalist>
-                <small id="flavorHelp" class="form-text text-muted">please press space or enter after each descriptor</small>
+                <small id="flavorHelp" class="form-text text-muted">please press , after each new descriptor</small>
             </div>
             <hr>
             <div id="ingredients">
@@ -73,7 +73,7 @@
                         </div>
                         <div class="col-md-4">
                             <label for="quantity-1">quantity</label>
-                            <input id="quantity-1" name="ingredient-select-1" class="form-control" type="text" placeholder="quantity" onkeypress="next(this, event, addMore)">
+                            <input id="quantity-1" name="ingredient-select-1" class="form-control" type="text" placeholder="quantity" onkeydown="next(this, event, addMore)">
                             <small id="flavorHelp" class="form-text text-muted">
                                 please leave a space between quantity and units eg. 2 oz, 30 ml, 2 slices
                             </small>
@@ -182,10 +182,9 @@
                     })
                 })
         
-        let addFlavor = (event, trigger) => {
-            console.log(event.keyCode)
-            alert(event.keyCode)
-            if ((event.keyCode == 13 || event.keyCode == 188) && trigger.value != ""){
+        let addFlavor = (trigger) => {
+            console.log(trigger.value[trigger.value.length - 1]);
+            if (trigger.value[trigger.value.length - 1] == ","){
                 if (addedFlavors.includes(trigger.value)){
                    trigger.value = ""; 
                 }else{
@@ -215,9 +214,10 @@
                         document.querySelector("#flavors").appendChild(newTag)
                     })
                     newInput = document.createElement("div")
-                    newInput.classList = "flavors badge badge-secondary mx-2 px-2 w-xs-50 w-md-30 w-lg-10"
-                    newInput.innerHTML = `<input style="width:100%" list="flavor-list" id="flavor-input" type="text" placeholder="add +"  onkeydown="addFlavor(event, this)">`
+                    newInput.classList = "flavors mx-2 w-xs-50 w-md-30 w-lg-10"
+                    newInput.innerHTML = `<input style="width:100%" list="flavor-list" id="flavor-input"  placeholder="add +"  oninput="addFlavor(this)">`
                     document.querySelector("#flavors").appendChild(newInput)
+                    newInput.focus()
                 }    
             }
         }
