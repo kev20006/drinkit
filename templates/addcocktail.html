@@ -39,7 +39,7 @@
                     placeholder="Flavor Descriptors">
                     <div class="flavors mx-2 w-xs-50 w-md-30 w-lg-10">
                         <!-- remove inline styles later!! -->
-                        <input style="width:100%" list="flavor-list" id="flavor-input" type="text" placeholder="add +"  onkeydown="addFlavor(event, this)">
+                        <input style="width:100%" list="flavor-list" id="flavor-input" type="text" placeholder="add +"  onkeypress="addFlavor(event, this)">
                     </div>
                 </div>
                 <datalist id="flavor-list"></datalist>
@@ -74,7 +74,7 @@
                         </div>
                         <div class="col-md-4">
                             <label for="quantity-1">quantity</label>
-                            <input id="quantity-1" name="ingredient-select-1" class="form-control" type="text" placeholder="quantity" onkeydown="next(this, event, addMore)">
+                            <input id="quantity-1" name="ingredient-select-1" class="form-control" type="text" placeholder="quantity" onkeypress="next(this, event, addMore)">
                             <small id="flavorHelp" class="form-text text-muted">
                                 please leave a space between quantity and units eg. 2 oz, 30 ml, 2 slices
                             </small>
@@ -186,7 +186,7 @@
         let addFlavor = (event, trigger) => {
             console.log(event.keyCode)
             alert(event.keyCode)
-            if ((event.keyCode == 13 || event.keyCode == 188 || event.keyCode == 229) && trigger.value != ""){
+            if ((event.keyCode == 13 || event.keyCode == 188) && trigger.value != ""){
                 if (addedFlavors.includes(trigger.value)){
                    trigger.value = ""; 
                 }else{
