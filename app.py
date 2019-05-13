@@ -13,13 +13,9 @@ from passlib.hash  import sha256_crypt
 
 app = Flask(__name__)
 
-mongo_uri = "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
-DBS_NAME = "bartendr"
-app.secret_key = 'any random string'
-
-#mongo_uri = os.environ.get('MONGO_URI')
-#DBS_NAME = os.environ.get('DBS_NAME')
-#app.secret_key = os.environ.get('SECRET_KEY')
+mongo_uri = os.environ.get('MONGO_URI')
+DBS_NAME = os.environ.get('DBS_NAME')
+app.secret_key = os.environ.get('SECRET_KEY')
 
 def aggregate_cocktail_previews(cocktails, filter):
     """
@@ -625,16 +621,23 @@ def delete_cocktail():
     })
     return "done!"
 
-#def clear_redundant_ingredients():
-    """Function to check if any ingredients are no longer used
-    and remove them from the DB"""
+#search routes
 
-#def clear_redundant_flavors();
-    """
-    Function to remove any unusued ingredients
-    """
+@app.route('/s/<type>/<terms>', methods=["GET"])
+def search(type, terms):
+    fieldName = ""
+    connection = mongo_connect(mongo_uri)
+    if type == "users":
+        fieldName += "user"
+    fieldName += "name"
+    results = connection[type].find(
+        {fieldName: {'$regex': terms, '$options': 'i'}}
+        )
+    for i in results:
+        print(i)
+    return "success"
 
 if __name__ == '__main__':
-    #port = int(os.environ.get("PORT", 33507))
-    #app.run(host='0.0.0.0', port=port)  
-    app.run(debug="true")
+    port = int(os.environ.get("PORT", 33507))
+    app.run(host='0.0.0.0', port=port)  
+    #app.run(debug="true")
