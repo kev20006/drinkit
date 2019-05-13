@@ -188,7 +188,7 @@
                 if (addedFlavors.includes(trigger.value)){
                    trigger.value = ""; 
                 }else{
-                    let flavor = trigger.value
+                    let flavor = trigger.value.substring(0, trigger.value.length - 1)
                     addedFlavors.push(flavor)
                     document.querySelector("#flavors").innerHTML = ""
                     console.log(addedFlavors)
