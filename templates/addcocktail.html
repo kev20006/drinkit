@@ -186,7 +186,7 @@
         let addFlavor = (event, trigger) => {
             console.log(event.keyCode)
             alert(event.keyCode)
-            if ((event.keyCode == 13 || event.keyCode == 188) && trigger.value != ""){
+            if ((event.keyCode == 13 || event.keyCode == 188 || event.keyCode == 229) && trigger.value != ""){
                 if (addedFlavors.includes(trigger.value)){
                    trigger.value = ""; 
                 }else{
