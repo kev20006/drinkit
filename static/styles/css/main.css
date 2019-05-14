@@ -53,8 +53,8 @@
   background-color: blue;
   border-radius: 0;
   margin: 4px;
-  box-shadow: -1px 0px hotpink;
-  transform: rotate(-1deg);
+  box-shadow: -3px -1px hotpink;
+  transform: rotate(-2deg);
   color: white;
 }
 #nav .nav-button-1 a {
@@ -62,8 +62,8 @@
 }
 #nav .nav-button-1:hover {
   box-shadow: none;
-  left: -1px;
-  top: 0px;
+  left: -3px;
+  top: -1px;
 }
 #nav .nav-button-2 {
   position: relative;
@@ -71,8 +71,8 @@
   background-color: blue;
   border-radius: 0;
   margin: 4px;
-  box-shadow: 1px 1px hotpink;
-  transform: rotate(-1deg);
+  box-shadow: -1px 0px hotpink;
+  transform: rotate(2deg);
   color: white;
 }
 #nav .nav-button-2 a {
@@ -80,8 +80,8 @@
 }
 #nav .nav-button-2:hover {
   box-shadow: none;
-  left: 1px;
-  top: 1px;
+  left: -1px;
+  top: 0px;
 }
 #nav .nav-button-3 {
   position: relative;
@@ -89,8 +89,8 @@
   background-color: blue;
   border-radius: 0;
   margin: 4px;
-  box-shadow: 4px 3px hotpink;
-  transform: rotate(1deg);
+  box-shadow: -2px 0px hotpink;
+  transform: rotate(0deg);
   color: white;
 }
 #nav .nav-button-3 a {
@@ -98,8 +98,8 @@
 }
 #nav .nav-button-3:hover {
   box-shadow: none;
-  left: 4px;
-  top: 3px;
+  left: -2px;
+  top: 0px;
 }
 #nav .nav-button-4 {
   position: relative;
@@ -107,8 +107,8 @@
   background-color: blue;
   border-radius: 0;
   margin: 4px;
-  box-shadow: -2px 3px hotpink;
-  transform: rotate(1deg);
+  box-shadow: 1px 4px hotpink;
+  transform: rotate(0deg);
   color: white;
 }
 #nav .nav-button-4 a {
@@ -116,8 +116,8 @@
 }
 #nav .nav-button-4:hover {
   box-shadow: none;
-  left: -2px;
-  top: 3px;
+  left: 1px;
+  top: 4px;
 }
 #nav .nav-button-5 {
   position: relative;
@@ -125,8 +125,8 @@
   background-color: blue;
   border-radius: 0;
   margin: 4px;
-  box-shadow: 4px -4px hotpink;
-  transform: rotate(2deg);
+  box-shadow: 3px 0px hotpink;
+  transform: rotate(0deg);
   color: white;
 }
 #nav .nav-button-5 a {
@@ -134,8 +134,8 @@
 }
 #nav .nav-button-5:hover {
   box-shadow: none;
-  left: 4px;
-  top: -4px;
+  left: 3px;
+  top: 0px;
 }
 #nav .btn-active {
   position: relative;
@@ -184,7 +184,7 @@
 .card:hover .title {
   position: relative;
   background: hotpink;
-  transform: rotate(2deg) scale(1.4);
+  transform: rotate(0deg) scale(1.4);
   z-index: 101;
 }
 .card:hover .like-view {
@@ -287,6 +287,41 @@
 .modal-content .modal-btn:hover {
   top: 2px;
   left: 2px;
+}
+
+#search {
+  padding-top: 10%;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 1500;
+  top: 0;
+  background: rgba(255, 255, 255, 0.9);
+  overflow-y: scroll;
+}
+#search h1 {
+  display: inline-block;
+}
+#search input {
+  border: None;
+  border-bottom: 3px solid black;
+  display: block;
+  margin: 0 auto;
+  width: 95%;
+  padding: 0px 5px;
+}
+#search input:hover {
+  box-shadow: 5px 5px hotpink;
+}
+#search input:focus {
+  outline: none;
+  box-shadow: -5px -5px blue, 3px 3px hotpink;
+}
+#search .result-title {
+  width: fit-content;
+}
+#search .list-group:hover {
+  border: none;
 }
 
 main {

@@ -13,43 +13,10 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/css/main.css') }}">
 </head>
 
-<style>
-    #search {
-        padding-top: 10%;
-        position: fixed;
-        height: 100%;
-        width: 100%;
-        z-index: 1500;
-        top: 0;
-        background: rgba(255, 255, 255, 0.9);
-    }
-
-    #search h1 {
-        display: inline-block;
-    }
-
-    #search input {
-        border: None;
-        border-bottom: 3px solid black;
-        display: block;
-        margin: 0 auto;
-        width: 95%;
-        padding: 0px 5px;
-    }
-
-    #search input:hover {
-        box-shadow: 5px 5px hotpink;
-    }
-
-    #search input:focus {
-        outline: none;
-        box-shadow: -5px -5px blue, 3px 3px hotpink;
-    }
-</style>
-
 <body>
     <nav id="nav" class="navbar navbar-light bg-light justify-content-between fixed-top">
-        <div class="d-flex nav-logo">
+        <div class="d-flex">
+        <div class="d-flex nav-logo mr-2">
                 <h5>
                     <a href="{{ url_for('index') }}">
                         <strong>
@@ -58,12 +25,10 @@
                         </strong>
                     </a>
                 </h5>
-           
         </div>
-
-        <div class="w-50 d-flex py-0 nav-search">
-            <select type="text" id="type-filter">
-                <option disabled> popular flavors </option>
+        <div class="d-flex py-0 ml-4">
+            <select class="nav-search w-sm-25" type="text" id="type-filter">
+                <option disabled selected> Quick Filters </option>
                 <option>Spirits</option>
                 <option>Mixers</option>
                 <option>Garnish</option>
@@ -71,7 +36,7 @@
             </select>
             <span class="nav-button-3 mr-2" onclick="advancedFilter()"><i class="fas fa-filter"></i></span>
         </div>
-
+    </div>
         <div class="d-flex">
                 <span class="nav-button-3" onclick="toggleSearch()"><i class="fas fa-search"></i></span>
                 <span class="nav-button-1 btn-active d-none d-md-block"><a href="{{ url_for('index', filter='recent') }}"><i class="fas fa-hourglass-start"></i></a></span>
@@ -190,9 +155,18 @@
                 <h1 class="blue" onclick="toggleSearch()"><i class="fas fa-times"></i></h1>
             </div>
     
-            <h3><input placeholder="enter search term" /></h3>
-            <div id="results">
-                <h3>No Results Found</h3>
+            <h3><input class="mt-2" placeholder="enter search term" oninput="search(this)"/></h3>
+            <div id="results" class="row mx-0">
+                <p id="no-results"></p>
+                <ul id="cocktails-results" class="list-group col-12 col-md-3">
+                </ul>
+                <ul id="ingredients-results" class="list-group col-12 col-md-3">
+                </ul>
+                <ul id="flavors-results" class="list-group col-12 col-md-3">
+                </ul>
+                <ul id="users-results" class="list-group col-12 col-md-3">
+                </ul>
+                
             </div>
         </div>
     
@@ -218,6 +192,67 @@
     <script>
         const toggleSearch = () =>{
             document.querySelector("#search").classList.toggle("d-none");
+        }
+
+        const search = (trigger) => {
+            typeList = ["cocktails", "users", "flavors", "ingredients"];
+            if (trigger.value == ""){
+                typeList.forEach(type => {
+                    document.querySelector(`#${type}-results`).innerHTML = "";
+                });
+            }else{
+                typeList.forEach(type =>{
+                    fetch(`/s/${type}/${trigger.value}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            document.querySelector(`#${type}-results`).innerHTML = "";
+                            if (!data.length < 1) {
+                                let title = document.createElement("li")
+                                title.innerHTML = `<strong>${type}</strong>`
+                                title.className = "list-group-item pink mb-2 result-title"
+                                document.querySelector(`#${type}-results`).appendChild(title)
+                                data.forEach(element => {
+                                    let newItem = createItem(type,element)
+                                    document.querySelector(`#${type}-results`).appendChild(newItem)
+                                })
+                            }
+                        })
+                        .catch(error => console.error(error));
+                })
+                //catch no results returned
+                if( !document.querySelector(`#cocktails-results`).hasChildNodes  &&
+                    document.querySelector(`#users-results`).hasChildNodes &&
+                    document.querySelector(`#flavors-results`).hasChildNodes &&
+                    document.querySelector(`#ingredients-results`).hasChildNodes)
+                    {
+                        document.querySelector("#no-results").textContent = "No Results Found"
+                    }
+                    else{
+                        document.querySelector("#no-results").textContent = ""
+                    }
+
+            }
+            
+        }
+
+        const createItem = (type, item) => {
+            let newItem = document.createElement("li")
+            newItem.className = "list-group-item";
+            switch (type){
+                case "cocktails":
+                    newItem.innerHTML = `<a href="/v/cocktail/${item._id.$oid}">${item.name}</a>`
+                break;
+                case "users":
+                    newItem.innerHTML = `<a href="/v/user_profile/${item._id.$oid}">${item.username}</a>`
+                break;
+                case "ingredients":
+                    newItem.innerHTML = `<a href="/v/ingredient/${item.name}">${item.name}</a>`
+                break;
+                case "flavors":
+                    newItem.innerHTML = `<a href="/v/flavor/${item.name}">${item.name}</a>`
+                break;
+            }
+            return newItem;
         }
     </script>
 </body>

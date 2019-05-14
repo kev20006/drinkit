@@ -633,9 +633,7 @@ def search(type, terms):
     results = connection[type].find(
         {fieldName: {'$regex': terms, '$options': 'i'}}
         )
-    for i in results:
-        print(i)
-    return "success"
+    return dumps(results)
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 33507))

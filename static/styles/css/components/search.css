@@ -1,0 +1,36 @@
+#search {
+  padding-top: 10%;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 1500;
+  top: 0;
+  background: rgba(255, 255, 255, 0.9);
+  overflow-y: scroll;
+}
+#search h1 {
+  display: inline-block;
+}
+#search input {
+  border: None;
+  border-bottom: 3px solid black;
+  display: block;
+  margin: 0 auto;
+  width: 95%;
+  padding: 0px 5px;
+}
+#search input:hover {
+  box-shadow: 5px 5px hotpink;
+}
+#search input:focus {
+  outline: none;
+  box-shadow: -5px -5px blue, 3px 3px hotpink;
+}
+#search .result-title {
+  width: fit-content;
+}
+#search .list-group:hover {
+  border: none;
+}
+
+/*# sourceMappingURL=search.css.map */
