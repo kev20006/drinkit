@@ -1,14 +1,13 @@
 import os
 import pymongo
 import json
+from datetime import datetime
 
 from pymongo import MongoClient
 from bson import ObjectId
 from bson.json_util import dumps
-
-from datetime import datetime
 from flask import Flask, redirect, render_template, request, session, url_for
-from passlib.hash  import sha256_crypt
+from passlib.hash import sha256_crypt
 
 
 app = Flask(__name__)
@@ -17,19 +16,18 @@ mongo_uri = os.environ.get('MONGO_URI')
 DBS_NAME = os.environ.get('DBS_NAME')
 app.secret_key = os.environ.get('SECRET_KEY')
 
+
 def aggregate_cocktail_previews(cocktails, filter):
     """
     function to aggregate information from all the tables
     to create the item previews used on the index page and
     in search results
     """
-    if filter == None or filter == "recent":
+    if filter is None or filter == "recent":
         filter = "created_at"
     elif filter == "popular":
         filter = "noOfVotes"
-        
-
-    cocktailDetails = cocktails.aggregate([
+    cocktail_details = cocktails.aggregate([
         {"$lookup":
             {
                 "from": "users",
@@ -38,12 +36,12 @@ def aggregate_cocktail_previews(cocktails, filter):
                 "as": "creator"
             }
          },
-        {"$unwind": 
+        {"$unwind":
             {
-                'path': '$flavor_tags' ,
+                'path': '$flavor_tags',
                 'preserveNullAndEmptyArrays': True
             }
-        },
+         },
         {"$lookup":
             {
                 "from": "flavors",
@@ -77,31 +75,40 @@ def aggregate_cocktail_previews(cocktails, filter):
                 "flavor_tags": {"$min": "$flavor_tags"},
                 "ingredients": {"$min": "$ingredients"},
                 "votes": {"$min": "$votes"},
-                "noOfVotes": {"$min": {"$subtract": [{"$size": "$votes.upvotes"},{"$size": "$votes.downvotes"}]}},
+                "noOfVotes": {"$min": {"$subtract": [
+                    {"$size": "$votes.upvotes"},
+                    {"$size": "$votes.downvotes"}
+                    ]}
+                },
                 "image_url": {"$min": "$image_url"},
                 "creator": {"$min": "$creator"},
                 "flavors": {"$addToSet": '$flavors'},
                 "created_at": {"$min": "$created_at"},
                 "ingredient_list":  {"$addToSet": '$ingredient_list'}
             }
-        },
-            {"$sort": {filter: -1}}
+         },
+        {"$sort":
+            {filter: -1}
+         }
     ])
-    
-    return cocktailDetails
+
+    return cocktail_details
+
 
 def get_id(collection, name):
     """
     given a name and a collection returns the id
     """
-    item = collection.find_one({"name":name})
-    if item != None:
+    item = collection.find_one({"name": name})
+    if item is not None:
         return item["_id"]
     return None
 
 
-
 def mongo_connect(uri):
+    """
+    connect to db and return connection
+    """
     try:
         conn = pymongo.MongoClient(uri)
         return conn["bartendr"]
@@ -111,20 +118,19 @@ def mongo_connect(uri):
 
 @app.route('/')
 @app.route('/<filter>')
-def index(filter = None):
+def index(filter=None):
     """
     route to render the homepage
     """
     connection = mongo_connect(mongo_uri)
     cocktails = connection["cocktails"]
     user = None
-    if session:   
+    if session:
         user = connection["users"].find_one({"_id": ObjectId(session['_id'])})
-    cocktailPreviews = aggregate_cocktail_previews(cocktails, filter)
-    return render_template('index.html', cocktails = cocktailPreviews, user= user)
+        cocktailPreviews = aggregate_cocktail_previews(cocktails, filter)
+    return render_template('index.html', cocktails=cocktailPreviews, user=user)
 
-
-#Login and Logout
+# Login and Logout
 
 
 @app.route('/login/', methods=["GET", "POST"])
@@ -133,13 +139,19 @@ def login():
     route to process logins for existing users
     """
     connection = mongo_connect(mongo_uri)
-    userCollection = connection["users"]
-    userdetails = userCollection.find_one({"username": request.form["username"]}) 
-    if userdetails != None:
-        if sha256_crypt.verify(request.form["password"], userdetails["passhash"]):
+    user_collection = connection["users"]
+    user_details = user_collection.find_one(
+            {"username": request.form["username"]}
+        )
+    if user_details is not None:
+        if sha256_crypt.verify(
+            request.form["password"],
+            user_details["passhash"]
+        ):
             session['username'] = request.form["username"]
             session['_id'] = str(userdetails["_id"])
     return redirect(url_for("index"))
+
 
 @app.route('/logout/')
 def logout():
@@ -154,7 +166,7 @@ def logout():
 
 @app.route('/v/<type>/<keyword>')
 @app.route('/v/<type>/<keyword>/<filter>')
-def view_by_type(type, keyword, filter=None):
+def view_by_type(type_of_search, keyword, filter=None):
     """
     route to render a subsection of the cocktails
     """
@@ -163,21 +175,24 @@ def view_by_type(type, keyword, filter=None):
     user = None
     if session:
         user = connection["users"].find_one({"_id": ObjectId(session['_id'])})
-    
-    cocktailPreviews = aggregate_cocktail_previews(cocktails, filter)
+        cocktail_previews = aggregate_cocktail_previews(cocktails, filter)
     outputCocktails = []
     for i in cocktailPreviews:
-     
-        if type == "ingredient":
+        if type_of_search == "ingredient":
             for ingredient in i["ingredient_list"]:
                 if ingredient["name"] == keyword:
-                    outputCocktails.append(i)   
-        elif type == "flavor":
+                    outputCocktails.append(i)
+        elif type_of_search == "flavor":
             if any(flavor["name"] == keyword for flavor in i["flavors"]):
                 outputCocktails.append(i)
 
     print(len(outputCocktails))
-    return render_template('filtered.html', cocktails=outputCocktails, user=user, urlString="v/{}/{}".format(type,keyword))
+    return render_template(
+                    'filtered.html',
+                    cocktails=outputCocktails,
+                    user=user,
+                    urlString="v/{}/{}".format(type_of_search, keyword)
+                )
 
 
 @app.route('/v/cocktail/<cocktail_id>')
@@ -187,16 +202,14 @@ def view_cocktail(cocktail_id):
     """
     connection = mongo_connect(mongo_uri)
     cocktail = connection["cocktails"].find_one(
-        {"_id": ObjectId(cocktail_id)} 
+        {"_id": ObjectId(cocktail_id)}
     )
     user = ""
     if session.get('_id'):
         user = connection["users"].find_one(
             {"_id": ObjectId(session['_id'])}
-    )
-    
-    return render_template('viewcocktail.html', cocktail=cocktail, user = user )
-
+        )
+    return render_template('viewcocktail.html', cocktail=cocktail, user=user)
 
 
 @app.route('/v/user_profile/<user_id>')
@@ -212,31 +225,35 @@ def view_user_profile(user_id):
     return render_template('userprofile.html', user=user)
 
 
-# /c/ Routes for Creating New Content 
+# /c/ Routes for Creating New Content
 
 
-@app.route('/c/new_account', methods=["GET","POST"])
+@app.route('/c/new_account', methods=["GET", "POST"])
 def new_user():
-    """ 
-    Add a New User to the database and Hashes their password 
+    """
+    Add a New User to the database and Hashes their password
     """
     hash = sha256_crypt.hash(request.form["newpassword1"])
     connection = mongo_connect(mongo_uri)
     userCollection = connection["users"]
     userCollection.insert_one(
         {
-            "username": request.form["newusername"], 
+            "username": request.form["newusername"],
             "passhash": hash,
-            "date_joined":str(datetime.now()),
-            "starred_cocktails":[],
-            "favorite_ingredients":[],
-            "favorite_flavors":[]
+            "date_joined": str(datetime.now()),
+            "starred_cocktails": [],
+            "favorite_ingredients": [],
+            "favorite_flavors": []
         }
     )
-    userdetails = userCollection.find_one({"username": request.form["newusername"]})
     session['username'] = request.form["newusername"]
     session['_id'] = str(userdetails["_id"])
     return redirect(url_for("index"))
+
+#
+# !!!LINTING DONE TO HERE!!!
+# !!!!CONTINUE LATER !!!!
+#
 
 
 @app.route('/c/cocktail', methods=["GET", "POST"])
