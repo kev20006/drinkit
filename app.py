@@ -127,7 +127,7 @@ def index(filter=None):
     user = None
     if session:
         user = connection["users"].find_one({"_id": ObjectId(session['_id'])})
-        cocktailPreviews = aggregate_cocktail_previews(cocktails, filter)
+    cocktailPreviews = aggregate_cocktail_previews(cocktails, filter)
     return render_template('index.html', cocktails=cocktailPreviews, user=user)
 
 # Login and Logout
@@ -195,13 +195,43 @@ def view_by_type(type_of_search, keyword, filter=None):
                 )
 
 
+@app.route('/advanced_filter/', methods=["POST", "GET"])
+def advanced_filter():
+    # change this so it happens programmatically not hard coded
+    # data_dict = {}
+    # data_dict["type"] = "and"
+    # data_dict["ingredients"] = [
+    #        ObjectId("5cab524eec4ad12098cc2807"),
+    #        ObjectId("5c9b8df91c9d440000478c92")
+    #    ]
+    # data_dict["equipment"] = ["Shaker"]
+    #
+    query = {"${}".format(data_dict["type"]): []}
+    for key in data_dict.keys():
+        if key == "ingredients":
+            queryString = {"ingredients": {"$elemMatch": {"ingredient": {"$in": data_dict[key]}}}}
+        elif key == "flavor_tags" or key == "equipment":
+            queryString = {key: {"$in": data_dict[key]}}
+        else:
+            queryString = {key: data_dict[key]}
+        if key != "type":
+            query["${}".format(data_dict["type"])].append(queryString)
+        
+    connection=mongo_connect(mongo_uri)
+    print(query)
+    cocktails=connection["cocktails"].find(query)
+    for i in cocktails:
+        print(i)
+    return "done"
+
+
 @app.route('/v/cocktail/<cocktail_id>')
 def view_cocktail(cocktail_id):
     """
     route to view a specific cocktail
     """
-    connection = mongo_connect(mongo_uri)
-    cocktail = connection["cocktails"].find_one(
+    connection= mongo_connect(mongo_uri)
+    cocktail= connection["cocktails"].find_one(
         {"_id": ObjectId(cocktail_id)}
     )
     user = ""
@@ -266,6 +296,7 @@ def new_drink():
 
     else:
         return redirect(url_for("index"))
+
 
 @app.route('/c/cocktail_processing', methods=["POST"])
 def add_new_drink_to_db():
@@ -653,6 +684,6 @@ def search(type, terms):
     return dumps(results)
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 33507))
-    app.run(host='0.0.0.0', port=port)  
-    #app.run(debug="true")
+    #port = int(os.environ.get("PORT", 33507))
+    #app.run(host='0.0.0.0', port=port)  
+    app.run(debug="true")
