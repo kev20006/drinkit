@@ -209,17 +209,23 @@ def advanced_filter():
     query = {"${}".format(data_dict["type"]): []}
     for key in data_dict.keys():
         if key == "ingredients":
-            queryString = {"ingredients": {"$elemMatch": {"ingredient": {"$in": data_dict[key]}}}}
+            queryString =
+            {"ingredients":
+                {"$elemMatch":
+                    {"ingredient":
+                        {"$in": data_dict[key]}
+                     }
+                 }
+             }
         elif key == "flavor_tags" or key == "equipment":
             queryString = {key: {"$in": data_dict[key]}}
         else:
             queryString = {key: data_dict[key]}
         if key != "type":
             query["${}".format(data_dict["type"])].append(queryString)
-        
-    connection=mongo_connect(mongo_uri)
+    connection = mongo_connect(mongo_uri)
     print(query)
-    cocktails=connection["cocktails"].find(query)
+    cocktails = connection["cocktails"].find(query)
     for i in cocktails:
         print(i)
     return "done"
@@ -230,8 +236,8 @@ def view_cocktail(cocktail_id):
     """
     route to view a specific cocktail
     """
-    connection= mongo_connect(mongo_uri)
-    cocktail= connection["cocktails"].find_one(
+    connection = mongo_connect(mongo_uri)
+    cocktail = connection["cocktails"].find_one(
         {"_id": ObjectId(cocktail_id)}
     )
     user = ""
@@ -288,7 +294,7 @@ def new_user():
 
 @app.route('/c/cocktail', methods=["GET", "POST"])
 def new_drink():
-    """ 
+    """
     render the form for adding a new cocktail to the database
     """
     if session['username']:
@@ -300,7 +306,7 @@ def new_drink():
 
 @app.route('/c/cocktail_processing', methods=["POST"])
 def add_new_drink_to_db():
-    """ 
+    """
     function called from the cocktail form to add a drink to the
     database using AJAX
     """
@@ -318,16 +324,14 @@ def add_new_drink_to_db():
             flavorIds.append(
                 ObjectId(add_flavor_return_id(i))
             )
-    
     ingredientIds = []
     for i in dataDict["ingredients"]:
         if any(j["name"] == i["name"] for j in ingredients):
             for j in ingredients:
                 if j["name"] == i["name"]:
-                    ingredients_id = j["_id"]["$oid"] 
+                    ingredients_id = j["_id"]["$oid"]
         else:
                 ingredients_id = add_ingredient_return_id(i["name"], i["type"])
-                
         ingredientIds.append(
             {
                 "ingredient": ObjectId(ingredients_id),
@@ -337,7 +341,6 @@ def add_new_drink_to_db():
             })
 
     connection = mongo_connect(mongo_uri)
-    
     connection["cocktails"].insert_one({
         "name": dataDict["name"],
         "description": dataDict["description"],
@@ -348,12 +351,12 @@ def add_new_drink_to_db():
         "equipment": dataDict["equipment"],
         "creator": ObjectId(session['_id']),
         "flagged": 0,
-        "votes":{
-            "upvotes":[],
+        "votes": {
+            "upvotes": [],
             "downvotes": []
         },
         "created_at": str(datetime.now()),
-        "preferred_spirits":[],
+        "preferred_spirits": [],
         "image_url": dataDict["image_url"]
     })
     return "success"
@@ -366,7 +369,7 @@ def add_comment():
     """
     data = request.data
     commentsDict = json.loads(data)
-    if not "parent" in commentsDict:
+    if "parent" not in commentsDict:
         commentsDict["parent"] = ""
     else:
         commentsDict["parent"] = ObjectId(
@@ -377,7 +380,7 @@ def add_comment():
         "parent": commentsDict["parent"],
         "cocktail_id": ObjectId(commentsDict["cocktail"]),
         "comment": commentsDict["comment"],
-        "votes":{
+        "votes": {
             "upvotes": [],
             "downvotes": []
         },
@@ -387,7 +390,7 @@ def add_comment():
     return "success"
 
 
-#functions for adding to the DB, without routes
+# functions for adding to the DB, without routes
 
 def add_ingredient_return_id(name, type):
     connection = mongo_connect(mongo_uri)
@@ -410,11 +413,10 @@ def add_flavor_return_id(name):
         {
             "name": name,
         })
-    newFlavor=flavors.find_one({
+    new_flavor = flavors.find_one({
             "name": name
         })
-    return newFlavor["_id"]
-
+    return new_flavor["_id"]
 
 
 # /api/ routes for making ajax requests
@@ -422,12 +424,12 @@ def add_flavor_return_id(name):
 
 @app.route('/api/ingredients/')
 @app.route('/api/ingredients/<type>')
-def get_ingredients_by_type(type = None):
+def get_ingredients_by_type(type=None):
     connection = mongo_connect(mongo_uri)
     if not type:
         ingredients = connection["ingredients"].find({})
     else:
-        ingredients = connection["ingredients"].find({"type":type})
+        ingredients = connection["ingredients"].find({"type": type})
     return dumps(ingredients)
 
 
@@ -440,13 +442,14 @@ def spirits_by_type(type):
 
 @app.route('/api/flavors/')
 @app.route('/api/flavors/<id>')
-def get_flavors(id = None):
+def get_flavors(id=None):
     connection = mongo_connect(mongo_uri)
     if id:
         flavors = connection["flavors"].find({"_id": ObjectId(id)})
-    else: 
+    else:
         flavors = connection["flavors"].find({})
     return dumps(flavors)
+
 
 @app.route('/api/comments/<cocktail_id>')
 def get_comments(cocktail_id):
@@ -456,20 +459,20 @@ def get_comments(cocktail_id):
             {"$match": {"cocktail_id": ObjectId(cocktail_id)}},
             {"$lookup":
                 {
-                "from":"users",
-                "localField": "user_id",
-                "foreignField": "_id",
-                "as": "user_info"
+                    "from": "users",
+                    "localField": "user_id",
+                    "foreignField": "_id",
+                    "as": "user_info"
                 }
-            },
-            {"$project": 
+             },
+            {"$project":
                 {"user_info._id": 0,
-                "user_info.passhash": 0, 
-                "user_info.starred_cocktails": 0,
-                "user_info.favorite_flavors": 0,
-                "user_info.favorite_ingredients": 0
-                }
-            }
+                    "user_info.passhash": 0,
+                    "user_info.starred_cocktails": 0,
+                    "user_info.favorite_flavors": 0,
+                    "user_info.favorite_ingredients": 0
+                 }
+             }
         ]
        )
     return dumps(comments)
@@ -512,20 +515,22 @@ def update_favorite_things():
             {"$push": {
                 favorite_things["type"]: ObjectId(favorite_things["item_id"])
                 }
-            }
+             }
         )
     else:
         connection["users"].update_one(
             {"_id": ObjectId(favorite_things["user"])},
-            {"$pull": 
+            {"$pull":
                 {
-                    favorite_things["type"]: ObjectId(favorite_things["item_id"])
-                }
-            }
+                    favorite_things["type"]:
+                    ObjectId(favorite_things["item_id"])
+                 }
+             }
         )
     return "success"
 
-@app.route("/u/like_dislike", methods = ["POST"])
+
+@app.route("/u/like_dislike", methods=["POST"])
 def like_dislike():
     "route to upvote and downvote drinks and comments"
     data = request.data
@@ -539,11 +544,11 @@ def like_dislike():
                 {
                     "votes.downvotes": new_like["user_id"]
                 },
-            "$push":
+             "$push":
                 {
                     "votes.upvotes": new_like["user_id"]
                 }
-            }
+             }
         )
     elif new_like["type"] == "down":
         connection[new_like["collection"]].update_one(
@@ -566,7 +571,7 @@ def like_dislike():
                     "votes.downvotes": new_like["user_id"],
                     "votes.upvotes": new_like["user_id"]
                 },
-            }
+             }
         )
     return "success"
 
@@ -582,10 +587,10 @@ def update_cocktail(cocktail_id):
         {"$lookup": {
             "from": "ingredients",
             "localField": "ingredients.ingredient",
-            "foreignField":"_id",
+            "foreignField": "_id",
             "as": "ingredient-details"
             }
-        },
+         },
         {"$limit": 1}
         ]
     )
@@ -598,7 +603,7 @@ def update_cocktail(cocktail_id):
 
 @app.route('/u/cocktail_processing', methods=["POST"])
 def update_drink_in_db():
-    """ 
+    """
     function called from the cocktail form to add a drink to the
     database using AJAX
     """
@@ -638,23 +643,25 @@ def update_drink_in_db():
 
     connection["cocktails"].update_one(
         {"_id": ObjectId(dataDict["id"])},
-        {"$set": 
+        {"$set":
             {"name": dataDict["name"],
-            "description": dataDict["description"],
-            "flavor_tags": flavorIds,
-            "ingredients": ingredientIds,
-            "method": dataDict["instructions"],
-            "glass": dataDict["glass"],
-            "equipment": dataDict["equipment"],
-            "creator": ObjectId(session['_id']),
-            "updated_at": str(datetime.now()),
-            "preferred_spirits": [],
-            "image_url": dataDict["image_url"]}
-        }
+                "description": dataDict["description"],
+                "flavor_tags": flavorIds,
+                "ingredients": ingredientIds,
+                "method": dataDict["instructions"],
+                "glass": dataDict["glass"],
+                "equipment": dataDict["equipment"],
+                "creator": ObjectId(session['_id']),
+                "updated_at": str(datetime.now()),
+                "preferred_spirits": [],
+                "image_url": dataDict["image_url"]}
+         }
     )
     return "success"
 
-#delete routes
+# delete routes
+
+
 @app.route('/d/delete_cocktail', methods=["POST"])
 def delete_cocktail():
     """
@@ -665,11 +672,12 @@ def delete_cocktail():
     print(cocktail)
     connection = mongo_connect(mongo_uri)
     connection["cocktails"].delete_one({
-        "_id":ObjectId(cocktail["object_id"])
+        "_id": ObjectId(cocktail["object_id"])
     })
     return "done!"
 
-#search routes
+# search routes
+
 
 @app.route('/s/<type>/<terms>', methods=["GET"])
 def search(type, terms):
@@ -684,6 +692,6 @@ def search(type, terms):
     return dumps(results)
 
 if __name__ == '__main__':
-    #port = int(os.environ.get("PORT", 33507))
-    #app.run(host='0.0.0.0', port=port)  
+    # port = int(os.environ.get("PORT", 33507))
+    # app.run(host='0.0.0.0', port=port)
     app.run(debug="true")
