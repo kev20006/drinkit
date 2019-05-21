@@ -3,166 +3,27 @@ import pymongo
 import json
 from datetime import datetime
 
-from pymongo import MongoClient
 from bson import ObjectId
 from bson.json_util import dumps
 from flask import Flask, redirect, render_template, request, session, url_for
-from passlib.hash import sha256_crypt
 
+from blueprints.login_logout import login_logout
+from blueprints.home import home
+from blueprints.api import api
 
 app = Flask(__name__)
 
 mongo_uri = os.environ.get('MONGO_URI')
 DBS_NAME = os.environ.get('DBS_NAME')
-app.secret_key = os.environ.get('SECRET_KEY')
+app.secret_key = "asdfsdf"
+#app.secret_key = os.environ.get('SECRET_KEY')
 
-
-def aggregate_cocktail_previews(cocktails, filter):
-    """
-    function to aggregate information from all the tables
-    to create the item previews used on the index page and
-    in search results
-    """
-    if filter is None or filter == "recent":
-        filter = "created_at"
-    elif filter == "popular":
-        filter = "noOfVotes"
-    cocktail_details = cocktails.aggregate([
-        {"$lookup":
-            {
-                "from": "users",
-                "foreignField": "_id",
-                "localField": "creator",
-                "as": "creator"
-            }
-         },
-        {"$unwind":
-            {
-                'path': '$flavor_tags',
-                'preserveNullAndEmptyArrays': True
-            }
-         },
-        {"$lookup":
-            {
-                "from": "flavors",
-                "foreignField": "_id",
-                "localField": "flavor_tags",
-                "as": "flavors"
-            }
-         },
-        {"$unwind":
-            {
-                'path': '$flavors',
-                'preserveNullAndEmptyArrays': True
-            }
-         },
-        {"$unwind": "$creator"},
-        {"$unwind": "$ingredients"},
-        {"$lookup":
-            {
-                "from": "ingredients",
-                "foreignField": "_id",
-                "localField": "ingredients.ingredient",
-                "as": "ingredient_list"
-            }
-         },
-        {"$unwind": "$ingredient_list"},
-        {"$group":
-            {
-                "_id": "$_id",
-                "name": {"$min": "$name"},
-                "description": {"$min": "$description"},
-                "flavor_tags": {"$min": "$flavor_tags"},
-                "ingredients": {"$min": "$ingredients"},
-                "votes": {"$min": "$votes"},
-                "noOfVotes": {"$min": {"$subtract": [
-                    {"$size": "$votes.upvotes"},
-                    {"$size": "$votes.downvotes"}
-                    ]}
-                },
-                "image_url": {"$min": "$image_url"},
-                "creator": {"$min": "$creator"},
-                "flavors": {"$addToSet": '$flavors'},
-                "created_at": {"$min": "$created_at"},
-                "ingredient_list":  {"$addToSet": '$ingredient_list'}
-            }
-         },
-        {"$sort":
-            {filter: -1}
-         }
-    ])
-
-    return cocktail_details
-
-
-def get_id(collection, name):
-    """
-    given a name and a collection returns the id
-    """
-    item = collection.find_one({"name": name})
-    if item is not None:
-        return item["_id"]
-    return None
-
-
-def mongo_connect(uri):
-    """
-    connect to db and return connection
-    """
-    try:
-        conn = pymongo.MongoClient(uri)
-        return conn["bartendr"]
-    except pymongo.errors.ConnectionFailure as e:
-        print("Could not connect to MongoDB: %s") % e
-
-
-@app.route('/')
-@app.route('/<filter>')
-def index(filter=None):
-    """
-    route to render the homepage
-    """
-    connection = mongo_connect(mongo_uri)
-    cocktails = connection["cocktails"]
-    user = None
-    if session:
-        user = connection["users"].find_one({"_id": ObjectId(session['_id'])})
-    cocktailPreviews = aggregate_cocktail_previews(cocktails, filter)
-    return render_template('index.html', cocktails=cocktailPreviews, user=user)
-
-# Login and Logout
-
-
-@app.route('/login/', methods=["GET", "POST"])
-def login():
-    """
-    route to process logins for existing users
-    """
-    connection = mongo_connect(mongo_uri)
-    user_collection = connection["users"]
-    user_details = user_collection.find_one(
-            {"username": request.form["username"]}
-        )
-    if user_details is not None:
-        if sha256_crypt.verify(
-            request.form["password"],
-            user_details["passhash"]
-        ):
-            session['username'] = request.form["username"]
-            session['_id'] = str(userdetails["_id"])
-    return redirect(url_for("index"))
-
-
-@app.route('/logout/')
-def logout():
-    """
-    route to end current login session for a user
-    """
-    session.pop('username', None)
-    return redirect(url_for('index'))
-
+app.register_blueprint(home)
+app.register_blueprint(login_logout)
+app.register_blueprint(api)
 
 # /v/ routes for viewing db content
+
 
 @app.route('/v/<type>/<keyword>')
 @app.route('/v/<type>/<keyword>/<filter>')
@@ -209,14 +70,14 @@ def advanced_filter():
     query = {"${}".format(data_dict["type"]): []}
     for key in data_dict.keys():
         if key == "ingredients":
-            queryString =
-            {"ingredients":
-                {"$elemMatch":
-                    {"ingredient":
-                        {"$in": data_dict[key]}
+            queryString = {
+                "ingredients":
+                    {"$elemMatch":
+                        {"ingredient":
+                            {"$in": data_dict[key]}
+                         }
                      }
-                 }
-             }
+                 } 
         elif key == "flavor_tags" or key == "equipment":
             queryString = {key: {"$in": data_dict[key]}}
         else:
@@ -259,37 +120,6 @@ def view_user_profile(user_id):
     )
     print(user)
     return render_template('userprofile.html', user=user)
-
-
-# /c/ Routes for Creating New Content
-
-
-@app.route('/c/new_account', methods=["GET", "POST"])
-def new_user():
-    """
-    Add a New User to the database and Hashes their password
-    """
-    hash = sha256_crypt.hash(request.form["newpassword1"])
-    connection = mongo_connect(mongo_uri)
-    userCollection = connection["users"]
-    userCollection.insert_one(
-        {
-            "username": request.form["newusername"],
-            "passhash": hash,
-            "date_joined": str(datetime.now()),
-            "starred_cocktails": [],
-            "favorite_ingredients": [],
-            "favorite_flavors": []
-        }
-    )
-    session['username'] = request.form["newusername"]
-    session['_id'] = str(userdetails["_id"])
-    return redirect(url_for("index"))
-
-#
-# !!!LINTING DONE TO HERE!!!
-# !!!!CONTINUE LATER !!!!
-#
 
 
 @app.route('/c/cocktail', methods=["GET", "POST"])
@@ -422,78 +252,7 @@ def add_flavor_return_id(name):
 # /api/ routes for making ajax requests
 
 
-@app.route('/api/ingredients/')
-@app.route('/api/ingredients/<type>')
-def get_ingredients_by_type(type=None):
-    connection = mongo_connect(mongo_uri)
-    if not type:
-        ingredients = connection["ingredients"].find({})
-    else:
-        ingredients = connection["ingredients"].find({"type": type})
-    return dumps(ingredients)
 
-
-@app.route('/api/spirits/<type>')
-def spirits_by_type(type):
-    connection = mongo_connect(mongo_uri)
-    spirits = connection["spirits"].find({"typeof": type})
-    return dumps(spirits)
-
-
-@app.route('/api/flavors/')
-@app.route('/api/flavors/<id>')
-def get_flavors(id=None):
-    connection = mongo_connect(mongo_uri)
-    if id:
-        flavors = connection["flavors"].find({"_id": ObjectId(id)})
-    else:
-        flavors = connection["flavors"].find({})
-    return dumps(flavors)
-
-
-@app.route('/api/comments/<cocktail_id>')
-def get_comments(cocktail_id):
-    connection = mongo_connect(mongo_uri)
-    comments = connection["comments"].aggregate(
-        [
-            {"$match": {"cocktail_id": ObjectId(cocktail_id)}},
-            {"$lookup":
-                {
-                    "from": "users",
-                    "localField": "user_id",
-                    "foreignField": "_id",
-                    "as": "user_info"
-                }
-             },
-            {"$project":
-                {"user_info._id": 0,
-                    "user_info.passhash": 0,
-                    "user_info.starred_cocktails": 0,
-                    "user_info.favorite_flavors": 0,
-                    "user_info.favorite_ingredients": 0
-                 }
-             }
-        ]
-       )
-    return dumps(comments)
-
-
-@app.route('/api/cocktails/<user_id>')
-def get_cocktails_by_user(user_id):
-    connection = mongo_connect(mongo_uri)
-    cocktails = connection["cocktails"].find({
-        "creator": ObjectId(user_id)
-    })
-    return dumps(cocktails)
-
-
-@app.route('/api/cocktail/<cocktail_id>')
-def get_cocktails_by_id(cocktail_id):
-    connection = mongo_connect(mongo_uri)
-    cocktail = connection["cocktails"].find_one({
-        "_id": ObjectId(cocktail_id)
-    })
-    return dumps(cocktail)
 
 
 # /u/ routes to update details in the database
