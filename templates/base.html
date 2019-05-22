@@ -18,7 +18,7 @@
         <div class="d-flex">
         <div class="d-flex nav-logo mr-2">
                 <h5>
-                    <a href="{{ url_for('index.index') }}">
+                    <a href="{{ url_for('home.index') }}">
                         <strong>
                             <i class="fas fa-glass-martini-alt"></i> 
                             <span class="d-none d-md-inline">Drinkit</span>
@@ -39,11 +39,11 @@
     </div>
         <div class="d-flex">
                 <span class="nav-button-3" onclick="toggleSearch()"><i class="fas fa-search"></i></span>
-                <span class="nav-button-1 btn-active d-none d-md-block"><a href="{{ url_for('index.index', filter='recent') }}"><i class="fas fa-hourglass-start"></i></a></span>
-                <span class="nav-button-2 d-none d-md-block"><a href="{{ url_for('index.index', filter='popular' ) }}"><i class="fas fa-chart-line"></i></a></span>
+                <span class="nav-button-1 btn-active d-none d-md-block"><a href="{{ url_for('home.index', filter='recent') }}"><i class="fas fa-hourglass-start"></i></a></span>
+                <span class="nav-button-2 d-none d-md-block"><a href="{{ url_for('home.index', filter='popular' ) }}"><i class="fas fa-chart-line"></i></a></span>
             {% if session['username'] %}
                 <span class="nav-button-3 d-none d-md-block">
-                    <a href="{{ url_for('view_user_profile', user_id=session['_id']) }}">{{ session['username'] }}</a>
+                    <a href="{{ url_for('profiles.view_user_profile', user_id=session['_id']) }}">{{ session['username'] }}</a>
                 </span>
                 <span class="nav-button-3 d-none d-md-block" ><a href="{{ url_for('login_logout.logout') }}">Log Out</a></span>
             {% else %}
@@ -55,15 +55,15 @@
         <div id="context-menu" class="collapse navbar-collapse pt-3 d-md-none">
             <div class="d-flex flex-column">
                 <strong>SORT:</strong>
-                <span class="nav-button-2 d-md-none btn-active"><a href="{{ url_for('index.index', filter='recent') }}">
+                <span class="nav-button-2 d-md-none btn-active"><a href="{{ url_for('home.index', filter='recent') }}">
                     <i class="fas fa-hourglass-start"></i>Most Recent</a></span>
-                <span class="nav-button-2 d-md-none"><a href="{{ url_for('index.index', filter='popular' ) }}"><i
+                <span class="nav-button-2 d-md-none"><a href="{{ url_for('home.index', filter='popular' ) }}"><i
                             class="fas fa-chart-line"></i>Most Popular</a></span>
                 <hr>
                 <strong>USERS:</strong>
                 {% if session['username'] %}
                 <span class="nav-button-2 d-md-none">
-                    <a href="{{ url_for('view_user_profile', user_id=session['_id']) }}">{{ session['username'] }}</a>
+                    <a href="{{ url_for('profiles.view_user_profile', user_id=session['_id']) }}">{{ session['username'] }}</a>
                 </span>
                 <span class="nav-button-2 d-md-none"><a href="{{ url_for('login_logout.logout') }}">Log Out</a></span>
                 {% else %}
@@ -115,7 +115,7 @@
                     </div>
                 </div>
                 <div class="row mx-0 px-2">
-                    <form action="{{ url_for('login_logout.new_user') }}" method="POST" onsubmit="validatePasswords()">
+                    <form id="new-account" action="{{ url_for('login_logout.new_user') }}" method="POST" onsubmit="validatePasswords()">
                         <div class="form-group">
                             <label for="new-username">Please Enter Your Desired Username</label>
                             <input id="new-username" name="newusername" class="modal-input" type="text" placeholder="new username" required>

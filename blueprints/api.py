@@ -80,3 +80,18 @@ def get_cocktails_by_id(cocktail_id):
         "_id": ObjectId(cocktail_id)
     })
     return dumps(cocktail)
+
+
+@api.route('/api/check_user/<name>')
+def check_user_exists(name):
+    """
+    takes a name and checks if a user exists
+    """
+    connection = mongo_connect()
+    user = connection["users"].find_one({
+        "username": name
+    })
+    if user:
+        return "True"
+    else:
+        return "False"

@@ -4,7 +4,7 @@ from bson import ObjectId
 from .utils import mongo_connect, aggregate_cocktail_previews
 
 
-home = Blueprint('index', __name__)
+home = Blueprint('home', __name__)
 
 
 @home.route('/')

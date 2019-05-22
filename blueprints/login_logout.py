@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from passlib.hash import sha256_crypt
 from flask import Blueprint, session, redirect, request, url_for
+from bson import ObjectId
 
 from .utils import mongo_connect
 
@@ -23,7 +26,7 @@ def login():
         ):
             session['username'] = request.form["username"]
             session['_id'] = str(user_details["_id"])
-    return redirect(url_for("index.index"))
+    return redirect(url_for("home.index"))
 
 
 @login_logout.route('/logout/')
@@ -32,7 +35,7 @@ def logout():
     route to end current login session for a user
     """
     session.pop('username', None)
-    return redirect(url_for('index'))
+    return redirect(url_for('home.index'))
 
 
 @login_logout.route('/new_account/', methods=["GET", "POST"])
@@ -40,10 +43,11 @@ def new_user():
     """
     Add a New User to the database and Hashes their password
     """
+    connection = mongo_connect()
+    user_collection = connection["users"]
     hash = sha256_crypt.hash(request.form["newpassword1"])
-    connection = mongo_connect(mongo_uri)
-    userCollection = connection["users"]
-    userCollection.insert_one(
+    
+    user_collection.insert_one(
         {
             "username": request.form["newusername"],
             "passhash": hash,
@@ -54,5 +58,9 @@ def new_user():
         }
     )
     session['username'] = request.form["newusername"]
-    session['_id'] = str(userdetails["_id"])
-    return redirect(url_for("index"))
+    # get new user's id
+    user_details = user_collection.find_one(
+        {"username": request.form["newusername"]}
+        )
+    session['_id'] = str(user_details["_id"])
+    return redirect(url_for("home.index"))

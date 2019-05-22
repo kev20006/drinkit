@@ -6,7 +6,7 @@
             <div>
                 <h3> {{ user.username }}</h3>
             </div>
-            <div><a class="btn btn-outline-dark" href="{{ url_for('index') }}"><i class="fas fa-times"></i></a></div>
+            <div><a class="btn btn-outline-dark" href="{{ url_for('home.index') }}"><i class="fas fa-times"></i></a></div>
         </div>
         <div class="row">
             <div class =" col-12 col-md-4 text-center">
@@ -53,7 +53,7 @@ let generateMiniCocktailCard = (cocktail) =>{
     `
     console.log(template)
     template.querySelector(".image-wrapper img").src = cocktail.image_url;
-    template.querySelector(".name a").href= `/v/cocktail/${cocktail._id.$oid}`;
+    template.querySelector(".name a").href= `/cocktail/${cocktail._id.$oid}`;
     template.querySelector(".name strong").innerText = cocktail.name;
     template.querySelector (".name").parentNode.children[1].innerText =  formatDate(new Date(cocktail.created_at));
     console.log(`${userId} == ${sessionId}`)
@@ -62,14 +62,14 @@ let generateMiniCocktailCard = (cocktail) =>{
         editButton.className = "btn btn-primary btn-sm" 
         editButton.innerHTML = `edit <i class="fas fa-pen"></i>`;
         editButton.addEventListener("click", ()=>{
-            window.location.replace(`/u/cocktail/${cocktail._id.$oid}`)
+            window.location.replace(`/update/cocktail/${cocktail._id.$oid}`)
         })
 
         let deleteButton = document.createElement("button");
         deleteButton.className = "btn btn-danger btn-sm"; 
         deleteButton.innerHTML = `delete <i class="fas fa-trash"></i>`;
         deleteButton.addEventListener("click", (e)=>{
-            fetch("/d/delete_cocktail", 
+            fetch("/delete_cocktail", 
                 {
                     method: 'post',
                     body: JSON.stringify({
