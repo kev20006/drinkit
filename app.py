@@ -21,6 +21,7 @@ from blueprints.search import searchs
 
 app = Flask(__name__)
 
+# os.environ['MONGO_URI'] = 
 # mongo_uri = os.environ.get('MONGO_URI')
 app.secret_key = "asdfsdf"
 # app.secret_key = os.environ.get('SECRET_KEY')

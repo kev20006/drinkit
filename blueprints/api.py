@@ -19,13 +19,6 @@ def get_ingredients_by_type(type=None):
     return dumps(ingredients)
 
 
-@api.route('/api/spirits/<type>')
-def spirits_by_type(type):
-    connection = mongo_connect()
-    spirits = connection["spirits"].find({"typeof": type})
-    return dumps(spirits)
-
-
 @api.route('/api/flavors/')
 @api.route('/api/flavors/<id>')
 def get_flavors(id=None):

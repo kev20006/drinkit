@@ -28,7 +28,7 @@ let vote = (trigger, type, collection) => {
         trigger.parentElement.children[1].innerText = parseInt(trigger.parentElement.children[1].innerText) - 1;
     }
 
-    fetch("/u/like_dislike", {
+    fetch("/update/like_dislike", {
         method: 'post',
         body: JSON.stringify({
             "type": fetchType,

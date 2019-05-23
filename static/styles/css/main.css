@@ -53,8 +53,8 @@
   background-color: blue;
   border-radius: 0;
   margin: 4px;
-  box-shadow: -3px -1px hotpink;
-  transform: rotate(-2deg);
+  box-shadow: 0px 1px hotpink;
+  transform: rotate(2deg);
   color: white;
 }
 #nav .nav-button-1 a {
@@ -62,8 +62,8 @@
 }
 #nav .nav-button-1:hover {
   box-shadow: none;
-  left: -3px;
-  top: -1px;
+  left: 0px;
+  top: 1px;
 }
 #nav .nav-button-2 {
   position: relative;
@@ -71,8 +71,8 @@
   background-color: blue;
   border-radius: 0;
   margin: 4px;
-  box-shadow: -1px 0px hotpink;
-  transform: rotate(2deg);
+  box-shadow: -2px 0px hotpink;
+  transform: rotate(3deg);
   color: white;
 }
 #nav .nav-button-2 a {
@@ -80,7 +80,7 @@
 }
 #nav .nav-button-2:hover {
   box-shadow: none;
-  left: -1px;
+  left: -2px;
   top: 0px;
 }
 #nav .nav-button-3 {
@@ -89,8 +89,8 @@
   background-color: blue;
   border-radius: 0;
   margin: 4px;
-  box-shadow: -2px 0px hotpink;
-  transform: rotate(0deg);
+  box-shadow: 2px 2px hotpink;
+  transform: rotate(2deg);
   color: white;
 }
 #nav .nav-button-3 a {
@@ -98,8 +98,8 @@
 }
 #nav .nav-button-3:hover {
   box-shadow: none;
-  left: -2px;
-  top: 0px;
+  left: 2px;
+  top: 2px;
 }
 #nav .nav-button-4 {
   position: relative;
@@ -107,8 +107,8 @@
   background-color: blue;
   border-radius: 0;
   margin: 4px;
-  box-shadow: 1px 4px hotpink;
-  transform: rotate(0deg);
+  box-shadow: -2px 2px hotpink;
+  transform: rotate(-1deg);
   color: white;
 }
 #nav .nav-button-4 a {
@@ -116,8 +116,8 @@
 }
 #nav .nav-button-4:hover {
   box-shadow: none;
-  left: 1px;
-  top: 4px;
+  left: -2px;
+  top: 2px;
 }
 #nav .nav-button-5 {
   position: relative;
@@ -125,8 +125,8 @@
   background-color: blue;
   border-radius: 0;
   margin: 4px;
-  box-shadow: 3px 0px hotpink;
-  transform: rotate(0deg);
+  box-shadow: 1px -4px hotpink;
+  transform: rotate(1deg);
   color: white;
 }
 #nav .nav-button-5 a {
@@ -134,8 +134,8 @@
 }
 #nav .nav-button-5:hover {
   box-shadow: none;
-  left: 3px;
-  top: 0px;
+  left: 1px;
+  top: -4px;
 }
 #nav .btn-active {
   position: relative;
@@ -146,6 +146,11 @@
   box-shadow: none;
   right: 4px;
   top: 3px;
+}
+
+.card-link {
+  text-decoration: none;
+  color: black;
 }
 
 .card {
@@ -170,7 +175,7 @@
   background: hotpink;
   color: white;
   padding: 0px 20px;
-  transform: rotate(-1deg);
+  transform: rotate(1deg);
   transition: all 0.5s;
   z-index: 101;
 }
@@ -184,23 +189,13 @@
 .card:hover .title {
   position: relative;
   background: hotpink;
-  transform: rotate(0deg) scale(1.4);
+  transform: rotate(3deg) scale(1.4);
   z-index: 101;
 }
 .card:hover .like-view {
   background: blue;
-  transform: rotate(1deg);
+  transform: rotate(-1deg);
   z-index: 110;
-}
-.card .spirit {
-  border: 3px solid hotpink;
-  color: hotpink;
-  margin: 2px 3px;
-}
-.card .flavors {
-  border: 3px solid blue;
-  color: blue;
-  margin: 2px 3px;
 }
 
 .bread-crumb-title {
@@ -289,20 +284,20 @@
   left: 2px;
 }
 
-#search {
+.search-or-filter {
   padding-top: 10%;
   position: fixed;
   height: 100%;
   width: 100%;
   z-index: 1500;
   top: 0;
-  background: rgba(255, 255, 255, 0.9);
+  background: white;
   overflow-y: scroll;
 }
-#search h1 {
+.search-or-filter h1 {
   display: inline-block;
 }
-#search input {
+.search-or-filter input {
   border: None;
   border-bottom: 3px solid black;
   display: block;
@@ -310,17 +305,17 @@
   width: 95%;
   padding: 0px 5px;
 }
-#search input:hover {
+.search-or-filter input:hover {
   box-shadow: 5px 5px hotpink;
 }
-#search input:focus {
+.search-or-filter input:focus {
   outline: none;
   box-shadow: -5px -5px blue, 3px 3px hotpink;
 }
-#search .result-title {
+.search-or-filter .result-title {
   width: fit-content;
 }
-#search .list-group:hover {
+.search-or-filter .list-group:hover {
   border: none;
 }
 
@@ -330,6 +325,20 @@ main {
 
 .voted {
   color: blue;
+}
+
+.spirit {
+  padding: 0px 10px;
+  border: 3px solid hotpink;
+  color: hotpink;
+  margin: 2px 3px;
+}
+
+.flavors {
+  padding: 0px 10px;
+  border: 3px solid blue;
+  color: blue;
+  margin: 2px 3px;
 }
 
 /*# sourceMappingURL=main.css.map */

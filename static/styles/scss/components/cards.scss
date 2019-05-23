@@ -1,3 +1,8 @@
+.card-link{
+     text-decoration: none;
+     color: black;
+}
+
 .card{
     border: 4px solid black;
     box-shadow:4px 4px hotpink;
@@ -47,15 +52,5 @@
         
     }
 
-    .spirit{
-        border: 3px solid hotpink;
-        color: hotpink;
-        margin: 2px 3px;
-    }
-
-    .flavors{
-        border: 3px solid blue;
-        color: blue;
-        margin: 2px 3px;
-    }
+    
 }

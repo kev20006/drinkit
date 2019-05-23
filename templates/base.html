@@ -27,14 +27,7 @@
                 </h5>
         </div>
         <div class="d-flex py-0 ml-4">
-            <select class="nav-search w-sm-25" type="text" id="type-filter">
-                <option disabled selected> Quick Filters </option>
-                <option>Spirits</option>
-                <option>Mixers</option>
-                <option>Garnish</option>
-                <option>Other</option>
-            </select>
-            <span class="nav-button-3 mr-2" onclick="advancedFilter()"><i class="fas fa-filter"></i></span>
+            <span class="nav-button-3 mr-2" onclick="toggleAdvFilters()"> Advanced <i class="fas fa-filter"></i></span>
         </div>
     </div>
         <div class="d-flex">
@@ -147,15 +140,16 @@
             </div>
         </div>
     </div>
-
-    <div id="search" class="d-none">
+    <!-- end of sign up-->
+    <!-- Search Menu -->
+    <div id="search" class="d-none search-or-filter">
         <div class="container">
             <div class="d-flex justify-content-between">
                 <h1 class="pink">Cocktail Search</h1>
                 <h1 class="blue" onclick="toggleSearch()"><i class="fas fa-times"></i></h1>
             </div>
     
-            <h3><input class="mt-2" placeholder="enter search term" oninput="search(this)"/></h3>
+            <h3><input class="mt-2" placeholder="enter search term" onkeydown="search(this, event)"/></h3>
             <div id="results" class="row mx-0">
                 <p id="no-results"></p>
                 <ul id="cocktails-results" class="list-group col-12 col-md-3">
@@ -171,7 +165,31 @@
         </div>
     
     </div>
-
+    <!-- End of Search Menu -->
+    <!-- Filter Menu Menu -->
+    <div id="adv-filter" class="d-none search-or-filter">
+        <div class="container">
+            <div class="d-flex justify-content-between">
+                <h1 class="pink">Advanced Filters</h1>
+                <h1 class="blue" onclick="toggleAdvFilters()"><i class="fas fa-times"></i></h1>
+            </div>
+            <p>Match All Criteria</p>
+            <p>Match Any Criteria</p>
+            <h3 class="block"><span class="blue">Ingredients</span></h3>
+            <p class="pink d-inline-block">Spirits</p>
+            <div id="ingredients-filter-spirit" class="d-flex flex-wrap"></div>
+            <p class="pink d-inline-block">Mixers</p>
+            <div id="ingredients-filter-mixer" class="d-flex flex-wrap"></div>
+            <p class="pink d-inline-block">Garnishes</p>
+            <div id="ingredients-filter-garnish" class="d-flex flex-wrap"></div>
+            <p class="pink d-inline-block">Others</p>
+            <div id="ingredients-filter-others" class="d-flex flex-wrap"></div>
+            <h3 class="blue d-inline-block">Flavors</h3>
+            <div id="flavor-filter" class="d-flex flex-wrap"></div>
+        </div>
+    
+    </div>
+    <!-- End of Filter Menu -->
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -187,72 +205,16 @@
     <script src="/static/scripts/favorites.js" charset="utf-8"></script>
     <script src="/static/scripts/votes.js" charset="utf-8"></script>
     <script src="/static/scripts/validatePasswords.js" charset="utf-8"></script>
+    <script src="/static/scripts/search.js" charset="utf-8"></script>
+    <script src="/static/scripts/advFilter.js" charset="utf-8"></script>
     {% block scripts %}
     {% endblock %}
     <script>
         const toggleSearch = () =>{
             document.querySelector("#search").classList.toggle("d-none");
         }
-
-        const search = (trigger) => {
-            typeList = ["cocktails", "users", "flavors", "ingredients"];
-            if (trigger.value == ""){
-                typeList.forEach(type => {
-                    document.querySelector(`#${type}-results`).innerHTML = "";
-                });
-            }else{
-                typeList.forEach(type =>{
-                    fetch(`/s/${type}/${trigger.value}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            document.querySelector(`#${type}-results`).innerHTML = "";
-                            if (!data.length < 1) {
-                                let title = document.createElement("li")
-                                title.innerHTML = `<strong>${type}</strong>`
-                                title.className = "list-group-item pink mb-2 result-title"
-                                document.querySelector(`#${type}-results`).appendChild(title)
-                                data.forEach(element => {
-                                    let newItem = createItem(type,element)
-                                    document.querySelector(`#${type}-results`).appendChild(newItem)
-                                })
-                            }
-                        })
-                        .catch(error => console.error(error));
-                })
-                //catch no results returned
-                if( !document.querySelector(`#cocktails-results`).hasChildNodes  &&
-                    document.querySelector(`#users-results`).hasChildNodes &&
-                    document.querySelector(`#flavors-results`).hasChildNodes &&
-                    document.querySelector(`#ingredients-results`).hasChildNodes)
-                    {
-                        document.querySelector("#no-results").textContent = "No Results Found"
-                    }
-                    else{
-                        document.querySelector("#no-results").textContent = ""
-                    }
-
-            }
-            
-        }
-
-        const createItem = (type, item) => {
-            let newItem = document.createElement("li")
-            newItem.className = "list-group-item";
-            switch (type){
-                case "cocktails":
-                    newItem.innerHTML = `<a href="/v/cocktail/${item._id.$oid}">${item.name}</a>`
-                break;
-                case "users":
-                    newItem.innerHTML = `<a href="/v/user_profile/${item._id.$oid}">${item.username}</a>`
-                break;
-                case "ingredients":
-                    newItem.innerHTML = `<a href="/v/ingredient/${item.name}">${item.name}</a>`
-                break;
-                case "flavors":
-                    newItem.innerHTML = `<a href="/v/flavor/${item.name}">${item.name}</a>`
-                break;
-            }
-            return newItem;
+        const toggleAdvFilters = () => {
+            document.querySelector("#adv-filter").classList.toggle("d-none");
         }
     </script>
 </body>

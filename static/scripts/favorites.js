@@ -8,7 +8,7 @@ let addFavorite = (trigger, type) => {
     let icon = trigger.classList[1]
     let parentElement = trigger.parentNode
     parentElement.innerHTML = textContent;
-    fetch("/u/favorite_things/", {
+    fetch("/update/favorite_things/", {
         method: 'post',
         body: JSON.stringify({
             "type": type,
@@ -23,9 +23,10 @@ let addFavorite = (trigger, type) => {
         .then(() => {
             let allTags = document.getElementsByClassName(type.split("_")[1])
             if (type.split("_")[1] == "cocktails") {
-                parentElement.innerHTML = `<i class="fas ${icon}" data-id="${trigger.dataset.id}"
-                                data-user="${trigger.dataset.user}" data-name="${trigger.dataset.name}"
-                                onclick="removeFavorite(this, '${type}')" ></i>`;
+                parentElement.innerHTML = 
+                `<i class="fas ${icon}" data-id="${trigger.dataset.id}"` +
+                                `data-user="${trigger.dataset.user}" data-name="${trigger.dataset.name}"` +
+                                `onclick="removeFavorite(this, '${type}')" ></i>`;
             } else {
                 for (i = 0; i < allTags.length; i++) {
 
@@ -51,7 +52,7 @@ let removeFavorite = (trigger, type) => {
     let icon = trigger.classList[1]
     let parentElement = trigger.parentNode
     parentElement.innerHTML = textContent;
-    fetch("/u/favorite_things/", {
+    fetch("/update/favorite_things/", {
         method: 'post',
         body: JSON.stringify({
             "type": type,

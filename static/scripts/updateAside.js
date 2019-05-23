@@ -37,7 +37,7 @@ fetch('/api/ingredients/')
     })
 
 removeItemFromDb = (type, itemId) =>{
-    fetch("/u/favorite_things/", {
+    fetch("/update/favorite_things/", {
         method: 'post',
         body: JSON.stringify({
             "type": type,
