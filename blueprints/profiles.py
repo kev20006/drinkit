@@ -19,7 +19,7 @@ def view_user_profile(user_id):
     return render_template('userprofile.html', user=user)
 
 
-@profiles.route('/cocktail/<cocktail_id>')
+@profiles.route('/cocktails/<cocktail_id>')
 def view_cocktail(cocktail_id):
     """
     route to view a specific cocktail

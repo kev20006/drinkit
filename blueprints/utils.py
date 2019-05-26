@@ -107,6 +107,12 @@ def get_id(collection, name):
 
 
 def get_ingredient_and_flavor_list(dataDict):
+    """
+    function take an array of flavor and ingredient names
+    and returns arrays of the corresponding ids
+    """
+    ingredients = json.loads(utils.get_ingredients_by_type())
+    flavors = json.loads(utils.get_flavors())
     flavor_ids = []
     for i in dataDict["flavors"]:
         if any(j["name"] == i for j in flavors):
@@ -134,4 +140,38 @@ def get_ingredient_and_flavor_list(dataDict):
                 "units": i['units'],
                 "type": i['type']
             })
-    return [flavor_ids, ingredient_ids]
+    return (flavor_ids, ingredient_ids)
+
+
+def add_ingredient_return_id(name, type):
+    connection = mongo_connect()
+    ingredients = connection["ingredients"]
+    ingredients.insert_one(
+        {
+            "name": name,
+            "type": type,
+        })
+    newIngredient = ingredients.find_one({
+        "name": name
+    })
+    return newIngredient["_id"]
+
+
+def add_flavor_return_id(name):
+    connection = mongo_connect()
+    flavors = connection["flavors"]
+    flavors.insert_one(
+        {
+            "name": name,
+        })
+    new_flavor = flavors.find_one({
+        "name": name
+    })
+    return new_flavor["_id"]
+
+
+def find(list, key, value):
+    for i, item in enumerate(list):
+        if dic[key] == value:
+            return i
+    return -1

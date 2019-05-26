@@ -1,11 +1,4 @@
-import os
-import pymongo
-import json
-from datetime import datetime
-
-from bson import ObjectId
-from bson.json_util import dumps
-from flask import Flask, redirect, render_template, request, session, url_for
+from flask import Flask
 
 from blueprints.login_logout import login_logout
 from blueprints.home import home
