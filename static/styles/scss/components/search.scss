@@ -12,7 +12,7 @@
             display: inline-block;
         }
         
-        input{
+        input[type="text"]{
             border: None;
             border-bottom: 3px solid black;
             display: block;
@@ -40,6 +40,10 @@
             &:hover{
                 border: none;
             }
+        }
+        .selected{
+            background-color: hotpink;
+            color: white;
         }
     }
 

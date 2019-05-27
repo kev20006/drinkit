@@ -149,7 +149,7 @@
                 <h1 class="blue" onclick="toggleSearch()"><i class="fas fa-times"></i></h1>
             </div>
     
-            <h3><input class="mt-2" placeholder="enter search term" onkeydown="search(this, event)"/></h3>
+            <h3><input class="mt-2" placeholder="enter search term" type="text" onkeydown="search(this, event)"/></h3>
             <div id="results" class="row mx-0">
                 <p id="no-results"></p>
                 <ul id="cocktails-results" class="list-group col-12 col-md-3">
@@ -173,8 +173,18 @@
                 <h1 class="pink">Advanced Filters</h1>
                 <h1 class="blue" onclick="toggleAdvFilters()"><i class="fas fa-times"></i></h1>
             </div>
-            <p>Match All Criteria</p>
-            <p>Match Any Criteria</p>
+            <form id="radio-form" class="radio-buttons d-flex justify-content-center my-3">
+                <div class="form-check-inline">
+                    <label class="form-check-label blue">
+                        <input id="or-button" type="radio" class="form-check-input" name="and-or" value="or" checked>Match All Selected
+                    </label>
+                </div>
+                <div class="form-check-inline blue">
+                    <label class="form-check-label">
+                        <input id="and-button" type="radio" class="form-check-input" name="and-or" value="and">Match All Selected
+                    </label>
+                </div>
+            </form>
             <h3 class="block"><span class="blue">Ingredients</span></h3>
             <p class="pink d-inline-block">Spirits</p>
             <div id="ingredients-filter-spirit" class="d-flex flex-wrap"></div>
@@ -186,6 +196,10 @@
             <div id="ingredients-filter-others" class="d-flex flex-wrap"></div>
             <h3 class="blue d-inline-block">Flavors</h3>
             <div id="flavor-filter" class="d-flex flex-wrap"></div>
+            <div id="search-preview"class="d-flex flex-column justify-content-center align-items-center"> 
+                <div class="d-inline-block">Results: <span id="no-of-results">0</span></div>
+                <div class="btn-active d-inline-block" onclick="getResults()">Show Results</div>
+            </div>
         </div>
     
     </div>

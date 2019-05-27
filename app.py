@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 
 from blueprints.login_logout import login_logout
@@ -14,7 +15,10 @@ from blueprints.search import searchs
 
 app = Flask(__name__)
 
-# os.environ['MONGO_URI'] = 
+os.environ['MONGO_URI'] = ("mongodb+srv://kev:22c2c119f3"
+                           "@cluster0-nnrmm.mongodb.net/"
+                           "testDB?retryWrites=true"
+                           )
 # mongo_uri = os.environ.get('MONGO_URI')
 app.secret_key = "asdfsdf"
 # app.secret_key = os.environ.get('SECRET_KEY')

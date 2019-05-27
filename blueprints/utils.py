@@ -18,17 +18,20 @@ def mongo_connect():
         print("Could not connect to MongoDB: %s") % e
 
 
-def aggregate_cocktail_previews(cocktails, filter):
+def aggregate_cocktail_previews(cocktails, filter, match=None):
     """
     function to aggregate information from all the tables
     to create the item previews used on the index page and
     in search results
     """
+    if match is None:
+        match = {"name": {"$ne": "null"}}
     if filter is None or filter == "recent":
         filter = "created_at"
     elif filter == "popular":
         filter = "noOfVotes"
     cocktail_details = cocktails.aggregate([
+        {"$match": match},
         {"$lookup":
             {
                 "from": "users",

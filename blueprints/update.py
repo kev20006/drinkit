@@ -4,7 +4,7 @@ from datetime import datetime
 from flask import Blueprint, session, render_template, request
 from bson import ObjectId
 
-from .utils import *
+from .utils import mongo_connect
 
 update = Blueprint('update', __name__)
 
@@ -83,7 +83,8 @@ def like_dislike():
                 },
              }
         )
-    return "success"
+    resp = jsonify(success=True)
+    return resp
 
 
 @update.route('/update/cocktail/<cocktail_id>')
@@ -107,7 +108,6 @@ def update_cocktail(cocktail_id):
     cocktailDetails = {}
     for i in cocktail:
         cocktailDetails = i
-    print(cocktailDetails)
     return render_template('editcocktail.html', cocktail=cocktailDetails)
 
 
@@ -143,4 +143,5 @@ def update_drink_in_db():
                 "image_url": dataDict["image_url"]}
          }
     )
-    return "success"
+    resp = jsonify(success=True)
+    return resp

@@ -30,7 +30,7 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_ingredients(self):
-        response = self.app.get('/api/flavors/')
+        response = self.app.get('/api/ingredients/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(json.loads(response.data)), 0)
 

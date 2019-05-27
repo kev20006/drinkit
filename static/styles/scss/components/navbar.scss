@@ -21,13 +21,11 @@
     }
 
     .nav-button{    
-        //loop through each cloud
         @for $i from 1 through 5 {
             $x-coord:#{random(9) - 5}px;
             $y-coord:#{random(9) - 5}px;
             $rotate:#{random(6) - 3}deg;
             &-#{$i} {
-                //animation shorthand( animation-name, duration, timing-function, delay, iteration-count)
                 position:relative;
                 padding:0px 10px;
                 background-color: blue;
@@ -48,18 +46,5 @@
         } 
 
         
-    }
-
-
-
-    .btn-active{
-        position:relative;
-        background-color: hotpink;
-        box-shadow: -4px 3px blue;
-        &:hover{
-                    box-shadow: none;
-                    right: 4px;
-                    top: 3px;
-                }
     }
 }

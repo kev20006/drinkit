@@ -11,7 +11,7 @@
 .search-or-filter h1 {
   display: inline-block;
 }
-.search-or-filter input {
+.search-or-filter input[type=text] {
   border: None;
   border-bottom: 3px solid black;
   display: block;
@@ -19,10 +19,10 @@
   width: 95%;
   padding: 0px 5px;
 }
-.search-or-filter input:hover {
+.search-or-filter input[type=text]:hover {
   box-shadow: 5px 5px hotpink;
 }
-.search-or-filter input:focus {
+.search-or-filter input[type=text]:focus {
   outline: none;
   box-shadow: -5px -5px blue, 3px 3px hotpink;
 }
@@ -31,6 +31,10 @@
 }
 .search-or-filter .list-group:hover {
   border: none;
+}
+.search-or-filter .selected {
+  background-color: hotpink;
+  color: white;
 }
 
 /*# sourceMappingURL=search.css.map */

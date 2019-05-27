@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Blueprint, session, render_template
 from bson import ObjectId
 
-import utils
+from .utils import get_ingredient_and_flavor_list, mongo_connect
 from .api import get_ingredients_by_type, get_flavors
 
 add_drink = Blueprint('add_drink', __name__)
@@ -33,7 +33,7 @@ def add_new_drink_to_db():
     # function returns an array
     # index 0: list of flavors
     # index 1: is a list of ingredients
-    ingredients_and_flavors = utils.get_ingredient_and_flavor_list(dataDict)
+    ingredients_and_flavors = get_ingredient_and_flavor_list(dataDict)
     connection = mongo_connect()
     connection["cocktails"].insert_one({
         "name": dataDict["name"],
