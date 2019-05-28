@@ -17,7 +17,6 @@ fetch("/api/flavors/")
 fetch("/api/ingredients/")
     .then((resp) => resp.json()) // Transform the data into json
     .then((data) => {
-        console.log(data)
         data.forEach(ingredient =>{
             document.querySelector(`#ingredients-filter-${ingredient.type}`)
                 .innerHTML += `<span id="${ingredient._id.$oid}" class="spirit" onclick="addToFilter(this, 'ingredient_list')">${ingredient.name}</span>`;
@@ -60,13 +59,8 @@ const getResults = () =>{
         method: 'post',
         body: JSON.stringify(filters)
     })
-    .then((response) => {
-        if (response.url[4] == "s"){
-            window.location.replace(response.url);
-        }
-        else{
-            let newUrl = "https" + response.url.slice(4);
-            window.location.replace(response.url);
-        }
-    })
+        .then((response) => { 
+            window.location.replace(
+                response.url.slice(response.url.search("resu")-1))
+        })
 }

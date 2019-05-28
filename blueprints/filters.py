@@ -1,7 +1,9 @@
 import ast
 import json
 
-from flask import Blueprint, session, render_template, request, url_for, redirect
+from flask import Blueprint, session, render_template, request, url_for
+from flask import redirect
+
 from bson import ObjectId
 from bson.json_util import dumps
 
@@ -38,14 +40,14 @@ def view_by_type(type_of_search, keyword, filter=None):
     )
 
 
-@filters.route('/advanced_filter', methods=["GET", "POST"])
+@filters.route('/advanced_filter', methods=["POST"])
 @filters.route('/advanced_filter/<count>', methods=["POST"])
 def advanced_filter(count=None):
     connection = mongo_connect()
     data = request.data
     data_dict = json.loads(data)
     if count is not None:
-        query = genereate_mongo_query(data_dict)  
+        query = genereate_mongo_query(data_dict)
         resultCount = connection["cocktails"].find(query).count()
         return dumps({"count": resultCount})
     else:
@@ -53,7 +55,8 @@ def advanced_filter(count=None):
             "index.filter_results",
             ingredients=data_dict["ingredient_list"],
             flavors=data_dict["flavor_list"],
-            type_of_search=data_dict["type"]))
+            type_of_search=data_dict["type"],
+        ))
 
 
 @filters.route('/results/<type_of_search>/<ingredients>/<flavors>')
@@ -63,8 +66,6 @@ def filter_results(type_of_search, ingredients, flavors):
         "flavor_list": ast.literal_eval(flavors),
         "type": type_of_search
     }
-    print("filter_dict")
-    print(filter_dict)
     query = genereate_mongo_query(filter_dict)
     connection = mongo_connect()
     results = aggregate_cocktail_previews(
@@ -91,8 +92,6 @@ def get_user():
 
 
 def genereate_mongo_query(data_dict):
-    print("data_dict")
-    print(data_dict)
     if len(data_dict["ingredient_list"]):
         data_dict["ingredients"] = []
     if len(data_dict["flavor_list"]):
