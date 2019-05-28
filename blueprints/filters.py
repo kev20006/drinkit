@@ -56,7 +56,7 @@ def advanced_filter(count=None):
             ingredients=data_dict["ingredient_list"],
             flavors=data_dict["flavor_list"],
             type_of_search=data_dict["type"],
-        ))
+        ),  _scheme="https")
 
 
 @filters.route('/results/<type_of_search>/<ingredients>/<flavors>')
