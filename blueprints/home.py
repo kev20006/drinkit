@@ -16,7 +16,8 @@ def index(filter=None):
     connection = mongo_connect()
     cocktails = connection["cocktails"]
     user = None
-    if session:
+    print(session)
+    if '_id' in session:
         user = connection["users"].find_one({"_id": ObjectId(session['_id'])})
     cocktailPreviews = aggregate_cocktail_previews(cocktails, filter)
     return render_template('index.html', cocktails=cocktailPreviews, user=user)

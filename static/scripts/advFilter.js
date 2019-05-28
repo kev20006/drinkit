@@ -42,7 +42,7 @@ const addToFilter = (target, category) => {
 
 const getResultCount = () =>{
     filters.type = document.querySelector('input[name="and-or"]:checked').value;
-    fetch('/advanced_filter/new/count', {
+    fetch('/advanced_filter/count', {
         method: 'post',
         body: JSON.stringify(filters)
     })
@@ -55,8 +55,9 @@ const getResultCount = () =>{
 }
 
 const getResults = () =>{
-    fetch('/advanced_filter/new', {
+    fetch('/advanced_filter', {
         method: 'post',
         body: JSON.stringify(filters)
     })
+    .then((response) => window.location.replace(response.url))
 }

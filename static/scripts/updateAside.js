@@ -9,7 +9,7 @@ fetch('/api/flavors/')
             })
             if (flavorName[0]) {
                 li.innerText = flavorName[0].name
-                li.innerHTML = `<a href="/v/flavor/${flavorName[0].name}">${flavorName[0].name}</a>`;
+                li.innerHTML = `<a href="/filter/flavor/${flavorName[0].name}">${flavorName[0].name}</a>`;
             } else {
                 removeItemFromDb("flavor", li.textContent)
                 li.parentNode.removeChild(li)
@@ -26,7 +26,7 @@ fetch('/api/ingredients/')
                 return element._id.$oid == li.dataset.id
             })
             if (ingredientsName[0]) {
-                li.innerHTML = `<a href="/v/ingredient/${ingredientsName[0].name}">${ingredientsName[0].name}</a>`;
+                li.innerHTML = `<a href="/filter/ingredient/${ingredientsName[0].name}">${ingredientsName[0].name}</a>`;
 
             } else {
                 removeItemFromDb("ingredient", li.textContent)
@@ -61,7 +61,7 @@ Promise.all(starred_ids.map(id => fetch(`/api/cocktail/${id}`)))
         data.forEach(cocktail => {
             let listItem = document.createElement("li");
             listItem.classList = "list-group-item";
-            listItem.innerHTML = `<a href="/v/cocktail/${cocktail._id.$oid}">${cocktail.name}</a>`;
+            listItem.innerHTML = `<a href="/cocktails/${cocktail._id.$oid}">${cocktail.name}</a>`;
             document.querySelector("#starred-list").appendChild(listItem);
         })
     });
