@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-from flask_talisman import Talisman
+
 
 from blueprints.login_logout import login_logout
 from blueprints.home import home
@@ -15,8 +15,6 @@ from blueprints.search import searchs
 
 
 app = Flask(__name__)
-# to enforce SSL
-Talisman(app)
 
 """
 os.environ['MONGO_URI'] = ("mongodb+srv://kev:22c2c119f3"
