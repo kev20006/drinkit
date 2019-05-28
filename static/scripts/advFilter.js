@@ -61,7 +61,12 @@ const getResults = () =>{
         body: JSON.stringify(filters)
     })
     .then((response) => {
-        console.log(response);
-        window.location.replace(response.url)
+        if (response.url[4] == "s"){
+            window.location.replace(response.url);
+        }
+        else{
+            let newUrl = "https" + response.url.slice(4);
+            window.location.replace(response.url);
+        }
     })
 }
