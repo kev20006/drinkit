@@ -32,11 +32,12 @@ const addToFilter = (target, category) => {
             }
         }
         target.classList.remove("selected")
+        getResultCount();
     }
     else{
-        filters[category].push(target.id)
-        target.classList.add("selected")
-        getResultCount()
+        filters[category].push(target.id);
+        target.classList.add("selected");
+        getResultCount();
     }
 }
 
@@ -48,8 +49,8 @@ const getResultCount = () =>{
     })
     .then((response)=> response.json())
     .then((data) => {
-        console.log(data)
-        document.querySelector("#no-of-results").innerHTML = data.count
+        console.log(data);
+        document.querySelector("#no-of-results").innerHTML = data.count;
         
     });
 }
@@ -59,5 +60,8 @@ const getResults = () =>{
         method: 'post',
         body: JSON.stringify(filters)
     })
-    .then((response) => window.location.replace(response.url))
+    .then((response) => {
+        console.log(response);
+        window.location.replace(response.url)
+    })
 }
