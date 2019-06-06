@@ -51,12 +51,13 @@ def advanced_filter(count=None):
         resultCount = connection["cocktails"].find(query).count()
         return dumps({"count": resultCount})
     else:
-        return redirect(url_for(
+        url = url_for(
             "index.filter_results",
             ingredients=data_dict["ingredient_list"],
             flavors=data_dict["flavor_list"],
             type_of_search=data_dict["type"]
-            ).replace("http://", "https://")
+        )
+        return redirect(url.replace("http://", "https://")
         )
 
 
