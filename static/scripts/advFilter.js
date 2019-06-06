@@ -60,6 +60,7 @@ const getResults = () =>{
         body: JSON.stringify(filters)
     })
         .then((response) => { 
+            console.log(response.url)
             window.location.assign(response.url);
         })
 }
