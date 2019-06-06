@@ -57,9 +57,6 @@ def advanced_filter(count=None):
             flavors=data_dict["flavor_list"],
             type_of_search=data_dict["type"]
         )
-        print(url)
-        url = url.replace("http://", "https://")
-        print(url)
         return redirect(url)
 
 

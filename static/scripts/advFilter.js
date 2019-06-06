@@ -61,6 +61,6 @@ const getResults = () =>{
     })
         .then((response) => { 
             console.log(response.url)
-            window.location.assign(response.url);
+            //window.location.assign(response.url);
         })
 }
