@@ -32,43 +32,58 @@
     </div>
         <div class="d-flex">
                 <span class="nav-button-3" onclick="toggleSearch()"><i class="fas fa-search"></i></span>
-                <span class="nav-button-1 btn-active d-none d-md-block"><a href="{{ url_for('home.index', filter='recent') }}"><i class="fas fa-hourglass-start"></i></a></span>
-                <span class="nav-button-2 d-none d-md-block"><a href="{{ url_for('home.index', filter='popular' ) }}"><i class="fas fa-chart-line"></i></a></span>
+                <a href="{{ url_for('home.index', filter='recent') }}">
+                    <span class="nav-button-3 btn-active d-none d-md-block"><i class="fas fa-hourglass-start"></i></span>
+                </a>
+                <a href="{{ url_for('home.index', filter='popular' ) }}">
+                    <span class="nav-button-3 d-none d-md-block"><i class="fas fa-chart-line"></i></span>
+                </a>
+                
             {% if session['username'] %}
-                <span class="nav-button-3 d-none d-md-block">
-                    <a href="{{ url_for('profiles.view_user_profile', user_id=session['_id']) }}">{{ session['username'] }}</a>
-                </span>
-                <span class="nav-button-3 d-none d-md-block" ><a href="{{ url_for('login_logout.logout') }}">Log Out</a></span>
+                <a href="{{ url_for('profiles.view_user_profile', user_id=session['_id']) }}">
+                    <span class="nav-button-3 d-none d-md-block">
+                        {{ session['username'] }}
+                    </span>
+                </a>
+                <a href="{{ url_for('login_logout.logout') }}">
+                    <span class="nav-button-3 d-none d-md-block">Log Out</span>
+                </a>
+                
             {% else %}
-                <span class="nav-button-4 d-none d-md-block" data-toggle="modal" data-target="#login">Login</span>
-                <span class="nav-button-4 d-none d-md-block" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
+                <span class="nav-button-3 d-none d-md-block" data-toggle="modal" data-target="#login">Login</span>
+                <span class="nav-button-3 d-none d-md-block" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
             {% endif %}
-                <span class="nav-button-5 d-md-none navbar-toggler ml-2" data-toggle="collapse" data-target="#context-menu"><a><i class="fas fa-bars"></i></a></span>
+                <span class="nav-button-3 d-md-none navbar-toggler ml-2" data-toggle="collapse" data-target="#context-menu"><i class="fas fa-bars"></i></span>
         </div>
         <div id="context-menu" class="collapse navbar-collapse pt-3 d-md-none">
             <div class="d-flex flex-column">
-                <strong>SORT:</strong>
-                <span class="nav-button-2 d-md-none btn-active"><a href="{{ url_for('home.index', filter='recent') }}">
-                    <i class="fas fa-hourglass-start"></i>Most Recent</a></span>
-                <span class="nav-button-2 d-md-none"><a href="{{ url_for('home.index', filter='popular' ) }}"><i
-                            class="fas fa-chart-line"></i>Most Popular</a></span>
-                <hr>
                 <strong>USERS:</strong>
                 {% if session['username'] %}
-                <span class="nav-button-2 d-md-none">
-                    <a href="{{ url_for('profiles.view_user_profile', user_id=session['_id']) }}">{{ session['username'] }}</a>
-                </span>
-                <span class="nav-button-2 d-md-none"><a href="{{ url_for('login_logout.logout') }}">Log Out</a></span>
+                <a href="{{ url_for('profiles.view_user_profile', user_id=session['_id']) }}">
+                    <span class="nav-button-3 d-md-none">
+                        {{ session['username'] }}
+                    </span>
+                </a>
+                <a href="{{ url_for('login_logout.logout') }}">
+                    <span class="nav-button-3 d-md-none">Log Out</span>
+                </a>
                 {% else %}
-                <span class="nav-button-2 d-block d-md-none" data-toggle="modal" data-target="login">Login</span>
-                <span class="nav-button-2 d-block d-md-none" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
+                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#login">Login</span>
+                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
                 {% endif %}
             </div>
         </div>
     </nav>
-
     {% block content %}
     {% endblock %}
+    <footer class="card w-100">
+        <div class="card-content text-center">
+            <p class="mt-4"> Drinkit was made by Kevin Stewart </p>
+            <p class="mb-4"> check it out on github 
+                <a href="https://github.com/kev20006/drinkit"><i class="fab fa-github"></i></a>
+            </p>
+        </div>
+    </footer>
     <!-- Login Modal -->
     <div id="login" class="modal fade" aria-labelledby="login" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">

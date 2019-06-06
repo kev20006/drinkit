@@ -60,7 +60,6 @@ const getResults = () =>{
         body: JSON.stringify(filters)
     })
         .then((response) => { 
-            window.location.replace(
-                response.url.slice(response.url.search("resu")-1))
+            window.location.assign(response.url);
         })
 }

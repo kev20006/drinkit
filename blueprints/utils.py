@@ -5,6 +5,8 @@ from pymongo import MongoClient
 import pymongo
 
 conString = os.environ.get('MONGO_URI')
+# conString = 
+# "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
 
 
 def mongo_connect():

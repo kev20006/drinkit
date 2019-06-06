@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from flask_talisman import Talisman
 
 
 from blueprints.login_logout import login_logout
@@ -15,6 +16,18 @@ from blueprints.search import searchs
 
 
 app = Flask(__name__)
+csp = {
+        'default-src': '\'self\'',
+        'img-src': '*',
+        'media-src': [
+            '*',
+        ],
+        'style-src': '\'unsafe-inline\' *',
+        'script-src': '\'unsafe-inline\' *',
+        'font-src': '*'
+    }
+
+Talisman(app, content_security_policy=csp)
 
 """
 os.environ['MONGO_URI'] = ("mongodb+srv://kev:22c2c119f3"
@@ -41,6 +54,8 @@ app.register_blueprint(searchs)
 
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 33507))
-    app.run(host='0.0.0.0', port=port)
-    # app.run(debug="true")
+    if os.environ.get('VERSION') == "PROD":
+        port = int(os.environ.get("PORT", 33507))
+        app.run(host='0.0.0.0', port=port)
+    else:
+        app.run(debug="true")
