@@ -57,8 +57,10 @@ def advanced_filter(count=None):
             flavors=data_dict["flavor_list"],
             type_of_search=data_dict["type"]
         )
-        return redirect(url.replace("http://", "https://")
-        )
+        print(url)
+        url = url.replace("http://", "https://")
+        print(url)
+        return redirect(url)
 
 
 @filters.route('/results/<type_of_search>/<ingredients>/<flavors>')

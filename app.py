@@ -16,18 +16,18 @@ from blueprints.search import searchs
 
 
 app = Flask(__name__)
-csp = {
-        'default-src': '\'self\'',
-        'img-src': '*',
-        'media-src': [
-            '*',
-        ],
-        'style-src': '\'unsafe-inline\' *',
-        'script-src': '\'unsafe-inline\' *',
-        'font-src': '*'
-    }
+# csp = {
+  #      'default-src': '\'self\'',
+    #    'img-src': '*',
+   #     'media-src': [
+      #      '*',
+     #   ],
+       # 'style-src': '\'unsafe-inline\' *',
+       # 'script-src': '\'unsafe-inline\' *',
+        #'font-src': '*'
+    #}
 
-Talisman(app, content_security_policy=csp)
+#Talisman(app, content_security_policy=csp)
 
 """
 os.environ['MONGO_URI'] = ("mongodb+srv://kev:22c2c119f3"
