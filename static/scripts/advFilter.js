@@ -59,8 +59,8 @@ const getResults = () =>{
         method: 'post',
         body: JSON.stringify(filters)
     })
-        .then((response) => { 
-            console.log(response.url)
-            //window.location.assign(response.url);
-        })
+    .then((response) => response.json())
+    .then(data => {
+        window.location.assign(data.url);
+    }) ;
 }
