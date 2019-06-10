@@ -1,10 +1,12 @@
 import json
 
 from datetime import datetime
-from flask import Blueprint, session, render_template, request
+from flask import Blueprint, session, render_template, request, jsonify
 from bson import ObjectId
 
 from .utils import mongo_connect
+from .api import get_ingredients_by_type, get_flavors
+from .api import get_ingredient_and_flavor_list
 
 update = Blueprint('update', __name__)
 
@@ -111,7 +113,7 @@ def update_cocktail(cocktail_id):
     return render_template('editcocktail.html', cocktail=cocktailDetails)
 
 
-@update.route('/update/cocktail_processing', methods=["POST"])
+@update.route('/update/cocktail/', methods=["POST"])
 def update_drink_in_db():
     """
     function called from the cocktail form to add a drink to the

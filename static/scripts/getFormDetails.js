@@ -7,10 +7,10 @@ let getFormDetails = (trigger, type) => {
     let cocktailDetails= {}
     if (type=="update"){
         cocktailDetails.id = document.querySelector("#name").dataset.id
-        fetchString = "/u/cocktail_processing"
+        fetchString = `/update/cocktail/`
     }
     else{
-        fetchString = "/c/cocktail_processing"
+        fetchString = "/cocktails/"
     }
     if(document.getElementById("name").value != ""){
         document.querySelector("#name-error").textContent = ""

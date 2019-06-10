@@ -1,9 +1,12 @@
+import json
+
 from flask import Blueprint, session, render_template
 from bson import ObjectId
 from bson.json_util import dumps
 
 
-from .utils import mongo_connect
+from .utils import mongo_connect, add_flavor_return_id
+from .utils import add_ingredient_return_id
 
 api = Blueprint('api', __name__)
 
@@ -88,3 +91,40 @@ def check_user_exists(name):
         return "True"
     else:
         return "False"
+
+
+def get_ingredient_and_flavor_list(dataDict):
+    """
+    function take an array of flavor and ingredient names
+    and returns arrays of the corresponding ids
+    """
+    ingredients = json.loads(get_ingredients_by_type())
+    flavors = json.loads(get_flavors())
+    flavor_ids = []
+    for i in dataDict["flavors"]:
+        if any(j["name"] == i for j in flavors):
+            for j in flavors:
+                if j["name"] == i:
+                    flavor_ids.append(ObjectId(j["_id"]["$oid"]))
+        else:
+            flavor_ids.append(
+                ObjectId(add_flavor_return_id(i))
+            )
+
+    ingredient_ids = []
+    for i in dataDict["ingredients"]:
+        if any(j["name"] == i["name"] for j in ingredients):
+            for j in ingredients:
+                if j["name"] == i["name"]:
+                    new_ingredient_id = j["_id"]["$oid"]
+        else:
+            new_ingredient_id = add_ingredient_return_id(i["name"], i["type"])
+
+        ingredient_ids.append(
+            {
+                "ingredient": ObjectId(new_ingredient_id),
+                "quantity": i['quantity'],
+                "units": i['units'],
+                "type": i['type']
+            })
+    return (flavor_ids, ingredient_ids)

@@ -16,30 +16,11 @@ from blueprints.search import searchs
 
 
 app = Flask(__name__)
-# csp = {
-  #      'default-src': '\'self\'',
-    #    'img-src': '*',
-   #     'media-src': [
-      #      '*',
-     #   ],
-       # 'style-src': '\'unsafe-inline\' *',
-       # 'script-src': '\'unsafe-inline\' *',
-        #'font-src': '*'
-    #}
-
-#Talisman(app, content_security_policy=csp)
-
-"""
-os.environ['MONGO_URI'] = ("mongodb+srv://kev:22c2c119f3"
-                           "@cluster0-nnrmm.mongodb.net/"
-                           "testDB?retryWrites=true"
-                           )
-"""
 
 
 # mongo_uri = os.environ.get('MONGO_URI')
-app.secret_key = "asdfsdfs"
-# app.secret_key = os.environ.get('SECRET_KEY')
+# app.secret_key = "asdfsdfs"
+app.secret_key = os.environ.get('SECRET_KEY')
 
 app.register_blueprint(home)
 app.register_blueprint(login_logout)

@@ -1,10 +1,13 @@
+import json
+
 from datetime import datetime
 
-from flask import Blueprint, session, render_template
+from flask import Blueprint, session, render_template, request, jsonify
 from bson import ObjectId
 
-from .utils import get_ingredient_and_flavor_list, mongo_connect
+from .utils import mongo_connect
 from .api import get_ingredients_by_type, get_flavors
+from .api import get_ingredient_and_flavor_list
 
 add_drink = Blueprint('add_drink', __name__)
 
@@ -56,5 +59,3 @@ def add_new_drink_to_db():
     resp = jsonify(success=True)
     return resp
 
-# Helper Funcitons to add new flavors and ingredients
-# and return there ID's from the DB

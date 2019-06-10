@@ -4,49 +4,42 @@ let getIngredients = (trigger) =>{
     let idNumber = trigger.id.split('-')[2];
     document.getElementById(`label-ingredient-select-${idNumber}`).textContent = 'fetching ingredients...';
     
-    let xhr = new XMLHttpRequest();
-    xhr.onload = () =>{
-        if (xhr.status >= 200 && xhr.status < 300){
-            let target = document.getElementById(`ingredient-selector-${idNumber}`)
-            target.innerHTML = '';
-            data = JSON.parse(xhr.response);
-            let select = document.createElement("select")
-            select.id = `ingredient-select-${idNumber}`;
-            select.classList = "form-control"
-            select.innerHTML = '';
-            data.forEach(element => {
-                select.innerHTML += `<option value="${element.name}">${element.name}</option>`;
-            })
-            select.innerHTML += `<option value="new">add new</option>`;
-            let label= document.createElement('label');
-            label.textContent = `type of ${trigger.value}`;
-            label.id = `label-ingredient-select-${idNumber}`;
-            label.for = `ingredient-select-${idNumber}`;
-            select.onchange = (event)=>{
-                if(event.target.value == "new"){
-                    target.innerHTML = '';
-                    ingredientInput = document.createElement("input");
-                    ingredientInput.id = `ingredient-select-${idNumber}`;
-                    ingredientInput.classList = 'form-control';
-                    ingredientInput.type = "text";
-                    label.id = `label-ingredient-select-${idNumber}`;
-                    label.for = `ingredient-select-${idNumber}`;
-                    label.textContent = "New Ingredient";
-                    target.appendChild(label);
-                    target.appendChild(ingredientInput); 
-                }
-            };
-            target.appendChild(label);
-            target.appendChild(select); 
-        }
-        else{
-            console.log('The request failed!')
-        }
-    }
-
-    xhr.open('GET', `/api/ingredients/${trigger.value}`);
-    xhr.send();
+    fetch(`/api/ingredients/${trigger.value}`)
+    .then((response)=> response.json())
+    .then(data => {
+        let target = document.getElementById(`ingredient-selector-${idNumber}`)
+        target.innerHTML = '';
+        let select = document.createElement("select")
+        select.id = `ingredient-select-${idNumber}`;
+        select.classList = "form-control"
+        select.innerHTML = '';
+        data.forEach(element => {
+            select.innerHTML += `<option value="${element.name}">${element.name}</option>`;
+        })
+        select.innerHTML += `<option value="new">add new</option>`;
+        let label = document.createElement('label');
+        label.textContent = `type of ${trigger.value}`;
+        label.id = `label-ingredient-select-${idNumber}`;
+        label.for = `ingredient-select-${idNumber}`;
+        select.onchange = (event) => {
+            if (event.target.value == "new") {
+                target.innerHTML = '';
+                ingredientInput = document.createElement("input");
+                ingredientInput.id = `ingredient-select-${idNumber}`;
+                ingredientInput.classList = 'form-control';
+                ingredientInput.type = "text";
+                label.id = `label-ingredient-select-${idNumber}`;
+                label.for = `ingredient-select-${idNumber}`;
+                label.textContent = "New Ingredient";
+                target.appendChild(label);
+                target.appendChild(ingredientInput);
+            }
+        };
+        target.appendChild(label);
+        target.appendChild(select);  
+    })      
 }
+
 
 
 let addMore = () =>{
@@ -54,7 +47,7 @@ let addMore = () =>{
     let nextIndex = parseInt(ingredients.children[ingredients.children.length - 1].id.split("-")[2]) +1
     let newRow = document.createElement("div")
     let help = document.querySelector("#flavorHelp")
-    help.parentNode.removeChild(help);
+    if (help) { help.parentNode.removeChild(help); }
     newRow.id = `ingredients-row-${nextIndex}`;
     newRow.classList = 'row mx-0 px-4';
     newRow.innerHTML = `
@@ -88,7 +81,7 @@ let next = (target, event,callback) => {
 	};
 }
 
-let newIngredient = (e) => {
+let newIngredient = () => {
     let htmlString = `
             <div class="row">
                 <div class="input-field col s5">

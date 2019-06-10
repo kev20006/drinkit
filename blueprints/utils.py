@@ -1,12 +1,14 @@
 import os
+import json
 
 from bson import ObjectId
 from pymongo import MongoClient
+
 import pymongo
 
 conString = os.environ.get('MONGO_URI')
-# conString = 
-# "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
+# conString = "mongodb+srv://kev:22c2c119f3#
+#  @cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
 
 
 def mongo_connect():
@@ -109,43 +111,6 @@ def get_id(collection, name):
     if item is not None:
         return item["_id"]
     return None
-
-
-def get_ingredient_and_flavor_list(dataDict):
-    """
-    function take an array of flavor and ingredient names
-    and returns arrays of the corresponding ids
-    """
-    ingredients = json.loads(utils.get_ingredients_by_type())
-    flavors = json.loads(utils.get_flavors())
-    flavor_ids = []
-    for i in dataDict["flavors"]:
-        if any(j["name"] == i for j in flavors):
-            for j in flavors:
-                if j["name"] == i:
-                    flavor_ids.append(ObjectId(j["_id"]["$oid"]))
-        else:
-            flavor_ids.append(
-                ObjectId(add_flavor_return_id(i))
-            )
-
-    ingredient_ids = []
-    for i in dataDict["ingredients"]:
-        if any(j["name"] == i["name"] for j in ingredients):
-            for j in ingredients:
-                if j["name"] == i["name"]:
-                    ingredient_ids = j["_id"]["$oid"]
-        else:
-                ingredient_ids = add_ingredient_return_id(i["name"], i["type"])
-
-        ingredient_ids.append(
-            {
-                "ingredient": ObjectId(ingredients_id),
-                "quantity": i['quantity'],
-                "units": i['units'],
-                "type": i['type']
-            })
-    return (flavor_ids, ingredient_ids)
 
 
 def add_ingredient_return_id(name, type):
