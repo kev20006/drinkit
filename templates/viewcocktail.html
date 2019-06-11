@@ -4,9 +4,9 @@
     <div class="card my-4">
         <div class="row my-2 mx-0 px-4 d-flex justify-content-between">
             <div>
-                <h3> {{ cocktail.name }}</h3>
+                <h3 class="pink"> {{ cocktail.name }}</h3>
             </div>
-            <div><a class="btn btn-outline-dark" href="{{ url_for('home.index') }}"><i class="fas fa-times"></i></a></div>
+            <a class="blue" href="{{ url_for('home.index') }}"><h3><i class="fas fa-times"></i></h3></a>
         </div>
         <div class="row d-flex px-4 justify-content-between">
             <div class="col-12 col-lg-6">
@@ -18,11 +18,10 @@
                 <strong>Ingredients:</strong>
                 <p id="spirit-tags">
                     {% for ingredient in cocktail.ingredients %}
-                    <span data-id="{{ ingredient.ingredient }}" data-user="{{ session['_id'] }}" class="ingredients badge badge-secondary">
+                    <span data-id="{{ ingredient.ingredient }}" data-user="{{ session['_id'] }}" class="spirit">
                         <span>loading..</span>
                         
                         {% if session['username'] %}
-                            
                             {%  if ingredient.ingredient in user.favorite_ingredients %}
                             <i data-action="remove"></i>
                             {% else %}
@@ -35,7 +34,7 @@
                     <strong>Flavor:</strong>
                     <p id="flavor-tags">
                         {% for flavor in cocktail.flavor_tags %}
-                        <span data-id="{{ flavor }}" data-user="{{session['_id']}}" class="flavors badge badge-secondary">
+                        <span data-id="{{ flavor }}" data-user="{{session['_id']}}" class="flavors">
                             <span>loading..</span>
                             {% if session['username'] %}
                                 {%  if flavor in user.favorite_flavors %}

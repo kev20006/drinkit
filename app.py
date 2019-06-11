@@ -17,10 +17,8 @@ from blueprints.search import searchs
 
 app = Flask(__name__)
 
-
-# mongo_uri = os.environ.get('MONGO_URI')
-# app.secret_key = "asdfsdfs"
-app.secret_key = os.environ.get('SECRET_KEY')
+app.secret_key = "asdfsdfs"
+# app.secret_key = os.environ.get('SECRET_KEY')
 
 app.register_blueprint(home)
 app.register_blueprint(login_logout)

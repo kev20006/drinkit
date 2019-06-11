@@ -8,7 +8,7 @@ from app import app
 # uri for test DB
 # os.environ['MONGO_URI'] = "mongodb+srv://kev:22c2c119f3"+
 #                           "@cluster0-nnrmm.mongodb.net/"+
-#                           "testDB?retryWrites=true"
+#                           "bartndr?retryWrites=true"
 
 
 class BasicTests(unittest.TestCase):

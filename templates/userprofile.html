@@ -11,9 +11,13 @@
         <div class="row">
             <div class =" col-12 col-md-4 text-center">
                 {% if user._id|string == session["_id"]|string %}
-                <p>You have not yet added a profile</p>
+                    {% if user.profile is not defined %}
+                        <p>You have not yet added a profile</p>
+                    {% endif %}
                 {% else %}
-                <p>This user does not have a profile</p>
+                    {% if user.profile is not defined %}   
+                    <p>This user does not have a profile</p>
+                    {% endif %}
                 {% endif %}
             </div>
             <div class=" col-12 col-md-8">
@@ -37,9 +41,9 @@ let generateMiniCocktailCard = (cocktail) =>{
     let template = document.createElement("div")
     template.className = "card col-12 col-md-6"
     template.innerHTML = `
-        <div class="d-flex w-100">
+        <div id="${cocktail._id.$oid}"class="d-flex w-100">
             <div class="image-wrapper mr-2">
-                <img class="img-thumbnail rounded-circle" style="height:100px; width:100px"
+                <img class="img-thumbnail" style="height:100px; width:100px"
                     src="" />
             </div>
             <div class="w-100 text-right pr-2">
@@ -51,17 +55,16 @@ let generateMiniCocktailCard = (cocktail) =>{
             
         </div>
     `
-    console.log(template)
     template.querySelector(".image-wrapper img").src = cocktail.image_url;
     template.querySelector(".name a").href= `/cocktail/${cocktail._id.$oid}`;
     template.querySelector(".name strong").innerText = cocktail.name;
     template.querySelector (".name").parentNode.children[1].innerText =  formatDate(new Date(cocktail.created_at));
-    console.log(`${userId} == ${sessionId}`)
     if (userId == sessionId){
         let editButton = document.createElement("button");
         editButton.className = "btn btn-primary btn-sm" 
         editButton.innerHTML = `edit <i class="fas fa-pen"></i>`;
         editButton.addEventListener("click", ()=>{
+            editButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> loading...`
             window.location.replace(`/update/cocktail/${cocktail._id.$oid}`)
         })
 
@@ -69,7 +72,8 @@ let generateMiniCocktailCard = (cocktail) =>{
         deleteButton.className = "btn btn-danger btn-sm"; 
         deleteButton.innerHTML = `delete <i class="fas fa-trash"></i>`;
         deleteButton.addEventListener("click", (e)=>{
-            fetch("/delete_cocktail", 
+            deleteButton.innerHTML= `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> deleting...`
+            fetch("/cocktail/delete", 
                 {
                     method: 'post',
                     body: JSON.stringify({

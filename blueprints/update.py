@@ -39,7 +39,8 @@ def update_favorite_things():
                 }
              }
         )
-    return "success"
+    resp = jsonify(success=True)
+    return resp
 
 
 @update.route("/update/like_dislike", methods=["POST"])

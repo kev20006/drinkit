@@ -82,10 +82,10 @@
                                     {% if session['username'] %}
                                     {%  if flavor._id in user.favorite_flavors %}
                                     <i class="fas fa-heart clickable" data-id="{{flavor._id}}" data-name="{{ flavor.name }}"
-                                        data-user="{{session['_id']}}" onclick="removeFavorite(this , 'favorite_flavors')"></i>
+                                        data-user="{{session['_id']}}" onclick="loading(this); removeFavorite(this , 'favorite_flavors')"></i>
                                     {% else %}
                                     <i class="far fa-heart clickable" data-id="{{flavor._id}}" data-name="{{ flavor.name }}"
-                                        data-user="{{session['_id']}}" onclick="addFavorite(this , 'favorite_flavors')"></i>
+                                        data-user="{{session['_id']}}" onclick="loading(this); addFavorite(this , 'favorite_flavors')"></i>
                                     {% endif %}
                                     {% endif %}
                                 </span>
@@ -136,7 +136,7 @@
             </div>
             <!-- Start of Sticky Column -->
             <div id="controls" class="col-4 d-none d-md-block">
-                <div style="top:40px;" class="sticky-top">
+                <div style="top:40px;">
                     <div class="card mt-4">
                         <div class="card-header pink">
                             <h5> Welcome to Drinkit</h5>

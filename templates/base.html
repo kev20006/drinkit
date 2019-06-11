@@ -88,8 +88,10 @@
     <div id="login" class="modal fade" aria-labelledby="login" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <h4>login</h4>
-                
+                <div class="d-flex justify-content-between mt-2 px-2">
+                    <h3 class="pink">Login</h3>
+                    <h3 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h3>
+                </div>
                 <form action="{{ url_for('login_logout.login') }}" method="POST">
                     <div class="form-group">
                         <label for="username">Please Enter Your Username</label>
@@ -100,7 +102,7 @@
                         <label for="password">Please Enter Your Password</label>
                         <input id="password" name="password" class="modal-input" type="password" placeholder="Password">
                     </div>
-                    <button class="modal-btn" type="submit">Sign in</button>
+                    <button class="modal-btn" onClick="loading(this,'logging in')"type="submit">Sign in</button>
                 </form>
             </div>
         </div>
@@ -112,17 +114,20 @@
                 <div class="modal-content">
                 <div class="row mx-0 px-2">
                     <div class="col-12">
-                    <h4>Create Account</h4>
+                    <div class="d-flex justify-content-between mt-2 px-2">
+                        <h4 class="pink">create account</h4>
+                        <h4 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h4>
+                    </div>
                     <p>By joining drinkit you are joining a brand new community of cocktail enthusiasts. As a member you will be able to
                         share
                         your creations, offer your advice to other like minded people and follow your favorite spirits, mixers or flavors to
                         get
                         new ideas to try in your bar or at home with your friends.</p>
                     
-                    <p>To join all you need to do is provide a username and a 5 digit pin number that will serve as your password.</p>
+                    <p>To join all you need to do is provide a username and a  password.</p>
                     </div>
                 </div>
-                <div class="row mx-0 px-2">
+                <div class="row mx-0 px-2 text-center">
                     <form id="new-account" action="{{ url_for('login_logout.new_user') }}" method="POST" onsubmit="validatePasswords()">
                         <div class="form-group">
                             <label for="new-username">Please Enter Your Desired Username</label>
@@ -131,11 +136,11 @@
                         
                         <div class="form-group">
                             <label for="new-password1">Please Enter Your Password</label>
-                            <input id="new-password1" name="newpassword1" class="modal-input" type="password" placeholder="password" >
+                            <input id="new-password1" name="newpassword1" class="modal-input" type="password" placeholder="password" required>
                         </div>
                         <div class="form-group">
                             <label for="new-password2">Please Re-Enter Your Password</label>
-                            <input id="new-password2" name="newpassword2" class="modal-input" type="password" placeholder="password">
+                            <input id="new-password2" name="newpassword2" class="modal-input" type="password" placeholder="password" required>
                         </div>
                         <div class="row">
                             <div class="col-12">
@@ -196,7 +201,7 @@
                 </div>
                 <div class="form-check-inline blue">
                     <label class="form-check-label">
-                        <input id="and-button" type="radio" class="form-check-input" name="and-or" value="and">Match All Selected
+                        <input id="and-button" type="radio" class="form-check-input" name="and-or" value="and">Match Any Selected
                     </label>
                 </div>
             </form>
@@ -213,7 +218,7 @@
             <div id="flavor-filter" class="d-flex flex-wrap"></div>
             <div id="search-preview"class="d-flex flex-column justify-content-center align-items-center"> 
                 <div class="d-inline-block">Results: <span id="no-of-results">0</span></div>
-                <div class="btn-active d-inline-block" onclick="getResults()">Show Results</div>
+                <div class="btn-active d-inline-block" onclick="loading(this,'fetching..');getResults();">Show Results</div>
                 </form>
                 
             </div>
@@ -246,6 +251,22 @@
         }
         const toggleAdvFilters = () => {
             document.querySelector("#adv-filter").classList.toggle("d-none");
+        }
+
+        /* When the user scrolls down, hide the navbar. When the user scrolls up, show the navbar */
+        var prevScrollpos = window.pageYOffset;
+        window.onscroll = function () {
+            var currentScrollPos = window.pageYOffset;
+            if (prevScrollpos > currentScrollPos) {
+                document.getElementById("nav").style.top = "0";
+            } else {
+                    document.getElementById("nav").style.top = "-50px";
+            }
+            prevScrollpos = currentScrollPos;
+        }
+
+        const loading = (trigger, message="") =>{
+            trigger.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${message}`;
         }
     </script>
 </body>
