@@ -24,12 +24,13 @@ def mongo_connect():
         print("Could not connect to MongoDB: %s") % e
 
 
-def aggregate_cocktail_previews(cocktails, filter, match=None):
+def aggregate_cocktail_previews(cocktails, page, filter, match=None):
     """
     function to aggregate information from all the tables
     to create the item previews used on the index page and
     in search results
     """
+    page = (int(page) * 5)-5
     if match is None:
         match = {"name": {"$ne": "null"}}
     if filter is None or filter == "recent":
@@ -99,7 +100,9 @@ def aggregate_cocktail_previews(cocktails, filter, match=None):
          },
         {"$sort":
             {filter: -1}
-         }
+         },
+        {"$skip": page},
+        {"$limit": 5}
     ])
 
     return cocktail_details

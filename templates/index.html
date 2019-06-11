@@ -221,6 +221,8 @@
             } 
             
         }
+        // update the timestamps from js date strings to human readable dates
+        [...document.querySelectorAll(".timestamp")].forEach(element=>{element.innerText= formatDate(new Date(element.innerText))})
     </script>
     
 

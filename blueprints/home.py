@@ -8,8 +8,9 @@ home = Blueprint('home', __name__)
 
 
 @home.route('/')
-@home.route('/<filter>')
-def index(filter=None):
+@home.route('/<page>')
+@home.route('/<page>/<filter>')
+def index(page=1, filter=None):
     """
     route to render the homepage
     """
@@ -19,5 +20,5 @@ def index(filter=None):
     print(session)
     if '_id' in session:
         user = connection["users"].find_one({"_id": ObjectId(session['_id'])})
-    cocktailPreviews = aggregate_cocktail_previews(cocktails, filter)
+    cocktailPreviews = aggregate_cocktail_previews(cocktails, page, filter)
     return render_template('index.html', cocktails=cocktailPreviews, user=user)
