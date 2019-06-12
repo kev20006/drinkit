@@ -35,6 +35,7 @@ def logout():
     route to end current login session for a user
     """
     session.pop('username', None)
+    session.pop('id', None)
     return redirect(url_for('home.index'))
 
 
@@ -46,7 +47,6 @@ def new_user():
     connection = mongo_connect()
     user_collection = connection["users"]
     hash = sha256_crypt.hash(request.form["newpassword1"])
-    
     user_collection.insert_one(
         {
             "username": request.form["newusername"],

@@ -90,31 +90,33 @@ def like_dislike():
     return resp
 
 
-@update.route('/update/cocktail/<cocktail_id>')
+@update.route('/cocktail/edit/<cocktail_id>')
 def update_cocktail(cocktail_id):
     """
     route to update a cocktails details
     """
-    connection = mongo_connect()
-    cocktail = connection["cocktails"].aggregate([
-        {"$match": {"_id": ObjectId(cocktail_id)}},
-        {"$lookup": {
-            "from": "ingredients",
-            "localField": "ingredients.ingredient",
-            "foreignField": "_id",
-            "as": "ingredient-details"
-        }
-        },
-        {"$limit": 1}
-    ]
-    )
-    cocktailDetails = {}
-    for i in cocktail:
-        cocktailDetails = i
-    return render_template('editcocktail.html', cocktail=cocktailDetails)
+    if ObjectId.is_valid(cocktail_id):
+        connection = mongo_connect()
+        cocktail = connection["cocktails"].aggregate([
+            {"$match": {"_id": ObjectId(cocktail_id)}},
+            {"$lookup": {
+                "from": "ingredients",
+                "localField": "ingredients.ingredient",
+                "foreignField": "_id",
+                "as": "ingredient-details"
+            }
+            },
+            {"$limit": 1}
+        ]
+        )
+        cocktailDetails = {}
+        for i in cocktail:
+            cocktailDetails = i
+        return render_template('editcocktail.html', cocktail=cocktailDetails)
+    return render_template('notfound.hmtl'), 404
 
 
-@update.route('/update/cocktail/', methods=["POST"])
+@update.route('/cocktail/edit/', methods=["POST"])
 def update_drink_in_db():
     """
     function called from the cocktail form to add a drink to the

@@ -2,7 +2,14 @@ import json
 
 from datetime import datetime
 
-from flask import Blueprint, session, render_template, request, jsonify
+from flask import (Blueprint,
+                   session,
+                   render_template,
+                   request,
+                   jsonify,
+                   redirect,
+                   url_for)
+
 from bson import ObjectId
 
 from .utils import mongo_connect
@@ -17,11 +24,11 @@ def new_drink():
     """
     render the form for adding a new cocktail to the database
     """
-    if session['username']:
+    if 'username' in session:
         return render_template('addcocktail.html')
 
     else:
-        return redirect(url_for("index"))
+        return redirect(url_for("home.index")), 404
 
 
 @add_drink.route('/cocktails/', methods=["POST"])

@@ -78,6 +78,18 @@ class TestsGetRoutes(unittest.TestCase):
         # test route without a session returns a 400 error
         response = self.app.get(
             '/cocktails/new', follow_redirects=True)
-        self.assertGreater(response.status_code, 400)     
+        self.assertGreater(response.status_code, 400)
+
+    def test_new_cocktail(self):
+        with app.test_client() as client:
+            with client.session_transaction() as session:
+                session["username"] = "bob"
+        # test default route works when logged in
+        response = client.get('/cocktails/new', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        # test route without a session returns a 400 error
+        response = self.app.get(
+            '/cocktails/new', follow_redirects=True)
+        self.assertGreater(response.status_code, 400)      
 
 unittest.main()
