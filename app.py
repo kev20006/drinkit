@@ -18,6 +18,10 @@ from blueprints.search import searchs
 app = Flask(__name__)
 
 app.secret_key = "asdfsdfs"
+os.environ["MONGO_URI"] = ("mongodb+srv://kev:22c2c119f3" +
+                           "@cluster0-nnrmm.mongodb.net/bartendr?" +
+                           "retryWrites=true")
+
 # app.secret_key = os.environ.get('SECRET_KEY')
 
 app.register_blueprint(home)

@@ -95,25 +95,32 @@ def update_cocktail(cocktail_id):
     """
     route to update a cocktails details
     """
-    if ObjectId.is_valid(cocktail_id):
-        connection = mongo_connect()
-        cocktail = connection["cocktails"].aggregate([
-            {"$match": {"_id": ObjectId(cocktail_id)}},
-            {"$lookup": {
-                "from": "ingredients",
-                "localField": "ingredients.ingredient",
-                "foreignField": "_id",
-                "as": "ingredient-details"
-            }
-            },
-            {"$limit": 1}
-        ]
-        )
-        cocktailDetails = {}
-        for i in cocktail:
-            cocktailDetails = i
-        return render_template('editcocktail.html', cocktail=cocktailDetails)
-    return render_template('notfound.hmtl'), 404
+    if "_id" in session:
+        if ObjectId.is_valid(cocktail_id):
+            connection = mongo_connect()
+            cocktail = connection["cocktails"].aggregate([
+                {"$match": {"_id": ObjectId(cocktail_id)}},
+                {"$lookup": {
+                    "from": "ingredients",
+                    "localField": "ingredients.ingredient",
+                    "foreignField": "_id",
+                    "as": "ingredient-details"
+                }
+                },
+                {"$limit": 1}
+            ]
+            )
+            if cocktail:
+                cocktailDetails = {}
+                for i in cocktail:
+                    cocktailDetails = i               
+                if "creator" in cocktailDetails:
+                    if cocktailDetails['creator'] == ObjectId(session["_id"]):
+                        return render_template(
+                            'editcocktail.html',
+                            cocktail=cocktailDetails
+                        )
+    return render_template('notfound.html'), 404
 
 
 @update.route('/cocktail/edit/', methods=["POST"])

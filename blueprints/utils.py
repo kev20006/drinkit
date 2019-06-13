@@ -6,17 +6,18 @@ from pymongo import MongoClient
 
 import pymongo
 
-conString = ("mongodb+srv://kev:22c2c119f3" +
-             "@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true")
-
 
 def mongo_connect():
     """
     connect to db and return connection
     """
     try:
-        conn = pymongo.MongoClient(conString)
-        return conn["bartendr"]
+        if 'TEST_URI' in os.environ:
+            conn = pymongo.MongoClient(os.environ["TEST_URI"])
+            return conn[os.environ["TEST_DB"]]
+        else:
+            conn = pymongo.MongoClient(os.environ["MONGO_URI"])
+            return conn["bartendr"]
     except pymongo.errors.ConnectionFailure as e:
         print("Could not connect to MongoDB: %s") % e
 
@@ -147,3 +148,42 @@ def find(list, key, value):
         if dic[key] == value:
             return i
     return -1
+
+
+def get_user():
+    user = None
+    if session:
+        connection = mongo_connect()
+        user = connection["users"].find_one({"_id": ObjectId(session['_id'])})
+    return user
+
+
+def genereate_mongo_query(data_dict):
+    if len(data_dict["ingredient_list"]):
+        data_dict["ingredients"] = []
+    if len(data_dict["flavor_list"]):
+        data_dict["flavor_tags"] = []
+    for i in data_dict["ingredient_list"]:
+        data_dict["ingredients"].append(ObjectId(str(i)))
+    for i in data_dict["flavor_list"]:
+        data_dict["flavor_tags"].append(ObjectId(str(i)))
+        data_dict.pop("ingredient_list", None)
+        data_dict.pop("flavor_list", None)
+    query = {"${}".format(data_dict["type"]): []}
+    for key in data_dict.keys():
+        if key == "ingredients":
+            queryString = {
+                "ingredients":
+                    {"$elemMatch":
+                        {"ingredient":
+                            {"$in": data_dict[key]}
+                         }
+                     }
+            }
+        elif key == "flavor_tags" or key == "equipment":
+            queryString = {key: {"$in": data_dict[key]}}
+        else:
+            queryString = {key: data_dict[key]}
+        if key != "type":
+            query["${}".format(data_dict["type"])].append(queryString)
+    return query

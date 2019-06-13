@@ -1,5 +1,4 @@
 todo
 environment.py
-# test db
-# "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/testDB?retryWrites=true"
-# "mongodb+srv://kev:22c2c119f3@cluster0-nnrmm.mongodb.net/bartendr?retryWrites=true"
+**/*.css.map
+tests/__pycache__

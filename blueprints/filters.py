@@ -7,7 +7,8 @@ from flask import redirect
 from bson import ObjectId
 from bson.json_util import dumps
 
-from .utils import mongo_connect, aggregate_cocktail_previews
+from .utils import (mongo_connect, aggregate_cocktail_previews,
+                    get_user, genereate_mongo_query)
 
 filters = Blueprint('index', __name__)
 
@@ -83,41 +84,3 @@ def filter_results(type_of_search, ingredients, flavors):
         tags=filter_dict
     )
 
-
-def get_user():
-    user = None
-    if session:
-        connection = mongo_connect()
-        user = connection["users"].find_one({"_id": ObjectId(session['_id'])})
-    return user
-
-
-def genereate_mongo_query(data_dict):
-    if len(data_dict["ingredient_list"]):
-        data_dict["ingredients"] = []
-    if len(data_dict["flavor_list"]):
-        data_dict["flavor_tags"] = []
-    for i in data_dict["ingredient_list"]:
-        data_dict["ingredients"].append(ObjectId(str(i)))
-    for i in data_dict["flavor_list"]:
-        data_dict["flavor_tags"].append(ObjectId(str(i)))
-        data_dict.pop("ingredient_list", None)
-        data_dict.pop("flavor_list", None)
-    query = {"${}".format(data_dict["type"]): []}
-    for key in data_dict.keys():
-        if key == "ingredients":
-            queryString = {
-                "ingredients":
-                    {"$elemMatch":
-                        {"ingredient":
-                            {"$in": data_dict[key]}
-                         }
-                     }
-                }
-        elif key == "flavor_tags" or key == "equipment":
-            queryString = {key: {"$in": data_dict[key]}}
-        else:
-            queryString = {key: data_dict[key]}
-        if key != "type":
-            query["${}".format(data_dict["type"])].append(queryString)
-    return query

@@ -1,7 +1,7 @@
 from flask import Blueprint, session, render_template
 from bson import ObjectId
 
-from .utils import mongo_connect
+from .utils import mongo_connect, get_user
 
 profiles = Blueprint('profiles', __name__)
 
@@ -33,11 +33,7 @@ def view_cocktail(cocktail_id):
             {"_id": ObjectId(cocktail_id)}
         )
         if cocktail:
-            user = ""
-            if session.get('_id'):
-                user = connection["users"].find_one(
-                    {"_id": ObjectId(session['_id'])}
-                )
+            user = get_user()
             return render_template(
                 'viewcocktail.html',
                 cocktail=cocktail,
