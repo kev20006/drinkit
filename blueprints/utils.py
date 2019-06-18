@@ -29,6 +29,7 @@ def aggregate_cocktail_previews(cocktails, page, filter, match=None):
     to create the item previews used on the index page and
     in search results
     """
+    print(page)
     page = (int(page) * 5)-5
     if match is None:
         match = {"name": {"$ne": "null"}}

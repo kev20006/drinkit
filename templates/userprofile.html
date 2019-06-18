@@ -39,7 +39,7 @@ let sessionId = document.querySelector("#user-card").dataset.sessionid
 
 let generateMiniCocktailCard = (cocktail) =>{
     let template = document.createElement("div")
-    template.className = "card col-12 col-md-6"
+    template.className = "col-12 col-md-6"
     template.innerHTML = `
         <div id="${cocktail._id.$oid}"class="d-flex w-100">
             <div class="image-wrapper mr-2">
@@ -65,7 +65,7 @@ let generateMiniCocktailCard = (cocktail) =>{
         editButton.innerHTML = `edit <i class="fas fa-pen"></i>`;
         editButton.addEventListener("click", ()=>{
             editButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> loading...`
-            window.location.replace(`/update/cocktail/${cocktail._id.$oid}`)
+            window.location.replace(`/cocktail/edit/${cocktail._id.$oid}`)
         })
 
         let deleteButton = document.createElement("button");

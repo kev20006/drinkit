@@ -1,3 +1,5 @@
+//iterate through the tags replacing _ids with names for both ingredient and flavors
+
 fetch('/api/flavors/')
     .then((response) => response.json())
     .then(data => {

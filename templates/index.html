@@ -17,6 +17,13 @@
                         <a class="waves-effect waves-light btn modal-trigger" data-toggle="modal" data-target="#sign-up"><i class="fas fa-cocktail"></i>Join
                             Today</a>
                     {% endif %}
+                    <a href="{{ url_for('home.index', page=1, filter='recent') }}">
+                        <span><i class="fas fa-hourglass-start"></i></span>
+                    </a>
+                    <a href="{{ url_for('home.index', page=1, filter='popular' ) }}">
+                        <span><i class="fas fa-chart-line"></i></span>
+                    </a>
+                    
                 </div>
             </div>
         </div>
@@ -149,6 +156,12 @@
                             <a class="waves-effect waves-light btn modal-trigger" data-toggle="modal" data-target="#sign-up"><i
                                     class="fas fa-cocktail"></i>Join Today</a>
                             {% endif %}
+                            <a href="{{ url_for('home.index', page=1, filter='recent') }}">
+                                <span><i class="fas fa-hourglass-start"></i></span>
+                            </a>
+                            <a href="{{ url_for('home.index', page=1, filter='popular' ) }}">
+                                <span><i class="fas fa-chart-line"></i></span>
+                            </a>
                         </div>
                     </div>
                     {% if session['username'] %}
@@ -211,19 +224,9 @@
 {% endblock %}
 {% block scripts %}
     {% if session['username'] %}
-        <script src="/static/scripts/randomiseAngles.js" charset="utf-8"></script>
         <script src="/static/scripts/updateAside.js" charset="utf-8"></script>
     {% endif %}
-    <script>
-        const viewCocktail = (trigger, event) => {
-            if (![...event.target.classList].includes("clickable")){
-                window.location.href = trigger.dataset.hyperlink
-            } 
-            
-        }
-        // update the timestamps from js date strings to human readable dates
-        [...document.querySelectorAll(".timestamp")].forEach(element=>{element.innerText= formatDate(new Date(element.innerText))})
-    </script>
+    <script src="/static/scripts/viewcocktail.js" charset="utf-8"></script>
     
 
 {% endblock %}

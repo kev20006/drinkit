@@ -14,16 +14,17 @@ filters = Blueprint('index', __name__)
 
 
 @filters.route('/filter/<type_of_search>/<keyword>')
-@filters.route('/filter/<type_of_search>/<keyword>/<filter>')
-def view_by_type(type_of_search, keyword, filter=None):
+@filters.route('/filter/<type_of_search>/<keyword>/<filter>/<page>')
+def view_by_type(type_of_search, keyword, filter=None, page=1):
     """
     route to render a subsection of the cocktails
     """
     connection = mongo_connect()
     cocktails = connection["cocktails"]
     user = get_user()
-    cocktail_previews = aggregate_cocktail_previews(cocktails, filter)
+    cocktail_previews = aggregate_cocktail_previews(cocktails, page, filter)
     output_cocktails = []
+    
     for i in cocktail_previews:
         if type_of_search == "ingredient":
             for ingredient in i["ingredient_list"]:
@@ -32,7 +33,7 @@ def view_by_type(type_of_search, keyword, filter=None):
         elif type_of_search == "flavor":
             if any(flavor["name"] == keyword for flavor in i["flavors"]):
                 output_cocktails.append(i)
-
+    
     return render_template(
         'filtered.html',
         cocktails=output_cocktails,
@@ -56,13 +57,14 @@ def advanced_filter(count=None):
             "index.filter_results",
             ingredients=data_dict["ingredient_list"],
             flavors=data_dict["flavor_list"],
-            type_of_search=data_dict["type"]
+            type_of_search=data_dict["type"],
+            page=1
         )
         return dumps({"url": url})
 
 
-@filters.route('/results/<type_of_search>/<ingredients>/<flavors>')
-def filter_results(type_of_search, ingredients, flavors):
+@filters.route('/results/<type_of_search>/<ingredients>/<flavors>/<page>')
+def filter_results(type_of_search, ingredients, flavors, page=1):
     filter_dict = {
         "ingredient_list": ast.literal_eval(ingredients),
         "flavor_list": ast.literal_eval(flavors),
@@ -70,11 +72,12 @@ def filter_results(type_of_search, ingredients, flavors):
     }
     query = genereate_mongo_query(filter_dict)
     connection = mongo_connect()
-    results = aggregate_cocktail_previews(
+    results = list(aggregate_cocktail_previews(
         connection["cocktails"],
+        page,
         None,
         query
-    )
+    ))
     user = get_user()
     return render_template(
         'filtered.html',

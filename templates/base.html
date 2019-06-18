@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Drink-it</title>
+    <link rel="shortcut icon" href="#" />
     <!-- Import Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
         integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> 
@@ -26,19 +27,21 @@
                     </a>
                 </h5>
         </div>
-        <div class="d-flex py-0 ml-4">
-            <span class="nav-button-3 mr-2" onclick="toggleAdvFilters()"> Advanced <i class="fas fa-filter"></i></span>
+        <div class="d-flex py-0 ml-2 ml-lg-4">
+            <div class="btn-group">
+                <div type="button" class="nav-button-3 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    Browse
+            </div>
+                <div id="quick-filters" class="dropdown-menu">
+                    
+                </div>
+            </div>
         </div>
     </div>
         <div class="d-flex">
+                <span class="nav-button-3 mr-2" onclick="toggleAdvFilters()"><i class="fas fa-filter"></i></span>
                 <span class="nav-button-3" onclick="toggleSearch()"><i class="fas fa-search"></i></span>
-                <a href="{{ url_for('home.index', filter='recent') }}">
-                    <span class="nav-button-3 btn-active d-none d-md-block"><i class="fas fa-hourglass-start"></i></span>
-                </a>
-                <a href="{{ url_for('home.index', filter='popular' ) }}">
-                    <span class="nav-button-3 d-none d-md-block"><i class="fas fa-chart-line"></i></span>
-                </a>
-                
             {% if session['username'] %}
                 <a href="{{ url_for('profiles.view_user_profile', user_id=session['_id']) }}">
                     <span class="nav-button-3 d-none d-md-block">
@@ -232,11 +235,12 @@
         crossorigin="anonymous"></script>
 
     <script src="/static/scripts/utilities.js" charset="utf-8"></script>   
-    <script src="/static/scripts/favorites.js" charset="utf-8"></script>
-    <script src="/static/scripts/votes.js" charset="utf-8"></script>
-    <script src="/static/scripts/validatePasswords.js" charset="utf-8"></script>
-    <script src="/static/scripts/search.js" charset="utf-8"></script>
-    <script src="/static/scripts/advFilter.js" charset="utf-8"></script>
+    <script src="/static/scripts/favoritesandvotes/favorites.js" charset="utf-8"></script>
+    <script src="/static/scripts/favoritesandvotes/votes.js" charset="utf-8"></script>
+    <script src="/static/scripts/login/validatePasswords.js" charset="utf-8"></script>
+    <script src="/static/scripts/login/login.js" charset="utf-8"></script>
+    <script src="/static/scripts/searchandfilter/search.js" charset="utf-8"></script>
+    <script src="/static/scripts/searchandfilter/advFilter.js" charset="utf-8"></script>
     {% block scripts %}
     {% endblock %}
     <script>
@@ -254,7 +258,7 @@
             if (prevScrollpos > currentScrollPos) {
                 document.getElementById("nav").style.top = "0";
             } else {
-                    document.getElementById("nav").style.top = "-50px";
+                    document.getElementById("nav").style.top = "-60px";
             }
             prevScrollpos = currentScrollPos;
         }
@@ -262,31 +266,17 @@
         const loading = (trigger, message="") =>{
             trigger.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${message}`;
         }
-        const login = (trigger) => {
-            loading(trigger, "logging in")
-            fetch('/login/',  {
-                 method: 'POST',
-                 header: {
-                     'Content-Type':'application/json'
-                 },
-                 redirect: 'follow',
-                 body: JSON.stringify(  {
-                    username: document.querySelector("#username").value,
-                    password: document.querySelector("#password").value
-                })
+
+        const populateBrowser = async() =>{
+            const flavors= await fetch('/api/flavors/').then((response) => response.json());
+            const spirits = await fetch('/api/ingredients/spirit').then((response) => response.json());
+            console.log(spirits);
+            spirits.forEach(({ _id, name }) => {
+                document.querySelector("#quick-filters").innerHTML += (`<a class="dropdown-item" href="/filter/ingredient/${name}">${name}</a>`)
             })
-            .then(
-               response => response.json())
-            .then(data => {
-                if (data.message === "Successful Login" ){
-                    location.reload();
-                }
-                else{
-                    document.querySelector("#login-error-message").innerText = data.message;
-                    trigger.textContent = "login" 
-                }
-                })
         }
+
+        populateBrowser()
     </script>
 </body>
 </html>

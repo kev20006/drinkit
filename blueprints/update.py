@@ -23,7 +23,7 @@ def update_favorite_things():
     connection = mongo_connect()
     if(favorite_things["action"] == "add"):
         connection["users"].update_one(
-            {"_id": ObjectId(favorite_things["user"])},
+            {"_id": ObjectId(session["_id"])},
             {"$push": {
                 favorite_things["type"]: ObjectId(favorite_things["item_id"])
             }
@@ -31,7 +31,7 @@ def update_favorite_things():
         )
     else:
         connection["users"].update_one(
-            {"_id": ObjectId(favorite_things["user"])},
+            {"_id": ObjectId(session["_id"])},
             {"$pull":
                 {
                     favorite_things["type"]:
