@@ -18,6 +18,7 @@
   box-shadow: -5px -5px blue, 3px 3px hotpink;
 }
 .modal-content .modal-btn {
+  color: white;
   position: relative;
   border: none;
   display: block;

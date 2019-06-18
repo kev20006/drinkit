@@ -16,7 +16,6 @@ def view_user_profile(user_id):
         user = connection["users"].find_one(
             {"_id": ObjectId(user_id)}
         )
-        print(user)
         if user:
             return render_template('userprofile.html', user=user)
     return render_template('notfound.html'), 404

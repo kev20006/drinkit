@@ -1,6 +1,7 @@
 import os
 import json
 
+from flask import session
 from bson import ObjectId
 from pymongo import MongoClient
 
@@ -152,7 +153,7 @@ def find(list, key, value):
 
 def get_user():
     user = None
-    if session:
+    if '_id' in session:
         connection = mongo_connect()
         user = connection["users"].find_one({"_id": ObjectId(session['_id'])})
     return user

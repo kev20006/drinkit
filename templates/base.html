@@ -92,18 +92,17 @@
                     <h3 class="pink">Login</h3>
                     <h3 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h3>
                 </div>
-                <form action="{{ url_for('login_logout.login') }}" method="POST">
-                    <div class="form-group">
-                        <label for="username">Please Enter Your Username</label>
-                        <input id="username" class="modal-input" name="username" type="text" aria-describedby="username"
-                            placeholder="Enter Username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Please Enter Your Password</label>
-                        <input id="password" name="password" class="modal-input" type="password" placeholder="Password">
-                    </div>
-                    <button class="modal-btn" onClick="loading(this,'logging in')"type="submit">Sign in</button>
-                </form>
+                <p id="login-error-message"></p>
+                <div class="form-group">
+                    <label for="username">Please Enter Your Username</label>
+                    <input id="username" class="modal-input" name="username" type="text" aria-describedby="username"
+                        placeholder="Enter Username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Please Enter Your Password</label>
+                    <input id="password" name="password" class="modal-input" type="password" placeholder="Password">
+                </div>
+                <button class="modal-btn" onClick="login(this)"type="submit">Sign in</button>
             </div>
         </div>
     </div>
@@ -127,8 +126,8 @@
                     <p>To join all you need to do is provide a username and a  password.</p>
                     </div>
                 </div>
-                <div class="row mx-0 px-2 text-center">
-                    <form id="new-account" action="{{ url_for('login_logout.new_user') }}" method="POST" onsubmit="validatePasswords()">
+                <div class="row mx-0 px-2 text-center d-flex flex-column">
+                    <form id="new-account" action="{{ url_for('login_logout.new_user') }}" method="POST" ></form>
                         <div class="form-group">
                             <label for="new-username">Please Enter Your Desired Username</label>
                             <input id="new-username" name="newusername" class="modal-input" type="text" placeholder="new username" required>
@@ -148,14 +147,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button class="modal-btn" type="submit">Join Today</button>
+                            <button class="modal-btn" onClick="validatePasswords()" type="submit">Join Today</button>
                         </div>
                     </form>
-                </div>
-                <div class="row mx-0 px-2">
-                <p><strong>Disclaimer:</strong> Drinkit is a practice project and has implemented minimal security so please don't
-                    disclose any personal
-                    information, I would also advise against using your email address as your username</p>
                 </div>
             </div>
         </div>
@@ -267,6 +261,31 @@
 
         const loading = (trigger, message="") =>{
             trigger.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${message}`;
+        }
+        const login = (trigger) => {
+            loading(trigger, "logging in")
+            fetch('/login/',  {
+                 method: 'POST',
+                 header: {
+                     'Content-Type':'application/json'
+                 },
+                 redirect: 'follow',
+                 body: JSON.stringify(  {
+                    username: document.querySelector("#username").value,
+                    password: document.querySelector("#password").value
+                })
+            })
+            .then(
+               response => response.json())
+            .then(data => {
+                if (data.message === "Successful Login" ){
+                    location.reload();
+                }
+                else{
+                    document.querySelector("#login-error-message").innerText = data.message;
+                    trigger.textContent = "login" 
+                }
+                })
         }
     </script>
 </body>
