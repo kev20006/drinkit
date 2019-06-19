@@ -1,5 +1,6 @@
 import ast
 import json
+import math
 
 from flask import Blueprint, session, render_template, request, url_for
 from flask import redirect
@@ -19,12 +20,27 @@ def view_by_type(type_of_search, keyword, filter=None, page=1):
     """
     route to render a subsection of the cocktails
     """
+    query_terms = {"ingredient_list": [], "flavor_list": [], "type": "or"}
+    search_id = mongo_connect()["{}s".format(type_of_search)].find_one(
+            {"name": keyword}
+        )
+    key = "ingredient_list" if type_of_search == "ingredient" else "flavor_list"
+    query_terms[key] = [str(search_id["_id"])]
+    query = genereate_mongo_query(query_terms)
+   
     connection = mongo_connect()
     cocktails = connection["cocktails"]
     user = get_user()
-    cocktail_previews = aggregate_cocktail_previews(cocktails, page, filter)
-    output_cocktails = []
-    
+    cocktail_previews = aggregate_cocktail_previews(
+        cocktails,
+        page,
+        filter,
+        query
+    )
+    total_results = connection["cocktails"].find(query).count()
+
+    max_pages = math.ceil(total_results/5)
+    """
     for i in cocktail_previews:
         if type_of_search == "ingredient":
             for ingredient in i["ingredient_list"]:
@@ -33,12 +49,17 @@ def view_by_type(type_of_search, keyword, filter=None, page=1):
         elif type_of_search == "flavor":
             if any(flavor["name"] == keyword for flavor in i["flavors"]):
                 output_cocktails.append(i)
-    
+    """
     return render_template(
         'filtered.html',
-        cocktails=output_cocktails,
+        cocktails=list(cocktail_previews),
         user=user,
-        urlString="viewing > {} > {}".format(type_of_search, keyword)
+        urlString="viewing > {} > {}".format(type_of_search, keyword),
+        current_page=page,
+        pages=max_pages,
+        type_of_search=type_of_search, 
+        keyword=keyword, 
+        filter=filter
     )
 
 
@@ -64,7 +85,7 @@ def advanced_filter(count=None):
 
 
 @filters.route('/results/<type_of_search>/<ingredients>/<flavors>/<page>')
-def filter_results(type_of_search, ingredients, flavors, page=1):
+def filter_results(type_of_search, ingredients, flavors, filter=None, page=1):
     filter_dict = {
         "ingredient_list": ast.literal_eval(ingredients),
         "flavor_list": ast.literal_eval(flavors),
@@ -72,18 +93,25 @@ def filter_results(type_of_search, ingredients, flavors, page=1):
     }
     query = genereate_mongo_query(filter_dict)
     connection = mongo_connect()
-    results = list(aggregate_cocktail_previews(
+    results = aggregate_cocktail_previews(
         connection["cocktails"],
         page,
-        None,
+        filter,
         query
-    ))
+    )
+    resultCount = connection["cocktails"].find(query).count()
+    pages = math.ceil(resultCount/5)
     user = get_user()
     return render_template(
         'filtered.html',
-        cocktails=results,
+        cocktails=list(results),
         user=user,
-        urlString="custom filter",
-        tags=filter_dict
+        url_string="custom filter",
+        tags=filter_dict,
+        current_page=page,
+        pages=pages,
+        ingredients=ingredients,
+        flavors=flavors,
+        filter=filter
     )
 

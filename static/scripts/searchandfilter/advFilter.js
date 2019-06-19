@@ -5,7 +5,8 @@ let filters = {
     type: "or"
 }
 
-fetch("/api/flavors/")
+
+/*fetch("/api/flavors/")
     .then((resp) => resp.json()) // Transform the data into json
     .then((data) => {
         data.forEach(flavor => {
@@ -22,6 +23,7 @@ fetch("/api/ingredients/")
                 .innerHTML += `<span id="${ingredient._id.$oid}" class="spirit" onclick="addToFilter(this, 'ingredient_list')">${ingredient.name}</span>`;
         })
     })  
+*/
 
 const addToFilter = (target, category) => {
     if (target.classList.contains("selected")){

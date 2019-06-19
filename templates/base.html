@@ -268,12 +268,33 @@
         }
 
         const populateBrowser = async() =>{
+            loading(document.querySelector("#quick-filters"), "fetching ingredients")
             const flavors= await fetch('/api/flavors/').then((response) => response.json());
-            const spirits = await fetch('/api/ingredients/spirit').then((response) => response.json());
-            console.log(spirits);
-            spirits.forEach(({ _id, name }) => {
+            const ingredients = await fetch('/api/ingredients/').then((response) => response.json());
+            const spirits = await fetch('/api/ingredients/spirit').then((response) => {
+                document.querySelector("#quick-filters").innerHTML = ""
+                return response.json()
+            });
+            // populate drop down
+            ingredients.forEach(({ _id, name }) => {
                 document.querySelector("#quick-filters").innerHTML += (`<a class="dropdown-item" href="/filter/ingredient/${name}">${name}</a>`)
             })
+            // populate adv. filter 
+            flavors.forEach(flavor => {
+                document.querySelector(`#flavor-filter`)
+                    .innerHTML += `<span id="${flavor._id.$oid}" class="spirit" onclick="addToFilter(this, 'flavor_list')">${flavor.name}</span>`
+            })
+
+            //populate adv. filter 
+            ingredients.forEach(ingredient => {
+                document.querySelector(`#ingredients-filter-${ingredient.type}`)
+                    .innerHTML += `<span id="${ingredient._id.$oid}" class="spirit" onclick="addToFilter(this, 'ingredient_list')">${ingredient.name}</span>`;
+            })
+            if (typeof updateAside === "function"){
+                updateAside(flavors, "flavor");
+                updateAside(ingredients, "ingredient");
+            }
+            
         }
 
         populateBrowser()

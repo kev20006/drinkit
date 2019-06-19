@@ -60,6 +60,13 @@ def get_comments(cocktail_id):
     return dumps(comments)
 
 
+@api.route('/api/cocktails/')
+def get_all_cocktails():
+    connection = mongo_connect()
+    cocktails = connection["cocktails"].find({})
+    return dumps(cocktails)
+
+
 @api.route('/api/cocktails/<user_id>')
 def get_cocktails_by_user(user_id):
     connection = mongo_connect()

@@ -1,40 +1,20 @@
 //AJAX scripts to replace the ID's with values on the sidebar
 
-fetch('/api/flavors/')
-    .then((response) => response.json())
-    .then(data => {
-        [...document.querySelector("#flavor-list").children[1].children].forEach(li => {
-            flavorName = data.filter(element => {
-                return element._id.$oid == li.dataset.id
-            })
-            if (flavorName[0]) {
-                li.innerText = flavorName[0].name
-                li.innerHTML = `<a href="/filter/flavor/${flavorName[0].name}">${flavorName[0].name}</a>`;
-            } else {
-                removeItemFromDb("flavor", li.textContent)
-                li.parentNode.removeChild(li)
-            }
-
+const updateAside = (data, location) => {
+    [...document.querySelector(`#${location}-list`).children[1].children].forEach(li => {
+        const name = data.filter(element => {
+            return element._id.$oid == li.dataset.id
         })
+        if (name[0]) {
+            li.innerText = name[0].name
+            li.innerHTML = `<a href="/filter/${location}/${name[0].name}">${name[0].name}</a>`;
+        } else {
+            removeItemFromDb("flavor", li.textContent)
+            li.parentNode.removeChild(li)
+        }
+
     })
-
-fetch('/api/ingredients/')
-    .then((response) => response.json())
-    .then(data => {
-        [...document.querySelector("#ingredient-list").children[1].children].forEach(li => {
-            ingredientsName = data.filter(element => {
-                return element._id.$oid == li.dataset.id
-            })
-            if (ingredientsName[0]) {
-                li.innerHTML = `<a href="/filter/ingredient/${ingredientsName[0].name}">${ingredientsName[0].name}</a>`;
-
-            } else {
-                removeItemFromDb("ingredient", li.textContent)
-                li.parentNode.removeChild(li)
-            }
-
-        })
-    })
+}
 
 removeItemFromDb = (type, itemId) =>{
     fetch("/update/favorite_things/", {
@@ -53,15 +33,12 @@ removeItemFromDb = (type, itemId) =>{
 
 
 let starred_ids = [...document.querySelector("#starred-list").children].map(element => element.innerText);
-document.querySelector("#starred-list").innerHTML = "loading";
-Promise.all(starred_ids.map(id => fetch(`/api/cocktail/${id}`)))
-    .then(response => Promise.all(response.map(r => r.json())))
-    .then(data => {
-        document.querySelector("#starred-list").innerHTML = "";
-        data.forEach(cocktail => {
-            let listItem = document.createElement("li");
-            listItem.classList = "list-group-item";
-            listItem.innerHTML = `<a href="/cocktails/${cocktail._id.$oid}">${cocktail.name}</a>`;
-            document.querySelector("#starred-list").appendChild(listItem);
-        })
-    });
+console.log(starred_ids)
+fetch("/api/cocktails/").then((response) => response.json()).then(data =>{
+    data.forEach(cocktail => {
+        if (starred_ids.includes(cocktail._id.$oid)){
+            console.log(cocktail._id.$oid)
+            document.getElementById(`${cocktail._id.$oid}`).innerHTML = `<a href="/cocktail/${cocktail._id.$oid}">${cocktail.name}</a>`
+        }
+    })
+});

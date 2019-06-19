@@ -9,10 +9,19 @@
             <div><a class="btn btn-outline-dark" href="{{ url_for('home.index') }}"><i class="fas fa-times"></i></a></div>
         </div>
         <div class="row">
-            <div class =" col-12 col-md-4 text-center">
+            <div id="profile" class =" col-12 col-md-4 text-center">
                 {% if user._id|string == session["_id"]|string %}
                     {% if user.profile is not defined %}
-                        <p>You have not yet added a profile</p>
+                      <p>You have not yet added a profile</p>
+                        <button onclick="addProfile()">click here to create your profile</button>
+                        {% else %}
+                        <div class="col-12">
+                            <img src="{{ user.profile.profile_url }}" alt="placeholder">
+                        </div>
+                        <div class="col-12">
+                            <h5 class="bold">bio</h5>
+                            <p>{{ user.profile.profile_url }}</p>
+                        </div>
                     {% endif %}
                 {% else %}
                     {% if user.profile is not defined %}   
@@ -102,6 +111,37 @@ fetch(`/api/cocktails/${userId}`)
             document.querySelector("#users-cocktails").appendChild(generateMiniCocktailCard(cocktail))
         })
     })
+const addProfile = () => {
+    document.querySelector("#profile").innerHTML= `<div class="row px-2">
+                            <div class="col-12">
+                                <img src="https://makemeacocktail.com/images/no_cocktail.png" alt="placeholder">
+                            </div>
+                            <div class="col-12 form-group">
+                                <label for="profile-pic-url">Add an image url for your profile</label>
+                                <input type="email" class="form-control" id="profile-pic-url" placeholder="Image Url">
+                            </div>
+                            <div class="col-12 form-group">
+                                <label for="exampleFormControlTextarea1">Type a short bio about yourself for other users to read</label>
+                                <textarea class="form-control" id="bio" rows="3"></textarea>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <input type="button" class="modal-button" value="submit profile" onclick="nextAction()"/>
+                            </div>
+                        </div>`
+}
+
+const nextAction = () => {
+    const profilePic= document.querySelector("#profile-pic-url").value
+    const bio = document.querySelector("#bio").value
+    //add post here!!!
+    document.querySelector("#profile").innerHTML = `<div class="col-12">
+                            <img src="${profilePic}" alt="placeholder">
+                        </div>
+                        <div class="col-12">
+                            <h5 class="bold">bio</h5>
+                            <p>${bio}</p>
+                        </div>` 
+}
 </script>
 
 {% endblock %}
