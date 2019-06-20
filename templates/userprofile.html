@@ -1,54 +1,55 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <main class="container">
-    <div id="user-card" data-sessionid="{{session['_id']}}" data-id="{{ user._id|string }}" class="card my-4">
-        <div class="row my-2 mx-0 px-4 d-flex justify-content-between">
-            <div>
-                <h3> {{ user.username }}</h3>
-            </div>
-            <div><a class="btn btn-outline-dark" href="{{ url_for('home.index') }}"><i class="fas fa-times"></i></a></div>
-        </div>
-        <div class="row">
-            <div id="profile" class =" col-12 col-md-4 text-center">
-                {% if user._id|string == session["_id"]|string %}
-                    {% if user.profile is not defined %}
-                      <p>You have not yet added a profile</p>
-                        <button onclick="addProfile()">click here to create your profile</button>
-                        {% else %}
-                        <div class="col-12">
-                            <img src="{{ user.profile.profile_url }}" alt="placeholder">
-                        </div>
-                        <div class="col-12">
-                            <h5 class="bold">bio</h5>
-                            <p>{{ user.profile.profile_url }}</p>
-                        </div>
-                    {% endif %}
-                {% else %}
-                    {% if user.profile is not defined %}   
-                    <p>This user does not have a profile</p>
-                    {% endif %}
-                {% endif %}
-            </div>
-            <div class=" col-12 col-md-8">
-                <p>{{ user.username }}'s cocktails</p>
-                <div id="users-cocktails" class="row mx-0">
-                    <p>Loading cocktails...</p>
-                </div>
-            </div>
-        </div>
+  <div
+    id="user-card"
+    data-sessionid="{{ session['_id'] }}"
+    data-id="{{ user._id | string }}"
+    class="card my-4"
+  >
+    <div class="row my-2 mx-0 px-4 d-flex justify-content-between">
+      <div>
+        <h3>{{ user.username }}</h3>
+      </div>
+      <div>
+        <a class="btn btn-outline-dark" href="{{ url_for('home.index') }}"
+          ><i class="fas fa-times"></i
+        ></a>
+      </div>
     </div>
+    <div class="row">
+      <div id="profile" class=" col-12 col-md-4 text-center">
+        {% if user._id|string == session["_id"]|string %} {% if user.profile is not defined %}
+        <p>You have not yet added a profile</p>
+        <button onclick="addProfile()">click here to create your profile</button>
+        {% else %}
+        <div class="col-12">
+          <img src="{{ user.profile.profile_url }}" alt="placeholder" />
+        </div>
+        <div class="col-12">
+          <h5 class="bold">bio</h5>
+          <p>{{ user.profile.profile_url }}</p>
+        </div>
+        {% endif %} {% else %} {% if user.profile is not defined %}
+        <p>This user does not have a profile</p>
+        {% endif %} {% endif %}
+      </div>
+      <div class=" col-12 col-md-8">
+        <p>{{ user.username }}'s cocktails</p>
+        <div id="users-cocktails" class="row mx-0">
+          <p>Loading cocktails...</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>
-{% endblock %}
-{% block scripts %}
+{% endblock %} {% block scripts %}
 <script>
+  let userId = document.querySelector('#user-card').dataset.id;
+  let sessionId = document.querySelector('#user-card').dataset.sessionid;
 
-let userId = document.querySelector("#user-card").dataset.id
-let sessionId = document.querySelector("#user-card").dataset.sessionid
-
-
-let generateMiniCocktailCard = (cocktail) =>{
-    let template = document.createElement("div")
-    template.className = "col-12 col-md-6"
+  let generateMiniCocktailCard = cocktail => {
+    let template = document.createElement('div');
+    template.className = 'col-12 col-md-6';
     template.innerHTML = `
         <div id="${cocktail._id.$oid}"class="d-flex w-100">
             <div class="image-wrapper mr-2">
@@ -60,59 +61,59 @@ let generateMiniCocktailCard = (cocktail) =>{
                 <p>Date</p>
                 <div class="contols d-flex justify-content-end"></div>
             </div>
-  
-            
+
+
         </div>
-    `
-    template.querySelector(".image-wrapper img").src = cocktail.image_url;
-    template.querySelector(".name a").href= `/cocktail/${cocktail._id.$oid}`;
-    template.querySelector(".name strong").innerText = cocktail.name;
-    template.querySelector (".name").parentNode.children[1].innerText =  formatDate(new Date(cocktail.created_at));
-    if (userId == sessionId){
-        let editButton = document.createElement("button");
-        editButton.className = "btn btn-primary btn-sm" 
-        editButton.innerHTML = `edit <i class="fas fa-pen"></i>`;
-        editButton.addEventListener("click", ()=>{
-            editButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> loading...`
-            window.location.replace(`/cocktail/edit/${cocktail._id.$oid}`)
-        })
+    `;
+    template.querySelector('.image-wrapper img').src = cocktail.image_url;
+    template.querySelector('.name a').href = `/cocktail/${cocktail._id.$oid}`;
+    template.querySelector('.name strong').innerText = cocktail.name;
+    template.querySelector('.name').parentNode.children[1].innerText = formatDate(
+      new Date(cocktail.created_at)
+    );
+    if (userId == sessionId) {
+      let editButton = document.createElement('button');
+      editButton.className = 'btn btn-primary btn-sm';
+      editButton.innerHTML = `edit <i class="fas fa-pen"></i>`;
+      editButton.addEventListener('click', () => {
+        editButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> loading...`;
+        window.location.replace(`/cocktail/edit/${cocktail._id.$oid}`);
+      });
 
-        let deleteButton = document.createElement("button");
-        deleteButton.className = "btn btn-danger btn-sm"; 
-        deleteButton.innerHTML = `delete <i class="fas fa-trash"></i>`;
-        deleteButton.addEventListener("click", (e)=>{
-            deleteButton.innerHTML= `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> deleting...`
-            fetch("/cocktail/delete", 
-                {
-                    method: 'post',
-                    body: JSON.stringify({
-                        "object_id": cocktail._id.$oid
-                    }),
-                    headers: {
-                    'Content-Type': 'application/json'
-                    }   
-                })
-            .then(() => {
-                window.location.reload();
-            })
-        })
-            
-        template.querySelector(".contols").appendChild(editButton);
-        template.querySelector(".contols").appendChild(deleteButton);
-    }              
-    return template           
-}
+      let deleteButton = document.createElement('button');
+      deleteButton.className = 'btn btn-danger btn-sm';
+      deleteButton.innerHTML = `delete <i class="fas fa-trash"></i>`;
+      deleteButton.addEventListener('click', e => {
+        deleteButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> deleting...`;
+        fetch('/cocktail/delete', {
+          method: 'post',
+          body: JSON.stringify({
+            object_id: cocktail._id.$oid
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(() => {
+          window.location.reload();
+        });
+      });
 
-fetch(`/api/cocktails/${userId}`)
-    .then((response) => response.json())
+      template.querySelector('.contols').appendChild(editButton);
+      template.querySelector('.contols').appendChild(deleteButton);
+    }
+    return template;
+  };
+
+  fetch(`/api/cocktails/${userId}`)
+    .then(response => response.json())
     .then(data => {
-        document.querySelector("#users-cocktails").innerHTML = ""
-        data.forEach(cocktail =>{
-            document.querySelector("#users-cocktails").appendChild(generateMiniCocktailCard(cocktail))
-        })
-    })
-const addProfile = () => {
-    document.querySelector("#profile").innerHTML= `<div class="row px-2">
+      document.querySelector('#users-cocktails').innerHTML = '';
+      data.forEach(cocktail => {
+        document.querySelector('#users-cocktails').appendChild(generateMiniCocktailCard(cocktail));
+      });
+    });
+  const addProfile = () => {
+    document.querySelector('#profile').innerHTML = `<div class="row px-2">
                             <div class="col-12">
                                 <img src="https://makemeacocktail.com/images/no_cocktail.png" alt="placeholder">
                             </div>
@@ -127,21 +128,39 @@ const addProfile = () => {
                             <div class="col-12 mb-4">
                                 <input type="button" class="modal-button" value="submit profile" onclick="nextAction()"/>
                             </div>
-                        </div>`
-}
+                            <div id="errorText"></div>
+                        </div>`;
+  };
 
-const nextAction = () => {
-    const profilePic= document.querySelector("#profile-pic-url").value
-    const bio = document.querySelector("#bio").value
-    //add post here!!!
-    document.querySelector("#profile").innerHTML = `<div class="col-12">
+  const nextAction = () => {
+    const profilePic = document.querySelector('#profile-pic-url').value;
+    const bio = document.querySelector('#bio').value;
+    fetch(`/user/update/${userId}`, {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        profile_url: profilePic,
+        bio: bio
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.querySelector('#profile').innerHTML = `<div class="col-12">
                             <img src="${profilePic}" alt="placeholder">
                         </div>
                         <div class="col-12">
                             <h5 class="bold">bio</h5>
                             <p>${bio}</p>
-                        </div>` 
-}
+                        </div>`;
+        } else {
+          document.querySelector('#profile').innerHTML = 'Could not add profile';
+        }
+      });
+  };
 </script>
 
 {% endblock %}

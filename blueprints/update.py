@@ -113,7 +113,7 @@ def update_cocktail(cocktail_id):
             if cocktail:
                 cocktailDetails = {}
                 for i in cocktail:
-                    cocktailDetails = i               
+                    cocktailDetails = i
                 if "creator" in cocktailDetails:
                     if cocktailDetails['creator'] == ObjectId(session["_id"]):
                         return render_template(
@@ -129,8 +129,6 @@ def update_drink_in_db():
     function called from the cocktail form to add a drink to the
     database using AJAX
     """
-    ingredients = json.loads(get_ingredients_by_type(None))
-    flavors = json.loads(get_flavors())
     data = request.data
     dataDict = json.loads(data)
 
@@ -157,3 +155,28 @@ def update_drink_in_db():
     )
     resp = jsonify(success=True)
     return resp
+
+
+@update.route('/user/update/<user_id>', methods=["POST"])
+def add_profile(user_id):
+    data = request.data
+    data_dict = json.loads(data)
+    print(data_dict)
+    connection = mongo_connect
+    try:
+        connection["users"].update_one({"_id": ObjectId(user_id)},
+                                       {
+            {"$set": {"profile":
+                      {
+                          "profile_url": data_dict["profile_url"],
+                          "bio": data_dict["bio"]
+                      }
+                      }
+             }
+        }
+        )
+        resp = jsonify(success=True)
+        return resp
+    except:
+        resp = jsonify(success=False)
+        return resp

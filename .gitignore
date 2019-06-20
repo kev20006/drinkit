@@ -1,4 +1,7 @@
-todo
-environment.py
-**/*.css.map
-tests/__pycache__
+__pycache__/
+node_modules/
+.prettierrc
+package.json
+package-lock.json
+.eslintrc.json
+**.pyc
