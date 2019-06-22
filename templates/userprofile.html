@@ -124,6 +124,7 @@ const addProfile = () => {
                                 <label for="exampleFormControlTextarea1">Type a short bio about yourself for other users to read</label>
                                 <textarea class="form-control" id="bio" rows="3"></textarea>
                             </div>
+                            <p id="profile-error"></p>
                             <div class="col-12 mb-4">
                                 <input type="button" class="modal-button" value="submit profile" onclick="nextAction()"/>
                             </div>
@@ -133,14 +134,30 @@ const addProfile = () => {
 const nextAction = () => {
     const profilePic= document.querySelector("#profile-pic-url").value
     const bio = document.querySelector("#bio").value
-    //add post here!!!
-    document.querySelector("#profile").innerHTML = `<div class="col-12">
-                            <img src="${profilePic}" alt="placeholder">
-                        </div>
-                        <div class="col-12">
-                            <h5 class="bold">bio</h5>
-                            <p>${bio}</p>
-                        </div>` 
+    fetch(`/user_profile/update/${userId}`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ profile_pic: profilePic , bio: bio })
+    })
+    .then((response) => response.json())
+    .then(data => {
+        console.log(data)
+        if(data.success){
+            document.querySelector("#profile").innerHTML = `<div class="col-12">
+                <img src="${profilePic}" alt="placeholder">
+                </div>
+                <div class="col-12">
+                    <h5 class="bold">bio</h5>
+                    <p>${bio}</p>
+                </div>`   
+        }
+        else{
+            document.querySelectorAll("#profile-error").textContent = "could not update profile"
+        }
+    });
 }
 </script>
 
