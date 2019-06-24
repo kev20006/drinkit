@@ -5,7 +5,6 @@ from flask import Blueprint, session, render_template, request, jsonify
 from bson import ObjectId
 
 from .utils import mongo_connect
-from .api import get_ingredients_by_type, get_flavors
 from .api import get_ingredient_and_flavor_list
 
 update = Blueprint('update', __name__)

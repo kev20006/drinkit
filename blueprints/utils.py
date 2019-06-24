@@ -29,7 +29,6 @@ def aggregate_cocktail_previews(cocktails, page, filter, match=None):
     to create the item previews used on the index page and
     in search results
     """
-    print(page)
     page = (int(page) * 5)-5
     if match is None:
         match = {"name": {"$ne": "null"}}
@@ -143,13 +142,6 @@ def add_flavor_return_id(name):
         "name": name
     })
     return new_flavor["_id"]
-
-
-def find(list, key, value):
-    for i, item in enumerate(list):
-        if dic[key] == value:
-            return i
-    return -1
 
 
 def get_user():

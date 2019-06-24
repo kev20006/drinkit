@@ -1,29 +1,29 @@
-let addFlavor = trigger => {
-  console.log(trigger.value[trigger.value.length - 1]);
-  if (trigger.value[trigger.value.length - 1] == ',') {
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
+
+const addFlavor = trigger => {
+  if (trigger.value[trigger.value.length - 1] === ',') {
     if (addedFlavors.includes(trigger.value)) {
       trigger.value = '';
     } else {
-      let flavor = trigger.value.substring(0, trigger.value.length - 1);
+      const flavor = trigger.value.substring(0, trigger.value.length - 1);
       addedFlavors.push(flavor);
       document.querySelector('#flavors').innerHTML = '';
-      console.log(addedFlavors);
-      addedFlavors.forEach(flavor => {
-        let newTag = document.createElement('div');
+      addedFlavors.forEach(flavorName => {
+        const newTag = document.createElement('div');
         newTag.className = 'flavors align-items-center d-flex my-0 mx-1';
-        let crossIcon = document.createElement('i');
+        const crossIcon = document.createElement('i');
         crossIcon.addEventListener('click', e => {
-          console.log(addedFlavors);
           addedFlavors = addedFlavors.filter(element => {
-            return element != flavor;
+            return element !== flavorName;
           });
-          console.log(addedFlavors);
           e.currentTarget.parentNode.remove();
         });
         crossIcon.className = 'fas fa-times ml-4 mr-1 my-0';
-        let flavorText = document.createElement('p');
+        const flavorText = document.createElement('p');
         flavorText.className = 'ml-1 my-0';
-        flavorText.textContent = flavor;
+        flavorText.textContent = flavorName;
         newTag.appendChild(flavorText);
         newTag.appendChild(crossIcon);
         document.querySelector('#flavors').appendChild(newTag);
@@ -37,7 +37,7 @@ let addFlavor = trigger => {
   }
 };
 
-let unlockOther = trigger => {
+const unlockOther = trigger => {
   if (trigger.checked) {
     document.getElementById('other-equipment-name').disabled = false;
   } else {
@@ -46,13 +46,14 @@ let unlockOther = trigger => {
   }
 };
 
-let newStep = () => {
-  let stepByStep = document.getElementById('step-by-step');
-  let nextStep = parseInt(stepByStep.children[stepByStep.children.length - 1].id.split('-')[1]) + 1;
-  let htmlString = `
+const newStep = () => {
+  const stepByStep = document.getElementById('step-by-step');
+  const nextStep =
+    parseInt(stepByStep.children[stepByStep.children.length - 1].id.split('-')[1], 10) + 1;
+  const htmlString = `
                     <input class="form-control steps" type="text" placeholder="step ${nextStep}" onkeydown="next(this, event, newStep)">
             `;
-  let div = document.createElement('div');
+  const div = document.createElement('div');
   div.className = 'form-group';
   div.id = `step-${nextStep}`;
   div.innerHTML = htmlString;
@@ -60,7 +61,7 @@ let newStep = () => {
   div.focus();
 };
 
-let updatePreview = trigger => {
+const updatePreview = trigger => {
   document.querySelector('#image-preview').src = trigger.value;
   document.querySelector('#image-preview').onerror = () => {
     this.onerror = null;

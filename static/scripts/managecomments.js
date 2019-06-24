@@ -1,7 +1,8 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 const genCommentHTML = comment => {
-  console.log(comment);
   const currentUser = document.getElementById('spirit-tags').children[0].dataset.user;
-  console.log(`current user is: ${currentUser}`);
   const upVoteButton = document.createElement('i');
   upVoteButton.className = 'far fa-arrow-alt-circle-up';
   upVoteButton.setAttribute('data-user', currentUser);
@@ -9,34 +10,26 @@ const genCommentHTML = comment => {
 
   if (comment.votes.upvotes.includes(currentUser)) {
     upVoteButton.className += ' voted';
-    upVoteButton.addEventListener('click', function() {
-      vote(this, 'up', 'comments');
-    });
+    upVoteButton.addEventListener('click', vote(this, 'up', 'comments'));
   } else {
-    upVoteButton.addEventListener('click', function() {
-      vote(this, 'up', 'comments');
-    });
+    upVoteButton.addEventListener('click', vote(this, 'up', 'comments'));
   }
 
-  let downVoteButton = document.createElement('i');
+  const downVoteButton = document.createElement('i');
   downVoteButton.className = 'far fa-arrow-alt-circle-down';
   downVoteButton.setAttribute('data-user', currentUser);
   downVoteButton.setAttribute('data-id', comment._id.$oid);
   if (comment.votes.downvotes.includes(currentUser)) {
     downVoteButton.className += ' voted';
-    downVoteButton.addEventListener('click', function() {
-      vote(this, 'down', 'comments');
-    });
+    downVoteButton.addEventListener('click', vote(this, 'down', 'comments'));
   } else {
-    downVoteButton.addEventListener('click', function() {
-      vote(this, 'down', 'comments');
-    });
+    downVoteButton.addEventListener('click', vote(this, 'down', 'comments'));
   }
 
-  let votes = document.createElement('span');
+  const votes = document.createElement('span');
   votes.className = 'votes';
 
-  let commentHTML = document.createElement('div');
+  const commentHTML = document.createElement('div');
   commentHTML.innerHTML = `
             <div class="card my-2 comment ">
                 <div class="row mx-0">
@@ -98,7 +91,6 @@ const updateComments = () => {
         commentContainer.textContent = '';
 
         data.forEach(comment => {
-          console.log(comment);
           const commentHTML = genCommentHTML(comment);
           if (comment.parent === '') {
             commentContainer.appendChild(commentHTML);

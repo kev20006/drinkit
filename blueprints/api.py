@@ -1,6 +1,6 @@
 import json
 
-from flask import Blueprint, session, render_template
+from flask import Blueprint
 from bson import ObjectId
 from bson.json_util import dumps
 

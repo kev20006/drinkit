@@ -1,56 +1,58 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
+const getIngredients = trigger => {
+  const idNumber = trigger.id.split('-')[2];
+  document.getElementById(`label-ingredient-select-${idNumber}`).textContent =
+    'fetching ingredients...';
 
-
-let getIngredients = (trigger) =>{
-    let idNumber = trigger.id.split('-')[2];
-    document.getElementById(`label-ingredient-select-${idNumber}`).textContent = 'fetching ingredients...';
-    
-    fetch(`/api/ingredients/${trigger.value}`)
-    .then((response)=> response.json())
+  fetch(`/api/ingredients/${trigger.value}`)
+    .then(response => response.json())
     .then(data => {
-        let target = document.getElementById(`ingredient-selector-${idNumber}`)
-        target.innerHTML = '';
-        let select = document.createElement("select")
-        select.id = `ingredient-select-${idNumber}`;
-        select.classList = "form-control"
-        select.innerHTML = '';
-        data.forEach(element => {
-            select.innerHTML += `<option value="${element.name}">${element.name}</option>`;
-        })
-        select.innerHTML += `<option value="new">add new</option>`;
-        let label = document.createElement('label');
-        label.textContent = `type of ${trigger.value}`;
-        label.id = `label-ingredient-select-${idNumber}`;
-        label.for = `ingredient-select-${idNumber}`;
-        select.onchange = (event) => {
-            if (event.target.value == "new") {
-                target.innerHTML = '';
-                ingredientInput = document.createElement("input");
-                ingredientInput.id = `ingredient-select-${idNumber}`;
-                ingredientInput.classList = 'form-control';
-                ingredientInput.type = "text";
-                label.id = `label-ingredient-select-${idNumber}`;
-                label.for = `ingredient-select-${idNumber}`;
-                label.textContent = "New Ingredient";
-                target.appendChild(label);
-                target.appendChild(ingredientInput);
-            }
-        };
-        target.appendChild(label);
-        target.appendChild(select);  
-    })      
-}
+      const target = document.getElementById(`ingredient-selector-${idNumber}`);
+      target.innerHTML = '';
+      const select = document.createElement('select');
+      select.id = `ingredient-select-${idNumber}`;
+      select.classList = 'form-control';
+      select.innerHTML = '';
+      data.forEach(element => {
+        select.innerHTML += `<option value="${element.name}">${element.name}</option>`;
+      });
+      select.innerHTML += `<option value="new">add new</option>`;
+      const label = document.createElement('label');
+      label.textContent = `type of ${trigger.value}`;
+      label.id = `label-ingredient-select-${idNumber}`;
+      label.for = `ingredient-select-${idNumber}`;
+      select.onchange = event => {
+        if (event.target.value === 'new') {
+          target.innerHTML = '';
+          ingredientInput = document.createElement('input');
+          ingredientInput.id = `ingredient-select-${idNumber}`;
+          ingredientInput.classList = 'form-control';
+          ingredientInput.type = 'text';
+          label.id = `label-ingredient-select-${idNumber}`;
+          label.for = `ingredient-select-${idNumber}`;
+          label.textContent = 'New Ingredient';
+          target.appendChild(label);
+          target.appendChild(ingredientInput);
+        }
+      };
+      target.appendChild(label);
+      target.appendChild(select);
+    });
+};
 
-
-
-let addMore = () =>{
-    let ingredients = document.getElementById('ingredients-table');
-    let nextIndex = parseInt(ingredients.children[ingredients.children.length - 1].id.split("-")[2]) +1
-    let newRow = document.createElement("div")
-    let help = document.querySelector("#flavorHelp")
-    if (help) { help.parentNode.removeChild(help); }
-    newRow.id = `ingredients-row-${nextIndex}`;
-    newRow.classList = 'row mx-0 px-4';
-    newRow.innerHTML = `
+const addMore = () => {
+  const ingredients = document.getElementById('ingredients-table');
+  const nextIndex =
+    parseInt(ingredients.children[ingredients.children.length - 1].id.split('-')[2], 10) + 1;
+  const newRow = document.createElement('div');
+  const help = document.querySelector('#flavorHelp');
+  if (help) {
+    help.parentNode.removeChild(help);
+  }
+  newRow.id = `ingredients-row-${nextIndex}`;
+  newRow.classList = 'row mx-0 px-4';
+  newRow.innerHTML = `
             <div class="col-md-4">
                 <label for="type-selector-${nextIndex}">Type of Ingredient</label>
                 <select id="type-selector-${nextIndex}" class="form-control" onchange="getIngredients(this);">
@@ -71,18 +73,18 @@ let addMore = () =>{
                 </div>
                 <hr>
     `;
-    ingredients.append(newRow)
-} 
+  ingredients.append(newRow);
+};
 
-let next = (target, event,callback) => {
-    if (event.keyCode == 13 && !target.classList.contains('fired')) {
-		callback();
-		target.classList.add('fired');
-	};
-}
+const next = (target, event, callback) => {
+  if (event.keyCode === 13 && !target.classList.contains('fired')) {
+    callback();
+    target.classList.add('fired');
+  }
+};
 
-let newIngredient = () => {
-    let htmlString = `
+const newIngredient = () => {
+  const htmlString = `
             <div class="row">
                 <div class="input-field col s5">
                     <input id="ingredient-${index} class="ingredient" type="text">
@@ -102,11 +104,9 @@ let newIngredient = () => {
                 <hr>
             </div>
         `;
-    let div = document.createElement("div");
-    div.className = "row";
-    div.innerHTML = htmlString;
-    document.getElementById("ingredients").append(div);
-    div.focus();
-
-}
-
+  const div = document.createElement('div');
+  div.className = 'row';
+  div.innerHTML = htmlString;
+  document.getElementById('ingredients').append(div);
+  div.focus();
+};

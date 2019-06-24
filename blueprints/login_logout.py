@@ -4,7 +4,6 @@ from datetime import datetime
 
 from passlib.hash import sha256_crypt
 from flask import Blueprint, session, redirect, request, url_for
-from bson import ObjectId
 from bson.json_util import dumps
 
 from .utils import mongo_connect
@@ -19,14 +18,12 @@ def login():
     """
     data = request.data
     login_details = json.loads(data)
-    print(login_details)
     connection = mongo_connect()
     user_collection = connection["users"]
     user_details = user_collection.find_one(
         {"username": login_details["username"]}
     )
     if user_details is not None:
-        print("doing this")
         if sha256_crypt.verify(
             login_details["password"],
             user_details["passhash"]
@@ -69,6 +66,6 @@ def new_user():
     # get new user's id
     user_details = user_collection.find_one(
         {"username": request.form["newusername"]}
-        )
+    )
     session['_id'] = str(user_details["_id"])
     return redirect(url_for("home.index"))

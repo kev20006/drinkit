@@ -2,10 +2,8 @@ import ast
 import json
 import math
 
-from flask import Blueprint, session, render_template, request, url_for
-from flask import redirect
+from flask import Blueprint, render_template, request, url_for
 
-from bson import ObjectId
 from bson.json_util import dumps
 
 from .utils import (mongo_connect, aggregate_cocktail_previews,
@@ -22,12 +20,12 @@ def view_by_type(type_of_search, keyword, filter=None, page=1):
     """
     query_terms = {"ingredient_list": [], "flavor_list": [], "type": "or"}
     search_id = mongo_connect()["{}s".format(type_of_search)].find_one(
-            {"name": keyword}
-        )
+        {"name": keyword}
+    )
     key = "ingredient_list" if type_of_search == "ingredient" else "flavor_list"
     query_terms[key] = [str(search_id["_id"])]
     query = genereate_mongo_query(query_terms)
-   
+
     connection = mongo_connect()
     cocktails = connection["cocktails"]
     user = get_user()
@@ -57,8 +55,8 @@ def view_by_type(type_of_search, keyword, filter=None, page=1):
         urlString="viewing > {} > {}".format(type_of_search, keyword),
         current_page=page,
         pages=max_pages,
-        type_of_search=type_of_search, 
-        keyword=keyword, 
+        type_of_search=type_of_search,
+        keyword=keyword,
         filter=filter
     )
 
@@ -114,4 +112,3 @@ def filter_results(type_of_search, ingredients, flavors, filter=None, page=1):
         flavors=flavors,
         filter=filter
     )
-

@@ -1,8 +1,3 @@
-import os
-from flask import Flask
-from flask_talisman import Talisman
-
-
 from blueprints.login_logout import login_logout
 from blueprints.home import home
 from blueprints.api import api
@@ -13,6 +8,9 @@ from blueprints.comments import comment
 from blueprints.update import update
 from blueprints.delete import delete
 from blueprints.search import searchs
+
+import os
+from flask import Flask
 
 
 app = Flask(__name__)

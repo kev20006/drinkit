@@ -44,123 +44,12 @@
 </main>
 {% endblock %} {% block scripts %}
 <script>
-  let userId = document.querySelector('#user-card').dataset.id;
-  let sessionId = document.querySelector('#user-card').dataset.sessionid;
-
-  let generateMiniCocktailCard = cocktail => {
-    let template = document.createElement('div');
-    template.className = 'col-12 col-md-6';
-    template.innerHTML = `
-        <div id="${cocktail._id.$oid}"class="d-flex w-100">
-            <div class="image-wrapper mr-2">
-                <img class="img-thumbnail" style="height:100px; width:100px"
-                    src="" />
-            </div>
-            <div class="w-100 text-right pr-2">
-                <h5 class="name"><a><strong></strong></a></h5>
-                <p>Date</p>
-                <div class="contols d-flex justify-content-end"></div>
-            </div>
-
-
-        </div>
-    `;
-    template.querySelector('.image-wrapper img').src = cocktail.image_url;
-    template.querySelector('.name a').href = `/cocktail/${cocktail._id.$oid}`;
-    template.querySelector('.name strong').innerText = cocktail.name;
-    template.querySelector('.name').parentNode.children[1].innerText = formatDate(
-      new Date(cocktail.created_at)
-    );
-    if (userId == sessionId) {
-      let editButton = document.createElement('button');
-      editButton.className = 'btn btn-primary btn-sm';
-      editButton.innerHTML = `edit <i class="fas fa-pen"></i>`;
-      editButton.addEventListener('click', () => {
-        editButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> loading...`;
-        window.location.replace(`/cocktail/edit/${cocktail._id.$oid}`);
-      });
-
-      let deleteButton = document.createElement('button');
-      deleteButton.className = 'btn btn-danger btn-sm';
-      deleteButton.innerHTML = `delete <i class="fas fa-trash"></i>`;
-      deleteButton.addEventListener('click', e => {
-        deleteButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> deleting...`;
-        fetch('/cocktail/delete', {
-          method: 'post',
-          body: JSON.stringify({
-            object_id: cocktail._id.$oid
-          }),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }).then(() => {
-          window.location.reload();
-        });
-      });
-
-      template.querySelector('.contols').appendChild(editButton);
-      template.querySelector('.contols').appendChild(deleteButton);
-    }
-    return template;
-  };
-
-  fetch(`/api/cocktails/${userId}`)
-    .then(response => response.json())
-    .then(data => {
-      document.querySelector('#users-cocktails').innerHTML = '';
-      data.forEach(cocktail => {
-        document.querySelector('#users-cocktails').appendChild(generateMiniCocktailCard(cocktail));
-      });
-    });
-  const addProfile = () => {
-    document.querySelector('#profile').innerHTML = `<div class="row px-2">
-                            <div class="col-12">
-                                <img src="https://makemeacocktail.com/images/no_cocktail.png" alt="placeholder">
-                            </div>
-                            <div class="col-12 form-group">
-                                <label for="profile-pic-url">Add an image url for your profile</label>
-                                <input type="email" class="form-control" id="profile-pic-url" placeholder="Image Url">
-                            </div>
-                            <div class="col-12 form-group">
-                                <label for="exampleFormControlTextarea1">Type a short bio about yourself for other users to read</label>
-                                <textarea class="form-control" id="bio" rows="3"></textarea>
-                            </div>
-                            <div class="col-12 mb-4">
-                                <input type="button" class="modal-button" value="submit profile" onclick="nextAction()"/>
-                            </div>
-                            <div id="errorText"></div>
-                        </div>`;
-  };
-
-  const nextAction = () => {
-    const profilePic = document.querySelector('#profile-pic-url').value;
-    const bio = document.querySelector('#bio').value;
-    fetch(`/user/update/${userId}`, {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        profile_url: profilePic,
-        bio: bio
-      })
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          document.querySelector('#profile').innerHTML = `<div class="col-12">
-                            <img src="${profilePic}" alt="placeholder">
-                        </div>
-                        <div class="col-12">
-                            <h5 class="bold">bio</h5>
-                            <p>${bio}</p>
-                        </div>`;
-        } else {
-          document.querySelector('#profile').innerHTML = 'Could not add profile';
-        }
-      });
-  };
+  // userId and Session ID added to globabl name space for use for the
+  // two following functions getCocktails and add profile
+  const userId = document.querySelector('#user-card').dataset.id;
+  const sessionId = document.querySelector('#user-card').dataset.sessionid;
 </script>
+<script src="../static/scripts/userprofiles/getcocktails.js"></script>
+<script src="../static/scripts/userprofiles/addprofile.js"></script>
 
 {% endblock %}

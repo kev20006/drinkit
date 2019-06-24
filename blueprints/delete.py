@@ -24,16 +24,16 @@ def delete_cocktail():
     return resp
 
 
-@delete.route('/user/delete', methods=["POST"])
-def delete_user():
+@delete.route('/user/delete/<user>', methods=["POST"])
+def delete_user(user):
     """
     Method to delete cocktail from the database
     """
     data = request.data
-    user = json.loads(data)
+    data_dict = dict(data)
     connection = mongo_connect()
-    connection["cocktails"].delete_one({
-        "_id": ObjectId(cocktail["object_id"])
+    connection["users"].delete_one({
+        "_id": ObjectId(data_dict["user"])
     })
     resp = jsonify(success=True)
     return resp

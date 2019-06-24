@@ -1,4 +1,4 @@
-from flask import Blueprint, session, render_template
+from flask import Blueprint, render_template
 from bson import ObjectId
 
 from .utils import mongo_connect, get_user
@@ -37,5 +37,5 @@ def view_cocktail(cocktail_id):
                 'viewcocktail.html',
                 cocktail=cocktail,
                 user=user
-                )
+            )
     return render_template('notfound.html'), 404

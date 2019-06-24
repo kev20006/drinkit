@@ -241,62 +241,11 @@
     <script src="/static/scripts/login/login.js" charset="utf-8"></script>
     <script src="/static/scripts/searchandfilter/search.js" charset="utf-8"></script>
     <script src="/static/scripts/searchandfilter/advFilter.js" charset="utf-8"></script>
+    <script src="/static/scripts/uiscripts.js" charset="utf-8"></script>
+    <script src="/static/scripts/loadpagedetails.js" charset="utf-8"></script>
     {% block scripts %}
     {% endblock %}
     <script>
-        const toggleSearch = () =>{
-            document.querySelector("#search").classList.toggle("d-none");
-        }
-        const toggleAdvFilters = () => {
-            document.querySelector("#adv-filter").classList.toggle("d-none");
-        }
-
-        /* When the user scrolls down, hide the navbar. When the user scrolls up, show the navbar */
-        var prevScrollpos = window.pageYOffset;
-        window.onscroll = function () {
-            var currentScrollPos = window.pageYOffset;
-            if (prevScrollpos > currentScrollPos) {
-                document.getElementById("nav").style.top = "0";
-            } else {
-                    document.getElementById("nav").style.top = "-60px";
-            }
-            prevScrollpos = currentScrollPos;
-        }
-
-        const loading = (trigger, message="") =>{
-            trigger.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${message}`;
-        }
-
-        const populateBrowser = async() =>{
-            loading(document.querySelector("#quick-filters"), "fetching ingredients")
-            const flavors= await fetch('/api/flavors/').then((response) => response.json());
-            const ingredients = await fetch('/api/ingredients/').then((response) => response.json());
-            const spirits = await fetch('/api/ingredients/spirit').then((response) => {
-                document.querySelector("#quick-filters").innerHTML = ""
-                return response.json()
-            });
-            // populate drop down
-            ingredients.forEach(({ _id, name }) => {
-                document.querySelector("#quick-filters").innerHTML += (`<a class="dropdown-item" href="/filter/ingredient/${name}">${name}</a>`)
-            })
-            // populate adv. filter 
-            flavors.forEach(flavor => {
-                document.querySelector(`#flavor-filter`)
-                    .innerHTML += `<span id="${flavor._id.$oid}" class="spirit" onclick="addToFilter(this, 'flavor_list')">${flavor.name}</span>`
-            })
-
-            //populate adv. filter 
-            ingredients.forEach(ingredient => {
-                document.querySelector(`#ingredients-filter-${ingredient.type}`)
-                    .innerHTML += `<span id="${ingredient._id.$oid}" class="spirit" onclick="addToFilter(this, 'ingredient_list')">${ingredient.name}</span>`;
-            })
-            if (typeof updateAside === "function"){
-                updateAside(flavors, "flavor");
-                updateAside(ingredients, "ingredient");
-            }
-            
-        }
-
         populateBrowser()
     </script>
 </body>
