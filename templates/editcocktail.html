@@ -208,14 +208,11 @@
     //pull the string names of the flavors from the db using ajax
     let addedFlavors = []
     let flavorTags = [...document.querySelector("#flavors").children].map(element =>{
-        console.log(element)
         return element.id
     })
     
-    fetch('/api/flavors/')
-        .then((response) => response.json())
-        .then(data => {
-            data.forEach(flavor => {
+    const editFlavorTags = (data) => {
+        data.forEach(flavor => {
                 if (flavorTags.includes(flavor._id.$oid)){
                     addedFlavors.push(flavor.name)
                     document.getElementById(flavor._id.$oid).innerHTML = ""
@@ -224,7 +221,6 @@
                         addedFlavors = addedFlavors.filter(element => {
                             return element != flavor.name
                         })
-                        console.log(addedFlavors)
                         e.currentTarget.parentNode.remove()
                     })
                     crossIcon.className = "fas fa-times ml-4 mr-1"
@@ -238,9 +234,8 @@
                 newFlavor.textContent = flavor.name;
                 document.querySelector("#flavor-list").appendChild(newFlavor)
             })
-        })
+    }
 
-    
     
 
 

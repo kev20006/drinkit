@@ -44,5 +44,9 @@ const populateBrowser = async () => {
     updateIngredientTags(ingredients);
   }
 
+  if (typeof editFlavorTags === 'function') {
+    editFlavorTags(flavors);
+  }
+
   // fill in item previews
 };

@@ -10,7 +10,7 @@ const getFormDetails = (trigger, type) => {
   const cocktailDetails = {};
   if (type === 'update') {
     cocktailDetails.id = document.querySelector('#name').dataset.id;
-    fetchString = `/update/cocktail/`;
+    fetchString = `/cocktail/edit/`;
   } else {
     fetchString = '/cocktails/';
   }

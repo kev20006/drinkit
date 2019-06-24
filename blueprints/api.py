@@ -100,7 +100,7 @@ def check_user_exists(name):
         return "False"
 
 
-def get_ingredient_and_flavor_list(dataDict):
+def get_ingredient_and_flavor_list(data_dict):
     """
     function take an array of flavor and ingredient names
     and returns arrays of the corresponding ids
@@ -108,7 +108,7 @@ def get_ingredient_and_flavor_list(dataDict):
     ingredients = json.loads(get_ingredients_by_type())
     flavors = json.loads(get_flavors())
     flavor_ids = []
-    for i in dataDict["flavors"]:
+    for i in data_dict["flavors"]:
         if any(j["name"] == i for j in flavors):
             for j in flavors:
                 if j["name"] == i:
@@ -119,7 +119,7 @@ def get_ingredient_and_flavor_list(dataDict):
             )
 
     ingredient_ids = []
-    for i in dataDict["ingredients"]:
+    for i in data_dict["ingredients"]:
         if any(j["name"] == i["name"] for j in ingredients):
             for j in ingredients:
                 if j["name"] == i["name"]:
