@@ -18,19 +18,27 @@
     </div>
     <div class="row">
       <div id="profile" class=" col-12 col-md-4 text-center">
-        {% if user._id|string == session["_id"]|string %} {% if user.profile is not defined %}
+        {% if user._id|string == session["_id"]|string %} {% if user.profile_pic is not defined %}
         <p>You have not yet added a profile</p>
         <button onclick="addProfile()">click here to create your profile</button>
         {% else %}
         <div class="col-12">
-          <img src="{{ user.profile.profile_url }}" alt="placeholder" />
+          <img src="{{ user.profile_pic }}" alt="placeholder" />
         </div>
         <div class="col-12">
           <h5 class="bold">bio</h5>
-          <p>{{ user.profile.profile_url }}</p>
+          <p>{{ user.bio }}</p>
         </div>
         {% endif %} {% else %} {% if user.profile is not defined %}
         <p>This user does not have a profile</p>
+        {% else %}
+        <div class="col-12">
+          <img src="{{ user.profile_pic }}" alt="placeholder" />
+        </div>
+        <div class="col-12">
+          <h5 class="bold">bio</h5>
+          <p>{{ user.bio }}</p>
+        </div>
         {% endif %} {% endif %}
       </div>
       <div class=" col-12 col-md-8">

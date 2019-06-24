@@ -38,21 +38,11 @@ def view_by_type(type_of_search, keyword, filter=None, page=1):
     total_results = connection["cocktails"].find(query).count()
 
     max_pages = math.ceil(total_results/5)
-    """
-    for i in cocktail_previews:
-        if type_of_search == "ingredient":
-            for ingredient in i["ingredient_list"]:
-                if ingredient["name"] == keyword:
-                    output_cocktails.append(i)
-        elif type_of_search == "flavor":
-            if any(flavor["name"] == keyword for flavor in i["flavors"]):
-                output_cocktails.append(i)
-    """
     return render_template(
         'filtered.html',
         cocktails=list(cocktail_previews),
         user=user,
-        urlString="viewing > {} > {}".format(type_of_search, keyword),
+        url_string="viewing > {} > {}".format(type_of_search, keyword),
         current_page=page,
         pages=max_pages,
         type_of_search=type_of_search,
@@ -82,7 +72,8 @@ def advanced_filter(count=None):
         return dumps({"url": url})
 
 
-@filters.route('/results/<type_of_search>/<ingredients>/<flavors>/<page>')
+@filters.route('/results/<type_of_search>/<ingredients>/<flavors>/')
+@filters.route('/results/<type_of_search>/<ingredients>/<flavors>/<page>/<filter>')
 def filter_results(type_of_search, ingredients, flavors, filter=None, page=1):
     filter_dict = {
         "ingredient_list": ast.literal_eval(ingredients),
@@ -102,6 +93,7 @@ def filter_results(type_of_search, ingredients, flavors, filter=None, page=1):
     user = get_user()
     return render_template(
         'filtered.html',
+        type_of_search=type_of_search,
         cocktails=list(results),
         user=user,
         url_string="custom filter",
