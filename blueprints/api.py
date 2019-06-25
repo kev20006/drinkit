@@ -100,6 +100,19 @@ def check_user_exists(name):
         return "False"
 
 
+@api.route('/api/users/')
+def get_all_users():
+    """
+    returns a list of all users and their Ids
+    """
+    try:
+        connection = mongo_connect()
+        user = connection["users"].find({}, {"_id": 1, "username": 1})
+        return dumps(user)
+    except:
+        return dumps({"Success": False})
+
+
 def get_ingredient_and_flavor_list(data_dict):
     """
     function take an array of flavor and ingredient names

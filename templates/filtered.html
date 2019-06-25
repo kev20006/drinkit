@@ -50,73 +50,69 @@
             </div>
             {% else %}
             
+            <!-- start of card-->
             {% for cocktail in cocktails %}
-            <div class="card my-4" data-hyperlink="{{ url_for('profiles.view_cocktail', cocktail_id = cocktail._id)}}"
-                onclick="viewCocktail(this, event)">
+            <div class="card my-4" data-hyperlink="{{ url_for('profiles.view_cocktail', cocktail_id = cocktail._id)}}" onclick="viewCocktail(this, event)">
                 <div class="row mx-0 pr-2">
-                    <div class="img-wrapper d-none d-lg-block col-lg-4"
-                        style="background:url({{cocktail.image_url}}); background-position: center;background-size: cover;">
+                    <div class="img-wrapper d-none d-lg-block col-lg-4" style="background:url({{cocktail.image_url}}); background-position: center;background-size: cover;">
                     </div>
                     <img class="card-img-top col-12 d-lg-none h-100" src="{{ cocktail.image_url }}"
-                        onerror="this.onerror=null;this.src='../static/images/placeholder.jpg';">
+                            onerror="this.onerror=null;this.src='../static/images/placeholder.jpg';">
                     <div class="card-body col-12 col-lg-8">
                         <div class="row">
                             <div>
                                 <h3 class="title">{{ cocktail.name }}</h3>
                             </div>
-    
+                    
                             <div class="d-flex like-view">
                                 {% if session['username'] %}
                                 {%  if cocktail._id in user.starred_cocktails %}
                                 <h3 class="cocktails"><i class="fas fa-star clickable" data-id="{{cocktail._id}}"
-                                        data-user="{{session['_id']}}"
-                                        onclick="removeFavorite(this, 'starred_cocktails')"></i></h3>
+                                        data-user="{{session['_id']}}" onclick="removeFavorite(this, 'starred_cocktails')"></i></h3>
                                 {% else %}
                                 <h3 class="cocktails"><i class="far fa-star clickable" data-id="{{cocktail._id}}"
-                                        data-user="{{session['_id']}}"
-                                        onclick="addFavorite(this , 'starred_cocktails')"></i></h3>
+                                        data-user="{{session['_id']}}" onclick="addFavorite(this , 'starred_cocktails')"></i></h3>
                                 {% endif %}
                                 {% endif %}
                             </div>
-    
+                    
                         </div>
                         <hr>
                         <div class="row d-flex">
                             <strong>SPIRITS:</strong><br>
-    
-                            {% for spirit in cocktail.ingredient_list %}
+                    
+                            {% for spirit in cocktail.ingredients %}
                             {%  if spirit.type == "spirit" %}
                             <span class="ingredients spirit">
-                                {{ spirit.name }}
+                                <span class="ing-{{spirit.ingredient}}"></span>
                                 {% if session['username'] %}
-                                {%  if spirit._id in user.favorite_ingredients %}
-                                <i class="fas fa-heart clickable" data-id="{{spirit._id}}" data-name="{{ spirit.name }}"
-                                    data-user="{{session['_id']}}"
-                                    onclick="removeFavorite(this , 'favorite_ingredients')"></i>
+                                {%  if spirit.ingredient in user.favorite_ingredients %}
+                                <i class="fas fa-heart clickable" data-id="{{spirit.ingredient}}"
+                                    data-user="{{session['_id']}}" onclick="removeFavorite(this , 'favorite_ingredients')"></i>
                                 {% else %}
-                                <i class="far fa-heart clickable" data-id="{{spirit._id}}" data-name="{{ spirit.name }}"
+                                <i class="far fa-heart clickable" data-id="{{spirit.ingredient}}"
                                     data-user="{{session['_id']}}" onclick="addFavorite(this , 'favorite_ingredients')"></i>
                                 {% endif %}
                                 {% endif %}
                             </span>
                             {% endif %}
                             {% endfor %}
-    
+                    
                         </div>
                         <div class="row">
-    
+                    
                             <strong>FLAVORS:</strong>
-    
-                            {% for flavor in cocktail.flavors %}
+                    
+                            {% for flavor in cocktail.flavor_tags %}
                             <span class="flavors">
-                                {{ flavor.name }}
+                                <span class="flav-{{flavor}}"></span>
                                 {% if session['username'] %}
-                                {%  if flavor._id in user.favorite_flavors %}
-                                <i class="fas fa-heart clickable" data-id="{{flavor._id}}" data-name="{{ flavor.name }}"
-                                    data-user="{{session['_id']}}" onclick="removeFavorite(this , 'favorite_flavors')"></i>
+                                {%  if flavor in user.favorite_flavors %}
+                                <i class="fas fa-heart clickable" data-id="{{flavor}}"
+                                    data-user="{{session['_id']}}" onclick="loading(this); removeFavorite(this , 'favorite_flavors')"></i>
                                 {% else %}
-                                <i class="far fa-heart clickable" data-id="{{flavor._id}}" data-name="{{ flavor.name }}"
-                                    data-user="{{session['_id']}}" onclick="addFavorite(this , 'favorite_flavors')"></i>
+                                <i class="far fa-heart clickable" data-id="{{flavor}}" 
+                                    data-user="{{session['_id']}}" onclick="loading(this); addFavorite(this , 'favorite_flavors')"></i>
                                 {% endif %}
                                 {% endif %}
                             </span>
@@ -140,8 +136,7 @@
                                         data-user="{{session['_id']}}" onclick="vote(this, 'up', 'cocktails')" disabled></i>
                                     {% endif %}
                                     {% endif %}
-                                    <span
-                                        class="vote-count">{{ cocktail.votes.upvotes|length - cocktail.votes.downvotes|length }}</span>
+                                    <span class="vote-count">{{ cocktail.votes.upvotes|length - cocktail.votes.downvotes|length }}</span>
                                     {% if session['username'] %}
                                     {% if user._id|string in cocktail.votes.downvotes %}
                                     <i class="far fa-arrow-alt-circle-down voted clickable" data-id="{{cocktail._id}}"
@@ -154,8 +149,8 @@
                                 </h5>
                             </div>
                             <div class="mr-2 text-right foot foot-right">
-                                <p class="blue"><small> a drink by <a
-                                            href="{{ url_for('profiles.view_user_profile', user_id=cocktail.creator._id) }}">{{ cocktail.creator.username }}</a></small>
+                                <p class="blue"><small> a drink by <a class="made-by user-{{cocktail.creator}}"
+                                            href="{{ url_for('profiles.view_user_profile', user_id=cocktail.creator) }}"></a></small>
                                 </p>
                                 <p class="blue"><small class="timestamp">{{ cocktail.created_at }}</small></p>
                             </div>

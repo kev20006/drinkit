@@ -63,13 +63,20 @@
                 <strong>USERS:</strong>
                 {% if session['username'] %}
                 <a href="{{ url_for('profiles.view_user_profile', user_id=session['_id']) }}">
-                    <span class="nav-button-3 d-md-none">
+                    <span class="nav-button-3 d-block d-md-none">
                         {{ session['username'] }}
                     </span>
                 </a>
                 <a href="{{ url_for('login_logout.logout') }}">
-                    <span class="nav-button-3 d-md-none">Log Out</span>
+                    <span class="nav-button-3 d-block d-md-none">Log Out</span>
                 </a>
+                <strong>Cocktails:</strong>
+                <span class="nav-button-3 d-block d-md-none" onclick="window.location.href = '/cocktails/new';">Add Cocktail</span>
+                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#favorite-flavors">My Cocktails</span>
+                <strong>Favorites:</strong>
+                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#starred-cocktails">Starred Cocktails</span>
+                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#favorite-flavors">Favorite Flavors</span>
+                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#favorite-ingredients">Favorite Ingredients</span>
                 {% else %}
                 <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#login">Login</span>
                 <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
