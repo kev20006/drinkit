@@ -55,7 +55,7 @@ const createItem = (type, item) => {
   newItem.className = 'list-group-item';
   switch (type) {
     case 'cocktails':
-      newItem.innerHTML = `<a href="/cocktail/${item._id.$oid}">${item.name}</a>`;
+      newItem.innerHTML = `<a href="/cocktails/${item._id.$oid}">${item.name}</a>`;
       break;
     case 'users':
       newItem.innerHTML = `<a href="/user_profile/${item._id.$oid}">${item.username}</a>`;

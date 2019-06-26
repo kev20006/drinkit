@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 // Loader function to load all the details from the APIs
 
 /* eslint-disable no-underscore-dangle */
@@ -9,7 +10,7 @@ const fillItemPreviews = (data, prefix) => {
     if (document.querySelector(`.${prefix}-${element._id.$oid}`)) {
       [...document.querySelectorAll(`.${prefix}-${element._id.$oid}`)].forEach(tag => {
         tag.innerText = prefix === 'user' ? element.username : element.name;
-        tag.dataset.name = prefix === 'user' ? element.username : element.name;
+        tag.parentNode.dataset.name = prefix === 'user' ? element.username : element.name;
       });
     }
   });
@@ -19,11 +20,18 @@ const fillItemPreviews = (data, prefix) => {
 const populateBrowser = async () => {
   document.querySelector('#quick-filters').innerHTML = '';
   loading(document.querySelector('#quick-filters'), 'fetching ingredients');
-  const cocktails = await fetch('/api/cocktails/').then(response => response.json());
-  const flavors = await fetch('/api/flavors/').then(response => response.json());
-  const ingredients = await fetch('/api/ingredients/').then(response => response.json());
-  const spirits = await fetch('/api/ingredients/spirit').then(response => response.json());
-  const users = await fetch('/api/users/').then(response => response.json());
+
+  // make all API calls in parallel
+  const [cocktails, flavors, ingredients, spirits, users] = await Promise.all([
+    fetch('/api/cocktails/').then(response => response.json()),
+    fetch('/api/flavors/').then(response => response.json()),
+    fetch('/api/ingredients/').then(response => response.json()),
+    fetch('/api/ingredients/spirit').then(response => response.json()),
+    fetch('/api/users/').then(response => response.json())
+  ]);
+
+  // use api results to update the app
+
   // populate drop down
   spirits.forEach(({ name }) => {
     document.querySelector(

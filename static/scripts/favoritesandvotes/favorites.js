@@ -1,3 +1,5 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 /* eslint-disable prettier/prettier */
@@ -8,9 +10,8 @@ const addFavorite = (trigger, type) => {
   } else {
     textContent = trigger.dataset.name;
   }
-  const icon = trigger.classList[1];
-  const parentElement = trigger.parentNode;
-  parentElement.innerHTML = textContent;
+  const icon = trigger.querySelector('i').classList[1];
+  trigger.innerHTML = textContent;
   fetch('/update/favorite_things/', {
     method: 'post',
     body: JSON.stringify({
@@ -23,25 +24,27 @@ const addFavorite = (trigger, type) => {
       'Content-Type': 'application/json'
     }
   }).then(() => {
+    // add to favorites list
     const allTags = document.getElementsByClassName(type.split('_')[1]);
     if (type.split('_')[1] === 'cocktails') {
-      parentElement.innerHTML =
+      trigger.innerHTML =
+        `${trigger.dataset.name}` +
         `<i class="fas ${icon}" data-id="${trigger.dataset.id}"` +
-        `data-user="${trigger.dataset.user}" data-name="${trigger.dataset.name}"` +
-        `onclick="removeFavorite(this, '${type}')" ></i>`;
+        `data-user="${trigger.dataset.user}"`;
+      trigger.onclick = () => {
+        removeFavorite(trigger, type);
+      };
     } else {
       for (let i = 0; i < allTags.length; i += 1) {
-        if (
-          allTags[i].children.length === 0 ||
-          allTags[i].children[0].dataset.name === trigger.dataset.name
-        ) {
-          allTags[i].innerHTML = `${textContent}<i class="fas ${icon}" data-id="${
-            trigger.dataset.id
-          }" 
-                                data-user="${trigger.dataset.user}" data-name="${
-            trigger.dataset.name
-          }" 
-                                onclick="removeFavorite(this, '${type}')" ></i>`;
+        if (allTags[i].dataset.name === trigger.dataset.name) {
+          allTags[i].innerHTML =
+            `${textContent}<i class="fas ${icon}"` +
+            `data-id="${trigger.dataset.id}" ` +
+            `data-user="${trigger.dataset.user}"` +
+            `</i>`;
+          allTags[i].onclick = () => {
+            removeFavorite(allTags[i], type);
+          };
         }
       }
     }
@@ -55,9 +58,8 @@ const removeFavorite = (trigger, type) => {
   } else {
     textContent = trigger.dataset.name;
   }
-  const icon = trigger.classList[1];
-  const parentElement = trigger.parentNode;
-  parentElement.innerHTML = textContent;
+  const icon = trigger.querySelector('i').classList[1];
+  trigger.innerHTML = textContent;
   fetch('/update/favorite_things/', {
     method: 'post',
     body: JSON.stringify({
@@ -72,24 +74,26 @@ const removeFavorite = (trigger, type) => {
   }).then(() => {
     const allTags = document.getElementsByClassName(type.split('_')[1]);
     if (type.split('_')[1] === 'cocktails') {
-      parentElement.innerHTML = `<i class="far ${icon}" data-id="${trigger.dataset.id}" 
-                                data-user="${trigger.dataset.user}" data-name="${
-        trigger.dataset.name
-      }" 
-                                onclick="addFavorite(this, '${type}')" ></i>`;
+      // remove from favorites list
+      trigger.innerHTML =
+        `${trigger.dataset.name}` +
+        `<i class="far ${icon}" data-id="${trigger.dataset.id}" ` +
+        `data-user="${trigger.dataset.user}"` +
+        `</i>`;
+      trigger.onlcick = () => {
+        addFavorite(trigger, type);
+      };
     } else {
       for (let i = 0; i < allTags.length; i += 1) {
-        if (
-          allTags[i].children.length === 0 ||
-          allTags[i].children[0].dataset.name === trigger.dataset.name
-        ) {
-          allTags[i].innerHTML = `${textContent}<i class="far ${icon}" data-id="${
-            trigger.dataset.id
-          }" 
-                                data-user="${trigger.dataset.user}" data-name="${
-            trigger.dataset.name
-          }" 
-                                onclick="addFavorite(this, '${type}')" ></i>`;
+        if (allTags[i].dataset.name === trigger.dataset.name) {
+          allTags[i].innerHTML =
+            `${textContent}<i class="far ${icon}"` +
+            `data-id="${trigger.dataset.id}" ` +
+            `data-user="${trigger.dataset.user}"` +
+            `</i>`;
+          allTags[i].onclick = () => {
+            addFavorite(allTags[i], type);
+          };
         }
       }
     }

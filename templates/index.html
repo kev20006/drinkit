@@ -51,45 +51,57 @@
                         
                             </div>
                             <hr>
-                            <div class="row d-flex">
-                                <strong>SPIRITS:</strong><br>
-                        
+                            <div class="row">
+                                <strong>SPIRITS:</strong>
                                 {% for spirit in cocktail.ingredients %}
-                                {%  if spirit.type == "spirit" %}
-                                <span class="ingredients spirit">
-                                    <span class="ing-{{spirit.ingredient}}"></span>
-                                    {% if session['username'] %}
-                                    {%  if spirit.ingredient in user.favorite_ingredients %}
-                                    <i class="fas fa-heart clickable" data-id="{{spirit.ingredient}}"
-                                        data-user="{{session['_id']}}" onclick="removeFavorite(this , 'favorite_ingredients')"></i>
-                                    {% else %}
-                                    <i class="far fa-heart clickable" data-id="{{spirit.ingredient}}"
-                                        data-user="{{session['_id']}}" onclick="addFavorite(this , 'favorite_ingredients')"></i>
+                                    {%  if spirit.type == "spirit" %}
+                                        {%  if spirit.ingredient in user.favorite_ingredients %}
+                                        <span class="ingredients spirit" data-id="{{spirit.ingredient}}"
+                                        data-user="{{session['_id']}}" onclick="removeFavorite(this , 'favorite_ingredients')">
+                                            <span class="ing-{{spirit.ingredient}}"></span>
+                                            {% if session['username'] %}
+                                            <i class="fas fa-heart clickable"></i>
+                                            {% endif %}
+                                        </span>
+                                            
+                                        {% else %}
+                                        <span class="ingredients spirit" data-id="{{spirit.ingredient}}"
+                                        data-user="{{session['_id']}}" onclick="addFavorite(this , 'favorite_ingredients')">
+                                                <span class="ing-{{spirit.ingredient}}"></span>
+                                                {% if session['username'] %}
+                                                <i class="far fa-heart clickable"></i>
+                                                {% endif %}
+                                        </span>
+                                        {% endif %}
                                     {% endif %}
-                                    {% endif %}
-                                </span>
-                                {% endif %}
                                 {% endfor %}
-                        
+                                
                             </div>
                             <div class="row">
-                        
-                                <strong>FLAVORS:</strong>
-                        
-                                {% for flavor in cocktail.flavor_tags %}
-                                <span class="flavors">
-                                    <span class="flav-{{flavor}}"></span>
-                                    {% if session['username'] %}
-                                    {%  if flavor in user.favorite_flavors %}
-                                    <i class="fas fa-heart clickable" data-id="{{flavor}}"
-                                        data-user="{{session['_id']}}" onclick="loading(this); removeFavorite(this , 'favorite_flavors')"></i>
-                                    {% else %}
-                                    <i class="far fa-heart clickable" data-id="{{flavor}}" 
-                                        data-user="{{session['_id']}}" onclick="loading(this); addFavorite(this , 'favorite_flavors')"></i>
-                                    {% endif %}
-                                    {% endif %}
-                                </span>
-                                {% endfor %}
+                                {% if cocktail.flavor_tags | length > 0 %}
+                                    <strong>FLAVORS:</strong>
+                            
+                                    {% for flavor in cocktail.flavor_tags %}
+                                    
+                                        {%  if flavor in user.favorite_flavors %}
+                                        <span class="flavors" data-id="{{flavor}}"
+                                        data-user="{{session['_id']}}" onclick="removeFavorite(this , 'favorite_flavors')">
+                                            <span class="flav-{{flavor}}"></span>
+                                            {% if session['username'] %}
+                                            <i class="fas fa-heart clickable"></i>
+                                            {% endif %}
+                                        </span>   
+                                        {% else %}
+                                        <span class="flavors" data-id="{{flavor}}"
+                                        data-user="{{session['_id']}}" onclick="addFavorite(this , 'favorite_flavors')">
+                                                <span class="flav-{{flavor}}"></span>
+                                                {% if session['username'] %}
+                                                <i class="far fa-heart clickable"></i>
+                                                {% endif %}
+                                        </span>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
                             </div>
                             <div class="row">
                                 <p>{{ cocktail.description[:350] }}{% if cocktail.description|length > 350 %}...{% endif %}</p>
