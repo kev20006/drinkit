@@ -40,10 +40,10 @@
                                 <div class="d-flex like-view">
                                     {% if session['username'] %}
                                     {%  if cocktail._id in user.starred_cocktails %}
-                                    <h3 class="cocktails"><i class="fas fa-star clickable" data-id="{{cocktail._id}}"
+                                    <h3 class="cocktails"><i class="fas fa-star clickable" data-name="{{ cocktail.name }}" data-id="{{cocktail._id}}"
                                             data-user="{{session['_id']}}" onclick="removeFavorite(this, 'starred_cocktails')"></i></h3>
                                     {% else %}
-                                    <h3 class="cocktails"><i class="far fa-star clickable" data-id="{{cocktail._id}}"
+                                    <h3 class="cocktails"><i class="far fa-star clickable" data-name="{{ cocktail.name }}" data-id="{{cocktail._id}}"
                                             data-user="{{session['_id']}}" onclick="addFavorite(this , 'starred_cocktails')"></i></h3>
                                     {% endif %}
                                     {% endif %}
@@ -170,32 +170,29 @@
                             <h5> Favorites </h5>
                         </div>
                         <div class="card-content center">
-                            {% if session['username'] %}
-                            <ul class="list-group">
-                                <li class="list-group-item">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-flavors" aria-expanded="true"
-                                            aria-controls="collapse-flavors">
-                                        Starred Cocktails
-                                    </button>
-                                </li>
-                                <li class="list-group-item">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-flavors" aria-expanded="true"
-                                        aria-controls="collapse-flavors">
-                                            Favorite Flavors
-                                    </button>
-                                </li>
-                                <li class="list-group-item">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-ingredients"
-                                        aria-expanded="true" aria-controls="collapse-ingredients">
-                                        Favorite Ingredients
-                                    </button>
-                                </li>
-                            </ul>
-                            {% else %}
-                            <p>As a member of drinkit you will be able to immediately jump to recipes related to your favorites ingredients
-                                and flavors from this menu</p>
-                            {% endif %}
-                        </div>
+                                {% if session['username'] %}
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <button class="btn btn-link" data-toggle="modal" data-target="#starred-menu">
+                                            Starred Cocktails
+                                        </button>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <button class="btn btn-link" data-toggle="modal" data-target="#fave-flav-menu">
+                                                Favorite Flavors
+                                        </button>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <button class="btn btn-link" data-toggle="modal" data-target="#fave-ing-menu">
+                                            Favorite Ingredients
+                                        </button>
+                                    </li>
+                                </ul>
+                                {% else %}
+                                <p>As a member of drinkit you will be able to immediately jump to recipes related to your favorites ingredients
+                                    and flavors from this menu</p>
+                                {% endif %}
+                            </div>
                     </div>
                 </div>
                 <!-- End of Sticky Column -->
@@ -223,9 +220,6 @@
     </main>
 {% endblock %}
 {% block scripts %}
-    {% if session['username'] %}
-        <script src="/static/scripts/updateAside.js" charset="utf-8"></script>
-    {% endif %}
     <script src="/static/scripts/viewcocktail.js" charset="utf-8"></script>
     
 

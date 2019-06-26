@@ -16,6 +16,20 @@ const fillItemPreviews = (data, prefix) => {
   });
 };
 
+const fillFaveMenus = (data, prefix) => {
+  data.forEach(element => {
+    if (document.querySelector(`.${prefix}-${element._id.$oid}`)) {
+      document.querySelector(`.${prefix}-${element._id.$oid}`).innerText = element.name;
+      if (prefix !== 'sc') {
+        const search = prefix === 'ff' ? 'flavor' : 'ingredient';
+        document.querySelector(`.${prefix}-${element._id.$oid}`).href = `/filter/${search}/${
+          element.name
+        }`;
+      }
+    }
+  });
+};
+
 // eslint-disable-next-line no-unused-vars
 const populateBrowser = async () => {
   document.querySelector('#quick-filters').innerHTML = '';
@@ -31,6 +45,11 @@ const populateBrowser = async () => {
   ]);
 
   // use api results to update the app
+
+  // populate favorites
+  fillFaveMenus(cocktails, 'sc');
+  fillFaveMenus(flavors, 'ff');
+  fillFaveMenus(ingredients, 'fi');
 
   // populate drop down
   spirits.forEach(({ name }) => {
@@ -57,11 +76,8 @@ const populateBrowser = async () => {
   fillItemPreviews(spirits, 'ing');
   fillItemPreviews(users, 'user');
 
-  if (typeof updateAside === 'function') {
-    updateAside(flavors, 'flavor');
-    updateAside(ingredients, 'ingredient');
-    getCocktailName(cocktails);
-  }
+  // populate starred cocktails
+
   // populate tags
   if (typeof updateFlavorTags === 'function') {
     updateFlavorTags(flavors);

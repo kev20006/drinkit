@@ -72,11 +72,11 @@
                 </a>
                 <strong>Cocktails:</strong>
                 <span class="nav-button-3 d-block d-md-none" onclick="window.location.href = '/cocktails/new';">Add Cocktail</span>
-                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#favorite-flavors">My Cocktails</span>
+                <span class="nav-button-3 d-block d-md-none" onclick="randomCocktail()">Random Cocktail</span>
                 <strong>Favorites:</strong>
-                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#starred-cocktails">Starred Cocktails</span>
-                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#favorite-flavors">Favorite Flavors</span>
-                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#favorite-ingredients">Favorite Ingredients</span>
+                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#starred-menu">Starred Cocktails</span>
+                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#fave-flav-menu">Favorite Flavors</span>
+                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#fave-ing-menu">Favorite Ingredients</span>
                 {% else %}
                 <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#login">Login</span>
                 <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
@@ -137,19 +137,19 @@
                     </div>
                 </div>
                 <div class="row mx-0 px-2 text-center d-flex flex-column">
-                    <form id="new-account" action="{{ url_for('login_logout.new_user') }}" method="POST" ></form>
+                    <form id="new-account" action="{{ url_for('login_logout.new_user') }}" method="POST" >
                         <div class="form-group">
                             <label for="new-username">Please Enter Your Desired Username</label>
-                            <input id="new-username" name="newusername" class="modal-input" type="text" placeholder="new username" required>
+                            <input id="new-username" name="newusername" class="modal-input" type="text" placeholder="new username" required />
                         </div>
                         
                         <div class="form-group">
                             <label for="new-password1">Please Enter Your Password</label>
-                            <input id="new-password1" name="newpassword1" class="modal-input" type="password" placeholder="password" required>
+                            <input id="new-password1" name="newpassword1" class="modal-input" type="password" placeholder="password" required />
                         </div>
                         <div class="form-group">
                             <label for="new-password2">Please Re-Enter Your Password</label>
-                            <input id="new-password2" name="newpassword2" class="modal-input" type="password" placeholder="password" required>
+                            <input id="new-password2" name="newpassword2" class="modal-input" type="password" placeholder="password" required />
                         </div>
                         <div class="row">
                             <div class="col-12">
@@ -157,7 +157,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button class="modal-btn" onClick="validatePasswords()" type="submit">Join Today</button>
+                            <button class="modal-btn" onClick="validatePasswords(this)" type="submit">Join Today</button>
                         </div>
                     </form>
                 </div>
@@ -230,6 +230,92 @@
     
     </div>
     <!-- End of Filter Menu -->
+<!-- favorite menus -->    
+    <!-- Starred Cocktails Modal -->
+    <div id="starred-menu" class="modal fade" aria-labelledby="starred-menu" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="d-flex justify-content-between mt-2 px-2">
+                    <h3 class="pink">Starred Cocktails</h3>
+                    <h3 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h3>
+                </div>
+                <ul id="starred-cocktails" class="list-group">
+                    {% if session['username'] %}
+                    {% for cocktail_id in user.starred_cocktails %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div><a href="/cocktails/{{ cocktail_id }}" class="sc-{{ cocktail_id }}"></a></div>
+                        <div data-id="{{ cocktail_id }}" user-id="{{ session[_id] }}" onclick="removeFavoriteFromList(this, 'starred_cocktails')"><i class="fas fa-trash-alt"></i></div>    
+                    </li>
+                    {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="my-cocktails-menu" class="modal fade" aria-labelledby="starred-menu" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="d-flex justify-content-between mt-2 px-2">
+                        <h3 class="pink">My Cocktails</h3>
+                        <h3 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h3>
+                    </div>
+                    <ul id="my-cocktails">
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    <!-- Favorite Flavors Modal -->
+    <div id="fave-flav-menu" class="modal fade" aria-labelledby="fave-flav-menu" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="d-flex justify-content-between mt-2 px-2">
+                    <h3 class="pink">Favorite Flavors</h3>
+                    <h3 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h3>
+                </div>
+                <ul id="fave-flav">
+                    {% if session['username'] %}
+                    {% for flavor_id in user.favorite_flavors %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div>
+                            <a class="ff-{{ flavor_id }}">{{ flavor_id }}</a>
+                        </div>
+                        <div data-id="{{ flavor_id }}" user-id="{{ session[_id] }}"
+                        onclick="removeFavoriteFromList(this, 'favorite_flavors')">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>    
+                    </li>
+                    {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Favorite Ingredients Modal -->
+    <div id="fave-ing-menu" class="modal fade" aria-labelledby="fave-ing-menu" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="d-flex justify-content-between mt-2 px-2">
+                    <h3 class="pink">Favorite Ingredients</h3>
+                    <h3 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h3>
+                </div>
+                <ul id="fave-ing">
+                    {% if session['username'] %}
+                    {% for ingredient_id in user.favorite_ingredients %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div><a class="fi-{{ ingredient_id }}">{{ ingredient_id }}</div>
+                        <div data-id="{{ ingredient_id }}" user-id="{{ session[_id] }}"
+                        onclick="removeFavoriteFromList(this, 'favorite_ingredients')">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>    
+                    </li>
+                    {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

@@ -6,9 +6,9 @@ const validatePasswords = trigger => {
   const username = document.getElementById('new-username').value;
   const password1 = document.getElementById('new-password1').value;
   const password2 = document.getElementById('new-password2').value;
-  document.getElementById('new-password1').value = '';
-  document.getElementById('new-password2').value = '';
   if (password1 !== password2) {
+    document.getElementById('new-password1').value = '';
+    document.getElementById('new-password2').value = '';
     // eslint-disable-next-line no-restricted-globals
     event.preventDefault();
     trigger.innerText = 'Sign Up';

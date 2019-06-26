@@ -51,6 +51,10 @@ def new_user():
     """
     connection = mongo_connect()
     user_collection = connection["users"]
+    fields = [k for k in request.form]
+    values = [request.form[k] for k in request.form]
+    print(fields)
+    print(values)
     hash = sha256_crypt.hash(request.form["newpassword1"])
     user_collection.insert_one(
         {
