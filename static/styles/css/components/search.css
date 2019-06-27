@@ -1,40 +1,32 @@
 .search-or-filter {
-  padding-top: 10%;
+  padding-top: 40px;
   position: fixed;
   height: 100%;
   width: 100%;
   z-index: 1500;
   top: 0;
   background: white;
-  overflow-y: scroll;
-}
-.search-or-filter h1 {
-  display: inline-block;
-}
-.search-or-filter input[type=text] {
-  border: None;
-  border-bottom: 3px solid black;
-  display: block;
-  margin: 0 auto;
-  width: 95%;
-  padding: 0px 5px;
-}
-.search-or-filter input[type=text]:hover {
-  box-shadow: 5px 5px hotpink;
-}
-.search-or-filter input[type=text]:focus {
-  outline: none;
-  box-shadow: -5px -5px blue, 3px 3px hotpink;
-}
-.search-or-filter .result-title {
-  width: fit-content;
-}
-.search-or-filter .list-group:hover {
-  border: none;
-}
-.search-or-filter .selected {
-  background-color: hotpink;
-  color: white;
-}
+  overflow-y: scroll; }
+  .search-or-filter h1 {
+    display: inline-block; }
+  .search-or-filter input[type='text'] {
+    border: None;
+    border-bottom: 3px solid black;
+    display: block;
+    margin: 0 auto;
+    width: 95%;
+    padding: 0px 5px; }
+    .search-or-filter input[type='text']:hover {
+      box-shadow: 5px 5px hotpink; }
+    .search-or-filter input[type='text']:focus {
+      outline: none;
+      box-shadow: -5px -5px blue, 3px 3px hotpink; }
+  .search-or-filter .result-title {
+    width: fit-content; }
+  .search-or-filter .list-group:hover {
+    border: none; }
+  .search-or-filter .selected {
+    background-color: hotpink;
+    color: white; }
 
 /*# sourceMappingURL=search.css.map */

@@ -1,50 +1,47 @@
-.search-or-filter{
-        padding-top: 10%;
-        position: fixed;
-        height: 100%;
-        width: 100%;
-        z-index: 1500;
-        top: 0;
-        background: rgb(255, 255, 255);
-        overflow-y: scroll;
-        
-        h1 {
-            display: inline-block;
-        }
-        
-        input[type="text"]{
-            border: None;
-            border-bottom: 3px solid black;
-            display: block;
-            margin: 0 auto;
-            width: 95%;
-            padding: 0px 5px;
+.search-or-filter {
+  padding-top: 40px;
 
-            &:hover {
-                box-shadow: 5px 5px hotpink;
-            }
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 1500;
+  top: 0;
+  background: rgb(255, 255, 255);
+  overflow-y: scroll;
 
-            &:focus {
-                outline: none;
-                box-shadow: -5px -5px blue, 3px 3px hotpink;
-            }
+  h1 {
+    display: inline-block;
+  }
 
-        }
+  input[type='text'] {
+    border: None;
+    border-bottom: 3px solid black;
+    display: block;
+    margin: 0 auto;
+    width: 95%;
+    padding: 0px 5px;
 
-        .result-title{
-            width: fit-content;
-        }
-
-        .list-group{
-           
-            &:hover{
-                border: none;
-            }
-        }
-        .selected{
-            background-color: hotpink;
-            color: white;
-        }
+    &:hover {
+      box-shadow: 5px 5px hotpink;
     }
 
-  
+    &:focus {
+      outline: none;
+      box-shadow: -5px -5px blue, 3px 3px hotpink;
+    }
+  }
+
+  .result-title {
+    width: fit-content;
+  }
+
+  .list-group {
+    &:hover {
+      border: none;
+    }
+  }
+  .selected {
+    background-color: hotpink;
+    color: white;
+  }
+}

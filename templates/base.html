@@ -274,7 +274,7 @@
                     <h3 class="pink">Favorite Flavors</h3>
                     <h3 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h3>
                 </div>
-                <ul id="fave-flav">
+                <ul id="fave-flav" class="list-group">
                     {% if session['username'] %}
                     {% for flavor_id in user.favorite_flavors %}
                     <li class="list-group-item d-flex justify-content-between">
@@ -300,7 +300,7 @@
                     <h3 class="pink">Favorite Ingredients</h3>
                     <h3 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h3>
                 </div>
-                <ul id="fave-ing">
+                <ul id="fave-ing" class="list-group">
                     {% if session['username'] %}
                     {% for ingredient_id in user.favorite_ingredients %}
                     <li class="list-group-item d-flex justify-content-between">

@@ -40,7 +40,10 @@ const populateBrowser = async () => {
     fetch('/api/cocktails/').then(response => response.json()),
     fetch('/api/flavors/').then(response => response.json()),
     fetch('/api/ingredients/').then(response => response.json()),
-    fetch('/api/ingredients/spirit').then(response => response.json()),
+    fetch('/api/ingredients/spirit').then(response => {
+      document.querySelector('#quick-filters').innerHTML = '';
+      return response.json();
+    }),
     fetch('/api/users/').then(response => response.json())
   ]);
 
