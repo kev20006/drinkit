@@ -19,7 +19,7 @@ const generateMiniCocktailCard = cocktail => {
         </div>
     `;
   template.querySelector('.image-wrapper img').src = cocktail.image_url;
-  template.querySelector('.name a').href = `/cocktail/${cocktail._id.$oid}`;
+  template.querySelector('.name a').href = `/cocktails/${cocktail._id.$oid}`;
   template.querySelector('.name strong').innerText = cocktail.name;
   template.querySelector('.name').parentNode.children[1].innerText = formatDate(
     new Date(cocktail.created_at)

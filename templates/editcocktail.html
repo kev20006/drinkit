@@ -13,12 +13,12 @@
                 <p><small id="name-error" class="text-danger"></small></p>
                 <input id="name" name="name" type="text" class="text-input" placeholder="Name of Cocktail" value= "{{cocktail.name}}" data-id="{{cocktail._id}}">
             </div>
-            <div class="row mx-0">
+            <div class="row mx-0 px-4">
                 <div class="col-12 col-md-4">
                     <label for="image-preview">Image Preview</label>
                     <img id="image-preview" src="{{cocktail.image_url}}" class="img-fluid img-thumbnail">
                 </div>
-                <div class="col px-0 mx-0">
+                <div class="col px-0 mx-0 px-md-4">
                         <div class="form-group">
                                 <label for="image-url">Please enter an image url*</label>
                                 <p><small id="image-error" class="text-danger"></small></p>
@@ -197,7 +197,7 @@
                 </div>
             </div>
 
-            <div class="row mx-0">
+            <div class="row mx-0 px-4">
                 <div id="step-by-step" class="col-12">
                     {% for step in cocktail.method %}
                     <div id="step-{{loop.index + 1}}" class="row mx-0 px-0">

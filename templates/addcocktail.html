@@ -12,14 +12,13 @@
             </div>
 
         </div>
-        <form>
             <div class="form-group px-4">
                 <label for="name">Type full name of cocktail*</label>
                 <p><small id="name-error" class="text-danger"></small></p>
                 <input id="name" name="name" type="text" class="text-input"
                     placeholder="Name of Cocktail">
             </div>
-            <div class="row mx-0">
+            <div class="row mx-0 px-4">
                 <div class="col-12 col-md-4">
                     <label for="image-preview">Image Preview</label>
                     <img id="image-preview" src="" class="img-fluid
@@ -27,21 +26,21 @@
                         onerror="this.onerror=null;this.src='../static/images/placeholder.jpg';">
                 </div>
                 <div class="col px-0 mx-0">
-                    <div class="form-group">
+                    <div class="form-group px-4">
                         <label for="image-url">Please enter an image url*</label>
                         <p><small id="image-error" class="text-danger"></small></p>
                         <input id="image-url" name="image-url" type="text"
                             class="text-input" placeholder="cocktail url"
                             onchange="updatePreview(this)">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group px-4">
                         <label for="description">Describe your cocktail*</label>
                         <p><small id="description-error" class="text-danger"></small></p>
                         <textarea id="description" name="description"
                             class="text-input"
                             placeholder="describe your cocktail"></textarea>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group px-4">
                         <label for="flavors">Enter a list of decriptors</label>
                         <div id="flavors" name="flavors" class="d-flex
                             flex-wrap"
@@ -100,8 +99,8 @@
                                 for="ingredient-select-1">Select Ingredient</label>
                             <input id="ingredient-select-1"
                                 name="ingredient-select-1" class="text-input"
-                                type="text" value="" placeholder="select type
-                                first" disabled>
+                                type="text" value="" 
+                                placeholder="select type first" disabled>
                         </div>
                         <div class="col-9 col-md-3">
                             <label for="quantity-1">quantity</label>
@@ -213,7 +212,7 @@
                 </div>
             </div>
 
-            <div class="row mx-0">
+            <div class="row mx-0 px-4">
                 <div id="step-by-step" class="col-12">
                     <div id="step-1" class="row">
                         <div name="step-1" class="col-10 col-md-11">
@@ -230,14 +229,13 @@
                 </div>
             </div>
 
-            <div class="row mx-0 px2 d-flex justify-content-between mt-2 mb-5">
+            <div class="row mx-0 d-flex justify-content-between mt-2 mb-5">
                 <button type="button" class="form-btn mb-5"><i class="fas
                         fa-times left"></i>cancel</button>
                 <button id="add-cocktail" type="button" class="form-btn mb-5"
                     onclick="getFormDetails(this, 'add')"><i class="fas
                         fa-cocktail"></i>submit drink</button>
             </div>
-        </form>
     </div>
 
 </main>
