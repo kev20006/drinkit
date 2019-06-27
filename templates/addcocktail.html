@@ -2,65 +2,93 @@
 {% block content %}
 <main class="container">
     <div class="card">
-        <div class="row my-2 mx-0 px-4 d-flex justify-content-between">
-            <div>
-                <h4>New Cocktail Details:</h4>
+        <div class="row my-2 mx-0 px-4">
+            <div class="col-12 d-flex mx-0 px-0 d-flex justify-content-between">
+                <div>
+                    <h4 class="pink">New Cocktail Details:</h4>
+                </div>
+                <div class="blue"><a href="{{ url_for('home.index') }}"><h3><i
+                                class="fas fa-times"></i></h3></a></div>
             </div>
-            <div><a class="btn btn-outline-dark" href="{{ url_for('home.index') }}"><i class="fas fa-times"></i></a></div>
+
         </div>
-        <form >
+        <form>
             <div class="form-group px-4">
                 <label for="name">Type full name of cocktail*</label>
                 <p><small id="name-error" class="text-danger"></small></p>
-                <input id="name" name="name" type="text" class="form-control" 
+                <input id="name" name="name" type="text" class="text-input"
                     placeholder="Name of Cocktail">
             </div>
             <div class="row mx-0">
                 <div class="col-12 col-md-4">
                     <label for="image-preview">Image Preview</label>
-                    <img id="image-preview" src="" class="img-fluid img-thumbnail" onerror="this.onerror=null;this.src='../static/images/placeholder.jpg';">
+                    <img id="image-preview" src="" class="img-fluid
+                        img-thumbnail"
+                        onerror="this.onerror=null;this.src='../static/images/placeholder.jpg';">
                 </div>
-                <div class="form-group px-4 col">
-                    <label for="image-url">Please enter an image url*</label>
-                    <p><small id="image-error" class="text-danger"></small></p>
-                    <input id="image-url" name="image-url" type="text" class="form-control" placeholder="cocktail url" onchange="updatePreview(this)">
-                </div>
-            </div>
-            <div class="form-group px-4">
-                <label for="description">Describe your cocktail*</label>
-                <p><small id="description-error" class="text-danger"></small></p>
-                <textarea id="description" name="description" class="form-control"
-                    placeholder="describe your cocktail"></textarea>
-                
-            </div>
-            <div class="form-group px-4">
-                <label for="flavors">Enter a list of decriptors</label>
-                <div id="flavors" name="flavors" class="d-flex flex-wrap" aria-describedby="flavorHelp">
-                    <div class="flavors mx-2 w-xs-50 w-md-30 w-lg-10">
-                        <!-- remove inline styles later!! -->
-                        <input style="width:100%; border:none" list="flavor-list" id="flavor-input" placeholder="add +"  oninput="addFlavor(this)">
+                <div class="col px-0 mx-0">
+                    <div class="form-group">
+                        <label for="image-url">Please enter an image url*</label>
+                        <p><small id="image-error" class="text-danger"></small></p>
+                        <input id="image-url" name="image-url" type="text"
+                            class="text-input" placeholder="cocktail url"
+                            onchange="updatePreview(this)">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Describe your cocktail*</label>
+                        <p><small id="description-error" class="text-danger"></small></p>
+                        <textarea id="description" name="description"
+                            class="text-input"
+                            placeholder="describe your cocktail"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="flavors">Enter a list of decriptors</label>
+                        <div id="flavors" name="flavors" class="d-flex
+                            flex-wrap"
+                            aria-describedby="flavorHelp">
+                            <div class="flavors mx-2 w-xs-40 w-md-20 w-lg-10
+                                d-flex">
+                                <!-- remove inline styles later!! -->
+                                <input style="width:100%; border:none"
+                                    list="flavor-list" id="flavor-input"
+                                    placeholder="add +"
+                                    onkeypress="addFlavorListener(this, event)">
+                                <div type="button" class="blue"
+                                    onclick="addFlavorListener(document.querySelector('#flavor-input'),
+                                    event)">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <datalist id="flavor-list"></datalist>
+                        <small id="flavorHelp" class="form-text text-muted">please
+                            press
+                            enter after each new descriptor</small>
                     </div>
                 </div>
-                <datalist id="flavor-list"></datalist>
-                <small id="flavorHelp" class="form-text text-muted">please press , after each new descriptor</small>
+
             </div>
             <hr>
             <div id="ingredients">
                 <div class="row d-flex justify-content-between mx-0 px-4">
-                    <div >
+                    <div>
                         <h4>Ingredients:</h4>
                         <p><small id="ingredients-error" class="text-danger"></small></p>
                     </div>
                     <div>
-                        <h4><a class="btn btn-outline-dark" onclick="addMore()"><i id="add-1" class="far fa-plus-square"></i></a></h4>
+                        <h4><a class="blue" onclick="addMore()"><i id="add-1"
+                                    class="fas fa-plus"></i></a></h4>
                     </div>
                 </div>
                 <div id="ingredients-table">
                     <div id="ingredients-row-1" class="row mx-0 px-4">
                         <div class="col-md-4">
                             <label for="type-selector-1">Type of Ingredient</label>
-                            <select id="type-selector-1" name="type-selector-1" class="form-control" onchange="getIngredients(this);">
-                                <option disabled value="" selected>Choose your option</option>
+                            <select id="type-selector-1" name="type-selector-1"
+                                class="text-input"
+                                onchange="getIngredients(this);">
+                                <option value="" selected disabled>Choose your
+                                    option</option>
                                 <option value="spirit">Spirit</option>
                                 <option value="garnish">Garnish</option>
                                 <option value="mixer">Mixer</option>
@@ -68,18 +96,31 @@
                             </select>
                         </div>
                         <div id="ingredient-selector-1" class="col-md-4">
-                            <label id="label-ingredient-select-1" for="ingredient-select-1" >Select Ingredient</label>
-                            <input id="ingredient-select-1" name="ingredient-select-1" class="form-control" type="text" value="" placeholder="select type first" disabled>
+                            <label id="label-ingredient-select-1"
+                                for="ingredient-select-1">Select Ingredient</label>
+                            <input id="ingredient-select-1"
+                                name="ingredient-select-1" class="text-input"
+                                type="text" value="" placeholder="select type
+                                first" disabled>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-9 col-md-3">
                             <label for="quantity-1">quantity</label>
-                            <input id="quantity-1" name="ingredient-select-1" class="form-control" type="text" placeholder="quantity" onkeydown="next(this, event, addMore)">
-                            <small id="flavorHelp" class="form-text text-muted">
-                                please leave a space between quantity and units eg. 2 oz, 30 ml, 2 slices
-                            </small>
+                            <input id="quantity-1" name="ingredient-select-1"
+                                class="text-input" type="text"
+                                placeholder="quantity" onkeydown="next(this,
+                                event, addMore)">
                         </div>
+                        <div class="col-3 col-md-1 d-flex align-items-end
+                            justify-content-end"
+                            onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
+                            <h3><i class="fas fa-trash-alt"></i></h3>
+                        </div>
+                        <small id="flavorHelp" class="form-text text-muted">
+                            please leave a space between quantity and units eg.
+                            2 oz, 30 ml, 2 slices
+                        </small>
                         <hr>
-                    </div>    
+                    </div>
                 </div>
             </div>
             <div class="row mx-0 px-4">
@@ -89,8 +130,8 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="glass">Select Your Glass</label>
-                        <select id="glass" name="glass" class="form-control">
-                            <option value="" value="any" selected>Any</option>
+                        <select id="glass" name="glass" class="text-input">
+                            <option value="any">Any</option>
                             <option value="collins">Collins</option>
                             <option value="martini">Martini</option>
                             <option value="hurricane">Hurricane</option>
@@ -104,74 +145,109 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="form-check form-check-inline">
-                            <input id="equip-1" name="equip-1" class="form-check-input" type="checkbox" value="Muddler">
-                            <label class="form-check-label" for="inlineCheckbox1">Muddler</label>
+                            <input id="equip-1" name="equip-1"
+                                class="form-check-input" type="checkbox"
+                                value="Muddler">
+                            <label class="form-check-label"
+                                for="inlineCheckbox1">Muddler</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input id="equip-2" name="equip-2" class="form-check-input" type="checkbox" value="Shaker">
-                            <label class="form-check-label" for="inlineCheckbox2">Shaker</label>
+                            <input id="equip-2" name="equip-2"
+                                class="form-check-input" type="checkbox"
+                                value="Shaker">
+                            <label class="form-check-label"
+                                for="inlineCheckbox2">Shaker</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input id="equip-3" name="equip-3" class="form-check-input" type="checkbox" value="Strainer">
-                            <label class="form-check-label" for="inlineCheckbox3">Strainer</label>
+                            <input id="equip-3" name="equip-3"
+                                class="form-check-input" type="checkbox"
+                                value="Strainer">
+                            <label class="form-check-label"
+                                for="inlineCheckbox3">Strainer</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-check form-check-inline">
-                            <input id="equip-4" name="equip-4" class="form-check-input" type="checkbox" value="Lighter">
-                            <label class="form-check-label" for="inlineCheckbox1">Lighter</label>
+                            <input id="equip-4" name="equip-4"
+                                class="form-check-input" type="checkbox"
+                                value="Lighter">
+                            <label class="form-check-label"
+                                for="inlineCheckbox1">Lighter</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input id="equip-5" name="equip-5" class="form-check-input" type="checkbox" value="Blender">
-                            <label class="form-check-label" for="inlineCheckbox2">Blender</label>
+                            <input id="equip-5" name="equip-5"
+                                class="form-check-input" type="checkbox"
+                                value="Blender">
+                            <label class="form-check-label"
+                                for="inlineCheckbox2">Blender</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input id="equip-other" class="form-check-input" type="checkbox" value="Other" onchange="unlockOther(this)">
-                            <label class="form-check-label" for="inlineCheckbox2">
-                                <input id="other-equipment-name" class="form-control" type="text" placeholder="other - please specify" disabled>
+                            <input id="equip-other" class="form-check-input"
+                                type="checkbox" value="Other"
+                                onchange="unlockOther(this)">
+                            <label class="form-check-label"
+                                for="inlineCheckbox2">
+                                <input id="other-equipment-name"
+                                    class="text-input" type="text"
+                                    placeholder="other - please specify"
+                                    disabled>
                             </label>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="row mx-0 px-4">
                 <h4>Method:</h4>
             </div>
-            <div class="row d-flex justify-content-between mx-0 px-4">
-                <div>
-
-                    <p>Enter step by step instructions how to make your cocktail below.</p>
+            <div class="row d-flex justify-content-between mx-0">
+                <div class="col-10 col-md-11">
+                    <p>Enter step by step instructions how to make your cocktail
+                        below.</p>
                     <p><small id="instructions-error" class="text-danger"></small></p>
                 </div>
-                <div><i id="add-step" class="far fa-plus-square" onclick="newStep()"></i></div>
-               
+                <div class="col-2 col-md-1 d-flex justify-content-end">
+                    <a onclick="newStep()">
+                        <h3 class="blue"><i id="add-step" class="fas fa-plus"></i></h3>
+                    </a>
+                </div>
             </div>
-            
-                <div class="row mx-0 px-4">
-                    <div id = "step-by-step" class="col-12">
-                        <div id="step-1" name="step-1" class="form-group">
-                            <input class="form-control" type="text" placeholder="step 1" onkeydown="next(this, event, newStep)">  
+
+            <div class="row mx-0">
+                <div id="step-by-step" class="col-12">
+                    <div id="step-1" class="row">
+                        <div name="step-1" class="col-10 col-md-11">
+                            <input class="text-input" type="text"
+                                placeholder="step 1"
+                                onkeydown="next(this, event, newStep)">
+                        </div>
+                        <div class="col-2 col-md-1 d-flex justify-content-end"
+                            onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
+                            <h3><i class="fas fa-trash-alt"></i></h3>
                         </div>
                     </div>
-                </div>
 
-            <div class="row mx-0 px-4 d-flex justify-content-between mt-2 mb-5">
-              
-                    <button type="button" class="btn btn-dark" class="mb-5"><i class="fas fa-times left"></i>cancel</button>
-                    <button id="add-cocktail" type="button" class="btn btn-dark" class="mb-5" onclick="getFormDetails(this, 'add')"><i class="fas fa-cocktail"></i>submit drink</button>
+                </div>
+            </div>
+
+            <div class="row mx-0 px2 d-flex justify-content-between mt-2 mb-5">
+                <button type="button" class="form-btn mb-5"><i class="fas
+                        fa-times left"></i>cancel</button>
+                <button id="add-cocktail" type="button" class="form-btn mb-5"
+                    onclick="getFormDetails(this, 'add')"><i class="fas
+                        fa-cocktail"></i>submit drink</button>
             </div>
         </form>
     </div>
-    
+
 </main>
 {% endblock %}
 
 {% block scripts %}
-    <script src="/static/scripts/addcocktail/addingredient.js" charset="utf-8"></script>
-    <script src="/static/scripts/addcocktail/getFormDetails.js" charset="utf-8"></script>
-    <script src="/static/scripts/addcocktail/addAndEditControls.js" charset="utf-8"></script>
-    <script>
+<script src="/static/scripts/addcocktail/addingredient.js" charset="utf-8"></script>
+<script src="/static/scripts/addcocktail/getFormDetails.js" charset="utf-8"></script>
+<script src="/static/scripts/addcocktail/addAndEditControls.js" charset="utf-8"></script>
+<script>
         let addedFlavors = []
         fetch('/api/flavors/')
             .then((response) => response.json())

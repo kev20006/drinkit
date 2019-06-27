@@ -1,6 +1,6 @@
 import json
 
-from .utils import mongo_connect
+from .utils import mongo_connect, get_user
 from .api import get_ingredient_and_flavor_list
 
 from datetime import datetime
@@ -23,7 +23,8 @@ def new_drink():
     render the form for adding a new cocktail to the database
     """
     if 'username' in session:
-        return render_template('addcocktail.html')
+        user = get_user()
+        return render_template('addcocktail.html', user=user)
 
     else:
         return redirect(url_for("home.index")), 404

@@ -105,14 +105,14 @@
                 <p id="login-error-message"></p>
                 <div class="form-group">
                     <label for="username">Please Enter Your Username</label>
-                    <input id="username" class="modal-input" name="username" type="text" aria-describedby="username"
+                    <input id="username" class="text-input" name="username" type="text" aria-describedby="username"
                         placeholder="Enter Username" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Please Enter Your Password</label>
-                    <input id="password" name="password" class="modal-input" type="password" placeholder="Password">
+                    <input id="password" name="password" class="text-input" type="password" placeholder="Password">
                 </div>
-                <button class="modal-btn" onClick="login(this)"type="submit">Sign in</button>
+                <button class="form-btn" onClick="login(this)"type="submit">Sign in</button>
             </div>
         </div>
     </div>
@@ -140,16 +140,16 @@
                     <form id="new-account" action="{{ url_for('login_logout.new_user') }}" method="POST" >
                         <div class="form-group">
                             <label for="new-username">Please Enter Your Desired Username</label>
-                            <input id="new-username" name="newusername" class="modal-input" type="text" placeholder="new username" required />
+                            <input id="new-username" name="newusername" class="text-input" type="text" placeholder="new username" required />
                         </div>
                         
                         <div class="form-group">
                             <label for="new-password1">Please Enter Your Password</label>
-                            <input id="new-password1" name="newpassword1" class="modal-input" type="password" placeholder="password" required />
+                            <input id="new-password1" name="newpassword1" class="text-input" type="password" placeholder="password" required />
                         </div>
                         <div class="form-group">
                             <label for="new-password2">Please Re-Enter Your Password</label>
-                            <input id="new-password2" name="newpassword2" class="modal-input" type="password" placeholder="password" required />
+                            <input id="new-password2" name="newpassword2" class="text-input" type="password" placeholder="password" required />
                         </div>
                         <div class="row">
                             <div class="col-12">
@@ -157,7 +157,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button class="modal-btn" onClick="validatePasswords(this)" type="submit">Join Today</button>
+                            <button class="form-btn" onClick="validatePasswords(this)" type="submit">Join Today</button>
                         </div>
                     </form>
                 </div>
@@ -222,7 +222,7 @@
             <div id="flavor-filter" class="d-flex flex-wrap"></div>
             <div id="search-preview"class="d-flex flex-column justify-content-center align-items-center"> 
                 <div class="d-inline-block">Results: <span id="no-of-results">0</span></div>
-                <div class="btn-active d-inline-block" onclick="loading(this,'fetching..');getResults();">Show Results</div>
+                <div class="modal-btn d-inline-block" onclick="loading(this,'fetching..');getResults();">Show Results</div>
                 </form>
                 
             </div>

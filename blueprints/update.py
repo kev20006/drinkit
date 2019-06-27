@@ -4,7 +4,7 @@ from datetime import datetime
 from flask import Blueprint, session, render_template, request, jsonify
 from bson import ObjectId
 
-from .utils import mongo_connect
+from .utils import mongo_connect, get_user
 from .api import get_ingredient_and_flavor_list
 
 update = Blueprint('update', __name__)
@@ -95,6 +95,7 @@ def update_cocktail(cocktail_id):
     route to update a cocktails details
     """
     if "_id" in session:
+        user = get_user()
         if ObjectId.is_valid(cocktail_id):
             connection = mongo_connect()
             cocktail = connection["cocktails"].aggregate([
@@ -117,7 +118,8 @@ def update_cocktail(cocktail_id):
                     if cocktailDetails['creator'] == ObjectId(session["_id"]):
                         return render_template(
                             'editcocktail.html',
-                            cocktail=cocktailDetails
+                            cocktail=cocktailDetails,
+                            user=user
                         )
     return render_template('notfound.html'), 404
 

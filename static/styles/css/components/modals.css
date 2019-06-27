@@ -1,35 +1,17 @@
 .modal-content {
   border-radius: none;
   box-shadow: 5px 5px blue;
-  border: 4px solid black;
-}
-.modal-content .modal-input {
-  border: 3px solid black;
-  display: block;
-  margin: 0 auto;
-  width: 95%;
-  padding: 0px 5px;
-}
-.modal-content .modal-input:hover {
-  box-shadow: 5px 5px hotpink;
-}
-.modal-content .modal-input:focus {
-  outline: none;
-  box-shadow: -5px -5px blue, 3px 3px hotpink;
-}
-.modal-content .modal-btn {
-  color: white;
-  position: relative;
-  border: none;
-  display: block;
-  margin: auto;
-  background: hotpink;
-  transform: scale(1.4);
-  box-shadow: 2px 2px black;
-}
-.modal-content .modal-btn:hover {
-  top: 2px;
-  left: 2px;
-}
+  border: 4px solid black; }
+  .modal-content .modal-input {
+    border: 3px solid black;
+    display: block;
+    margin: 0 auto;
+    width: 95%;
+    padding: 0px 5px; }
+    .modal-content .modal-input:hover {
+      box-shadow: 5px 5px hotpink; }
+    .modal-content .modal-input:focus {
+      outline: none;
+      box-shadow: -5px -5px blue, 3px 3px hotpink; }
 
 /*# sourceMappingURL=modals.css.map */

@@ -46,6 +46,7 @@ const getFormDetails = (trigger, type) => {
     const quantity = ingredientsTable[i].children[2].children[1].value.split(' ')[0];
     let units = 'none';
     if (ingredientsTable[i].children[2].children[1].value.split(' ').length === 2) {
+      // eslint-disable-next-line prefer-destructuring
       units = ingredientsTable[i].children[2].children[1].value.split(' ')[1];
     }
     const type = ingredientsTable[i].querySelectorAll('select')[0].value;
@@ -65,13 +66,13 @@ const getFormDetails = (trigger, type) => {
   if (document.getElementById('glass').value !== '') {
     cocktailDetails.glass = document.getElementById('glass').value;
   }
-
-  const instructions = document.getElementById('step-by-step').children;
+  instructions = document.querySelector('#step-by-step').children;
   cocktailDetails.instructions = [];
   document.querySelector('#instructions-error').textContent = '';
   for (let i = 0; i < instructions.length; i += 1) {
-    if (instructions[i].children[0].value !== '') {
-      cocktailDetails.instructions.push(instructions[i].children[0].value);
+    const step = document.querySelector(`#step-${i + 1}`).querySelector('input').value;
+    if (step !== '') {
+      cocktailDetails.instructions.push(step);
     }
   }
   if (cocktailDetails.instructions.length === 0) {
