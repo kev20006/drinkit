@@ -181,6 +181,8 @@ Samsung A7 (2017) - Android
 
 On all devices - control to do this was not in a particularly intuitive place. - redesigned moved this to make it easier to use.
 
+
+
 **2. Filter based on ingredients**
 
 Ingredients menu was too long and unweildly, quick filter is now only done by spirit, as user feddback suggested that people don't tend to search for cocktails by garnish or mixer.

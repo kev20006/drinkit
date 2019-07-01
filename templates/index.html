@@ -199,23 +199,28 @@
         <div id="controls" class="col-4 d-none d-md-block">
             <div class="sticky-top" style="top:20px;">
                 <div class="card mt-4">
-                    <div class="card-header pink">
-                        <h5> Welcome to Drinkit</h5>
-                    </div>
-                    <div class="card-content center">
-                        {% if session['username'] %}
-                        <a class="waves-effect waves-light btn modal-trigger"
-                            href="{{ url_for('add_drink.new_drink') }}"><i
-                                class="fas fa-cocktail"></i>New Drink</a>
-                        {% else %}
-                        <a class="waves-effect waves-light btn modal-trigger"
-                            data-toggle="modal" data-target="#sign-up"><i
-                                class="fas fa-cocktail"></i>Join Today</a>
-                        {% endif %}
-                        <a class="waves-effect waves-light btn modal-trigger"
-                            href="{{ url_for('add_drink.new_drink') }}"><i
-                                class="fas fa-cocktail"></i>Random Drink</a>
-                    </div>
+                        <div class="card-header pink">
+                                <h5> Welcome to Drinkit</h5>
+                            </div>
+                            <div class="card-content center">
+                                <ul class="list-group">
+                                {% if session['username'] %}
+                                <li class="list-group-item">
+                                    <a href="{{ url_for('add_drink.new_drink') }}"><i
+                                            class="fas fa-cocktail mr-4"></i>New Drink</a>
+                                </li>
+                                {% else %}
+                                <li class="list-group-item">
+                                    <a data-toggle="modal" data-target="#sign-up"><i
+                                            class="fas fa-cocktail mr-4"></i>Join Today</a>
+                                    {% endif %}
+                                </li>
+                                <li class="list-group-item">
+                                    <a 
+                                        href="{{ url_for('profiles.view_cocktail', cocktail_id= 'random') }}"><i class="fas fa-dice mr-4"></i>Random Drink</a>
+                                    </ul>
+                                </li>
+                            </div>
                 </div>
                 <div class="card mt-4">
                     <div class="card-header pink">

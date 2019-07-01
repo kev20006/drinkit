@@ -1,5 +1,6 @@
 import os
 import json
+import random
 
 from flask import session
 from bson import ObjectId
@@ -37,6 +38,16 @@ def aggregate_cocktail_previews(cocktails, page, filter, match=None):
     elif filter == "popular":
         filter = "noOfVotes"
     cocktail_details = cocktails.aggregate([
+        {"$addFields": {
+            "noOfVotes": {
+                "$subtract": [
+                    {"$size": {"$ifNull": ["$votes.upvotes", []]}},
+                    {"$size": {"$ifNull": ["$votes.downvotes", []]}}
+                ]
+            }
+        }
+        }
+        ,
         {"$match": match},
         {"$sort":
             {filter: -1}
@@ -91,6 +102,16 @@ def get_user():
         connection = mongo_connect()
         user = connection["users"].find_one({"_id": ObjectId(session['_id'])})
     return user
+
+
+def random_cocktail():
+    """
+    return a random cocktail
+    """
+
+    connection = mongo_connect()
+    cocktails = list(connection["cocktails"].find({}))
+    return cocktails[random.randint(0, len(cocktails) - 1)]
 
 
 def genereate_mongo_query(data_dict):

@@ -1,4 +1,5 @@
 import json
+import random
 
 from flask import Blueprint
 from bson import ObjectId
@@ -14,6 +15,10 @@ api = Blueprint('api', __name__)
 @api.route('/api/ingredients/')
 @api.route('/api/ingredients/<type>')
 def get_ingredients_by_type(type=None):
+    """
+    returns a details on all of all ingredients given no parameter
+    given an id returns details of a specific ingredient
+    """
     connection = mongo_connect()
     if not type:
         ingredients = connection["ingredients"].find({})
@@ -25,6 +30,10 @@ def get_ingredients_by_type(type=None):
 @api.route('/api/flavors/')
 @api.route('/api/flavors/<id>')
 def get_flavors(id=None):
+    """
+    returns a details on all flavors if given no parameter
+    given an id returns details of a specific flavor
+    """
     connection = mongo_connect()
     if id:
         flavors = connection["flavors"].find({"_id": ObjectId(id)})
@@ -35,6 +44,9 @@ def get_flavors(id=None):
 
 @api.route('/api/comments/<cocktail_id>')
 def get_comments(cocktail_id):
+    """
+    fetches all comments on a cocktail given it's ID
+    """
     connection = mongo_connect()
     comments = connection["comments"].aggregate(
         [
@@ -62,6 +74,9 @@ def get_comments(cocktail_id):
 
 @api.route('/api/cocktails/')
 def get_all_cocktails():
+    """
+    returns a list of all cocktails
+    """
     connection = mongo_connect()
     cocktails = connection["cocktails"].find({})
     return dumps(cocktails)
@@ -78,11 +93,30 @@ def get_cocktails_by_user(user_id):
 
 @api.route('/api/cocktail/<cocktail_id>')
 def get_cocktails_by_id(cocktail_id):
+    """
+    return JSON details for a cocktail of given id
+    """
     connection = mongo_connect()
-    cocktail = connection["cocktails"].find_one({
-        "_id": ObjectId(cocktail_id)
-    })
-    return dumps(cocktail)
+    try:
+        cocktail = connection["cocktails"].find_one({
+            "_id": ObjectId(cocktail_id)
+        })
+        return dumps(cocktail)
+    except:
+        return dumps({"error": "no cocktail found"})
+
+
+@api.route('/api/cocktail')
+def get_random_cocktail():
+    """
+    return JSON details for a random cocktail
+    """
+    try:
+        connection = mongo_connect()
+        cocktails = list(connection["cocktails"].find({}))
+        return dumps(cocktails[random.randint(0, len(cocktails) - 1)])
+    except:
+        return dumps({"error": "no cocktail found"})
 
 
 @api.route('/api/check_user/<name>')
