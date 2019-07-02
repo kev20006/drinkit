@@ -46,8 +46,7 @@ def aggregate_cocktail_previews(cocktails, page, filter, match=None):
                 ]
             }
         }
-        }
-        ,
+        },
         {"$match": match},
         {"$sort":
             {filter: -1}

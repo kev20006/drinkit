@@ -20,6 +20,16 @@ const fillFaveMenus = (data, prefix) => {
   data.forEach(element => {
     if (document.querySelector(`.${prefix}-${element._id.$oid}`)) {
       document.querySelector(`.${prefix}-${element._id.$oid}`).innerText = element.name;
+      document
+        .querySelector(`.${prefix}-${element._id.$oid}`)
+        .closest('li')
+        .querySelector('.delete-wrapper').dataset.name = element.name;
+      if (prefix === 'sc') {
+        document
+          .querySelector(`.${prefix}-${element._id.$oid}`)
+          .closest('li')
+          .querySelector('i').dataset.name = element.name;
+      }
       if (prefix !== 'sc') {
         const search = prefix === 'ff' ? 'flavor' : 'ingredient';
         document.querySelector(`.${prefix}-${element._id.$oid}`).href = `/filter/${search}/${
@@ -76,7 +86,7 @@ const populateBrowser = async () => {
 
   // fill in preview details
   fillItemPreviews(flavors, 'flav');
-  fillItemPreviews(spirits, 'ing');
+  fillItemPreviews(ingredients, 'ing');
   fillItemPreviews(users, 'user');
 
   // populate starred cocktails

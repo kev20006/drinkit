@@ -2,30 +2,15 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 const genCommentHTML = comment => {
-  const currentUser = document.getElementById('spirit-tags').children[0].dataset.user;
+  const currentUser = document.querySelector('main').dataset.user;
   const upVoteButton = document.createElement('i');
   upVoteButton.className = 'far fa-arrow-alt-circle-up';
   upVoteButton.setAttribute('data-user', currentUser);
   upVoteButton.setAttribute('data-id', comment._id.$oid);
-
-  if (comment.votes.upvotes.includes(currentUser)) {
-    upVoteButton.className += ' voted';
-    upVoteButton.addEventListener('click', vote(this, 'up', 'comments'));
-  } else {
-    upVoteButton.addEventListener('click', vote(this, 'up', 'comments'));
-  }
-
   const downVoteButton = document.createElement('i');
   downVoteButton.className = 'far fa-arrow-alt-circle-down';
   downVoteButton.setAttribute('data-user', currentUser);
   downVoteButton.setAttribute('data-id', comment._id.$oid);
-  if (comment.votes.downvotes.includes(currentUser)) {
-    downVoteButton.className += ' voted';
-    downVoteButton.addEventListener('click', vote(this, 'down', 'comments'));
-  } else {
-    downVoteButton.addEventListener('click', vote(this, 'down', 'comments'));
-  }
-
   const votes = document.createElement('span');
   votes.className = 'votes';
 
@@ -72,6 +57,20 @@ const genCommentHTML = comment => {
   commentHTML.querySelector('.votes').innerHTML =
     comment.votes.upvotes.length - comment.votes.downvotes.length;
   if (currentUser) commentHTML.querySelector('.vote-controls').appendChild(downVoteButton);
+  // check to see if user has already upvoted a comment
+  if (comment.votes.upvotes.includes(currentUser)) {
+    upVoteButton.className += ' voted';
+  }
+  upVoteButton.addEventListener('click', () => {
+    vote(upVoteButton, 'up', 'comments');
+  });
+  // check to see if user has already down voted a comment
+  if (comment.votes.downvotes.includes(currentUser)) {
+    downVoteButton.className += ' voted';
+  }
+  downVoteButton.addEventListener('click', () => {
+    vote(downVoteButton, 'down', 'comments');
+  });
   return commentHTML;
 };
 

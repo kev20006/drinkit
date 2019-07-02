@@ -19,7 +19,7 @@ def view_user_profile(user_id):
         )
         if user:
             return render_template('userprofile.html', user=user)
-    return render_template('notfound.html'), 404
+    return render_template('notfound.html', user=get_user()), 404
 
 
 @profiles.route('/cocktails/<cocktail_id>')
@@ -46,4 +46,4 @@ def view_cocktail(cocktail_id):
             cocktail=dict(random_cocktail()),
             user=user
         )
-    return render_template('notfound.html'), 404
+    return render_template('notfound.html', user=get_user()), 404

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<main class="container">
+<main class="container" data-id="{{ session['_id'] }}">
     <div class="card my-4">
         <div class="row my-2 mx-0 px-4 d-flex justify-content-between">
             <div>
@@ -12,40 +12,92 @@
             <div class="col-12 col-lg-6">
                 <img src="{{ cocktail.image_url }}" class="img-fluid" onerror="this.onerror=null;this.src='../../static/images/placeholder.jpg';"/>
             </div>
+            
             <div class="col-12 col-lg-6">
+                    <div class=" d-flex justify justify-content-between pink">
+                            {% if session['username'] %}
+                            <h3>Add as favorite:</h3>
+                            {% if cocktail._id in user.starred_cocktails %}
+                            <h3 class="cocktails"><i class="fas fa-star
+                                    clickable" data-name="{{ cocktail.name
+                                    }}" data-id="{{cocktail._id}}"
+                                    data-user="{{session['_id']}}"
+                                    onclick="removeFavorite(this,
+                                    'starred_cocktails')"></i></h3>
+                            {% else %}
+                            <h3 class="cocktails"><i class="far fa-star
+                                    clickable" data-name="{{ cocktail.name
+                                    }}" data-id="{{cocktail._id}}"
+                                    data-user="{{session['_id']}}"
+                                    onclick="addFavorite(this ,
+                                    'starred_cocktails')"></i></h3>
+                            {% endif %}
+                            {% endif %}
+                        </div>
                 <strong>Description:</strong>
                 <p>{{ cocktail.description }}</p>
-                <strong>Ingredients:</strong>
-                <p id="spirit-tags">
-                    {% for ingredient in cocktail.ingredients %}
-                    <span data-id="{{ ingredient.ingredient }}" data-user="{{ session['_id'] }}" class="spirit">
-                        <span>loading..</span>
+                <strong>INGREDIENTS:</strong>
+                <div class="row mx-0">
                         
-                        {% if session['username'] %}
-                            {%  if ingredient.ingredient in user.favorite_ingredients %}
-                            <i data-action="remove"></i>
-                            {% else %}
-                            <i data-action="add"></i>
-                            {% endif %}
-                        {% endif %}
-                    </span>
-                    {% endfor %}
-                </p>
-                    <strong>Flavor:</strong>
-                    <p id="flavor-tags">
-                        {% for flavor in cocktail.flavor_tags %}
-                        <span data-id="{{ flavor }}" data-user="{{session['_id']}}" class="flavors">
-                            <span>loading..</span>
+                        {% for spirit in cocktail.ingredients %}
+                        {% if spirit.ingredient in user.favorite_ingredients
+                        %}
+                        <span class="ingredients spirit"
+                            data-id="{{spirit.ingredient}}"
+                            data-user="{{session['_id']}}"
+                            onclick="removeFavorite(this ,
+                            'favorite_ingredients')">
+                            <span class="ing-{{spirit.ingredient}}"></span>
                             {% if session['username'] %}
-                                {%  if flavor in user.favorite_flavors %}
-                                    <i data-action="remove"></i>
-                                {% else %}
-                                    <i data-action="add"></i>
-                                {% endif %}
+                            <i class="fas fa-heart clickable"></i>
                             {% endif %}
                         </span>
+
+                        {% else %}
+                        <span class="ingredients spirit"
+                            data-id="{{spirit.ingredient}}"
+                            data-user="{{session['_id']}}"
+                            onclick="addFavorite(this ,
+                            'favorite_ingredients')">
+                            <span class="ing-{{spirit.ingredient}}"></span>
+                            {% if session['username'] %}
+                            <i class="far fa-heart clickable"></i>
+                            {% endif %}
+                        </span>
+                        {% endif %}
                         {% endfor %}
-                    </p>
+                    </div>
+                {% if cocktail.flavor_tags | length > 0 %}
+                    <strong>FLAVORS:</strong>
+                    <div class="row mx-0">
+                           
+
+                            {% for flavor in cocktail.flavor_tags %}
+
+                            {% if flavor in user.favorite_flavors %}
+                            <span class="flavors" data-id="{{flavor}}"
+                                data-user="{{session['_id']}}"
+                                onclick="removeFavorite(this ,
+                                'favorite_flavors')">
+                                <span class="flav-{{flavor}}"></span>
+                                {% if session['username'] %}
+                                <i class="fas fa-heart clickable"></i>
+                                {% endif %}
+                            </span>
+                            {% else %}
+                            <span class="flavors" data-id="{{flavor}}"
+                                data-user="{{session['_id']}}"
+                                onclick="addFavorite(this ,
+                                'favorite_flavors')">
+                                <span class="flav-{{flavor}}"></span>
+                                {% if session['username'] %}
+                                <i class="far fa-heart clickable"></i>
+                                {% endif %}
+                            </span>
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </div>
               
             </div>
         </div>
@@ -74,6 +126,11 @@
         <hr>
         <div class="row mx-0 px-sm-4">
             <h4 class="px-4">Comments</h4>
+            <div class="col-12">
+                <div id="comments-area" data-cocktail="{{ cocktail._id }}">
+                    Fetching Comments....
+                </div>      
+            </div>
             <div class="new-comment col-12">
                 <div class="col-12 mx-0">
                     Comment as {{ session['username'] }}
@@ -89,17 +146,11 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12">
-                <div id="comments-area" data-cocktail="{{ cocktail._id }}">
-                    Fetching Comments....
-                </div>      
-            </div>
         </div>
     </div>
 </main>
 {% endblock %}
 {% block scripts %}
-<script src="/static/scripts/updateTags.js" charset="utf-8"></script>
 <script src="/static/scripts/managecomments.js" charset="utf-8">
 
    

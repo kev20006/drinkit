@@ -244,7 +244,9 @@
                     {% for cocktail_id in user.starred_cocktails %}
                     <li class="list-group-item d-flex justify-content-between">
                         <div><a href="/cocktails/{{ cocktail_id }}" class="sc-{{ cocktail_id }}"></a></div>
-                        <div data-id="{{ cocktail_id }}" user-id="{{ session[_id] }}" onclick="removeFavoriteFromList(this, 'starred_cocktails')"><i class="fas fa-trash-alt"></i></div>    
+                        <div class="delete-wrapper" data-id="{{ cocktail_id }}" data-user="{{ session['_id'] }}" onclick="removeFavoriteFromList(this, 'starred_cocktails')">
+                            <i data-id="{{ cocktail_id }}" data-user="{{ session['_id'] }}" class="fas fa-trash-alt"></i>
+                        </div>    
                     </li>
                     {% endfor %}
                     {% endif %}
@@ -252,20 +254,6 @@
             </div>
         </div>
     </div>
-
-    <div id="my-cocktails-menu" class="modal fade" aria-labelledby="starred-menu" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="d-flex justify-content-between mt-2 px-2">
-                        <h3 class="pink">My Cocktails</h3>
-                        <h3 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h3>
-                    </div>
-                    <ul id="my-cocktails">
-                    </ul>
-                </div>
-            </div>
-        </div>
-
     <!-- Favorite Flavors Modal -->
     <div id="fave-flav-menu" class="modal fade" aria-labelledby="fave-flav-menu" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -279,9 +267,9 @@
                     {% for flavor_id in user.favorite_flavors %}
                     <li class="list-group-item d-flex justify-content-between">
                         <div>
-                            <a class="ff-{{ flavor_id }}">{{ flavor_id }}</a>
+                            <a class="ff-{{ flavor_id }}"></a>
                         </div>
-                        <div data-id="{{ flavor_id }}" user-id="{{ session[_id] }}"
+                        <div class="delete-wrapper" data-id="{{ flavor_id }}" data-user="{{ session['_id'] }}"
                         onclick="removeFavoriteFromList(this, 'favorite_flavors')">
                             <i class="fas fa-trash-alt"></i>
                         </div>    
@@ -304,8 +292,8 @@
                     {% if session['username'] %}
                     {% for ingredient_id in user.favorite_ingredients %}
                     <li class="list-group-item d-flex justify-content-between">
-                        <div><a class="fi-{{ ingredient_id }}">{{ ingredient_id }}</div>
-                        <div data-id="{{ ingredient_id }}" user-id="{{ session[_id] }}"
+                        <div><a class="fi-{{ ingredient_id }}"></a></div>
+                        <div class="delete-wrapper" data-id="{{ ingredient_id }}" data-user="{{ session['_id'] }}"
                         onclick="removeFavoriteFromList(this, 'favorite_ingredients')">
                             <i class="fas fa-trash-alt"></i>
                         </div>    

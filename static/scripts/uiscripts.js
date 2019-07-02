@@ -18,6 +18,7 @@ window.onscroll = () => {
     document.getElementById('nav').style.top = '0';
   } else {
     document.getElementById('nav').style.top = '-60px';
+    document.getElementById('context-menu').classList.remove('show');
   }
   prevScrollpos = currentScrollPos;
 };
