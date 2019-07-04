@@ -33,7 +33,7 @@ const generateMiniCocktailCard = cocktail => {
     const deleteButton = document.createElement('button');
     deleteButton.className = 'btn btn-danger btn-sm';
     deleteButton.innerHTML = `delete <i class="fas fa-trash"></i>`;
-    deleteButton.addEventListener('click', e => {
+    deleteButton.addEventListener('click', () => {
       deleteButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> deleting...`;
       fetch('/cocktail/delete', {
         method: 'post',

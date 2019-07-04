@@ -14,7 +14,8 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/css/main.css') }}">
 </head>
 
-<body>
+<body class="d-flex flex-column">
+    <!-- navbar-->
     <nav id="nav" class="navbar navbar-light bg-light justify-content-between fixed-top">
         <div class="d-flex">
         <div class="d-flex nav-logo mr-2">
@@ -84,9 +85,13 @@
             </div>
         </div>
     </nav>
+    <!-- end of navbar-->
+    <div id="page-content">
     {% block content %}
     {% endblock %}
-    <footer class="card w-100 sticky-bottom">
+    </div>
+    <!-- page footer-->
+    <footer id="page-footer" class="card w-100 sticky-bottom">
         <div class="card-content text-center">
             <p class="mt-4"> Drinkit was made by Kevin Stewart </p>
             <p class="mb-4"> check it out on github 
@@ -94,6 +99,7 @@
             </p>
         </div>
     </footer>
+    <!-- end of footer -->
     <!-- Login Modal -->
     <div id="login" class="modal fade" aria-labelledby="login" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">

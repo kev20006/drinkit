@@ -2,6 +2,11 @@
 @import 'components/navbar', 'components/cards', 'components/infocard', 'components/modals',
   'components/search', 'components/usercards.scss';
 
+html,
+body {
+  height: 100%;
+}
+
 main {
   margin-top: 60px;
 }
@@ -22,4 +27,12 @@ main {
   border: 3px solid blue;
   color: blue;
   margin: 2px 3px;
+}
+
+#page-content {
+  flex: 1 0 auto;
+}
+
+#page-footer {
+  flex-shrink: none;
 }
