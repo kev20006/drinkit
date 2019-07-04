@@ -54,6 +54,31 @@
     top: 2px;
     left: 2px; }
 
+.sort-btn {
+  color: white;
+  position: relative;
+  border: none;
+  display: block;
+  margin: auto;
+  padding: 0 10px;
+  background: hotpink;
+  box-shadow: 2px 2px black; }
+  .sort-btn:hover {
+    top: 2px;
+    left: 2px; }
+
+.delete-btn {
+  color: white;
+  position: relative;
+  border: none;
+  display: block;
+  margin: auto;
+  background: #a81a1a;
+  box-shadow: 2px 2px black; }
+  .delete-btn:hover {
+    top: 2px;
+    left: 2px; }
+
 #nav {
   border-bottom: 4px solid blue;
   transition: top 0.5s; }
@@ -77,57 +102,29 @@
     background-color: blue;
     border-radius: 0;
     margin: 4px;
-    box-shadow: 0px -1px hotpink;
+    box-shadow: 2px -2px hotpink;
     color: white; }
     #nav .nav-button-1 a {
       color: white; }
     #nav .nav-button-1:hover {
       box-shadow: none;
-      left: 0px;
-      top: -1px; }
+      left: 2px;
+      top: -2px; }
   #nav .nav-button-2 {
     position: relative;
     padding: 0px 10px;
     background-color: blue;
     border-radius: 0;
     margin: 4px;
-    box-shadow: 1px -3px hotpink;
+    box-shadow: -2px 3px hotpink;
     color: white; }
     #nav .nav-button-2 a {
       color: white; }
     #nav .nav-button-2:hover {
       box-shadow: none;
-      left: 1px;
-      top: -3px; }
-  #nav .nav-button-3 {
-    position: relative;
-    padding: 0px 10px;
-    background-color: blue;
-    border-radius: 0;
-    margin: 4px;
-    box-shadow: 3px -3px hotpink;
-    color: white; }
-    #nav .nav-button-3 a {
-      color: white; }
-    #nav .nav-button-3:hover {
-      box-shadow: none;
-      left: 3px;
-      top: -3px; }
-  #nav .nav-button-4 {
-    position: relative;
-    padding: 0px 10px;
-    background-color: blue;
-    border-radius: 0;
-    margin: 4px;
-    box-shadow: 3px 3px hotpink;
-    color: white; }
-    #nav .nav-button-4 a {
-      color: white; }
-    #nav .nav-button-4:hover {
-      box-shadow: none;
-      left: 3px;
+      left: -2px;
       top: 3px; }
-  #nav .nav-button-5 {
+  #nav .nav-button-3 {
     position: relative;
     padding: 0px 10px;
     background-color: blue;
@@ -135,12 +132,40 @@
     margin: 4px;
     box-shadow: -4px -2px hotpink;
     color: white; }
+    #nav .nav-button-3 a {
+      color: white; }
+    #nav .nav-button-3:hover {
+      box-shadow: none;
+      left: -4px;
+      top: -2px; }
+  #nav .nav-button-4 {
+    position: relative;
+    padding: 0px 10px;
+    background-color: blue;
+    border-radius: 0;
+    margin: 4px;
+    box-shadow: 1px -4px hotpink;
+    color: white; }
+    #nav .nav-button-4 a {
+      color: white; }
+    #nav .nav-button-4:hover {
+      box-shadow: none;
+      left: 1px;
+      top: -4px; }
+  #nav .nav-button-5 {
+    position: relative;
+    padding: 0px 10px;
+    background-color: blue;
+    border-radius: 0;
+    margin: 4px;
+    box-shadow: -1px 2px hotpink;
+    color: white; }
     #nav .nav-button-5 a {
       color: white; }
     #nav .nav-button-5:hover {
       box-shadow: none;
-      left: -4px;
-      top: -2px; }
+      left: -1px;
+      top: 2px; }
 
 .card-link {
   text-decoration: none;
@@ -151,6 +176,8 @@
   box-shadow: 4px 4px hotpink;
   z-index: 10;
   transition: all 0.5s; }
+  .card .name-wrapper {
+    height: 50px; }
   .card .title {
     position: relative;
     top: -20px;
@@ -160,9 +187,13 @@
     transform: rotate(-4deg) scale(1.4);
     transition: all 0.5s;
     z-index: 110; }
+    .card .title a {
+      color: inherit;
+      text-shadow: 2px 2px black; }
   .card .like-view {
     position: absolute;
     right: 10px;
+    top: 50px;
     background: hotpink;
     color: white;
     padding: 0px 20px;
@@ -177,11 +208,16 @@
     .card:hover .title {
       position: relative;
       background: hotpink;
-      transform: rotate(0deg) scale(1.4);
+      transform: rotate(3deg) scale(1.4);
       z-index: 101; }
+      .card:hover .title a {
+        text-decoration: underline;
+        text-decoration-color: blue; }
+      .card:hover .title a:active {
+        color: blue; }
     .card:hover .like-view {
       background: blue;
-      transform: rotate(3deg);
+      transform: rotate(1deg);
       z-index: 110; }
 
 .bread-crumb-title {
@@ -243,8 +279,15 @@
       outline: none;
       box-shadow: -5px -5px blue, 3px 3px hotpink; }
 
+@keyframes fadein {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
 .search-or-filter {
   padding-top: 40px;
+  padding-bottom: 40px;
+  animation: fadein 0.5s;
   position: fixed;
   height: 100%;
   width: 100%;
@@ -273,6 +316,16 @@
   .search-or-filter .selected {
     background-color: hotpink;
     color: white; }
+
+#user-card .name a {
+  color: white;
+  background-color: hotpink;
+  text-decoration: underline;
+  transition: all 0.5s; }
+  #user-card .name a:hover {
+    text-decoration-color: blue; }
+  #user-card .name a:active {
+    color: blue; }
 
 main {
   margin-top: 60px; }

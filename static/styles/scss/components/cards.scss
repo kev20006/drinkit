@@ -1,56 +1,68 @@
-.card-link{
-     text-decoration: none;
-     color: black;
+.card-link {
+  text-decoration: none;
+  color: black;
 }
 
-.card{
-    border: 4px solid black;
-    box-shadow:4px 4px hotpink;
-    z-index: 10;
+.card {
+  border: 4px solid black;
+  box-shadow: 4px 4px hotpink;
+  z-index: 10;
+  transition: all 0.5s;
+
+  .name-wrapper {
+    height: 50px;
+  }
+
+  .title {
+    position: relative;
+    top: -20px;
+    background: blue;
+    color: white;
+    padding: 0px 20px;
+    transform: rotate(-4deg) scale(1.4);
     transition: all 0.5s;
-    
-
-    .title{
-        position: relative;
-        top: -20px;
-        background: blue;
-        color: white;
-        padding: 0px 20px;
-        transform: rotate(-4deg) scale(1.4);
-        transition: all 0.5s;
-        z-index:110;
+    z-index: 110;
+    a {
+      color: inherit;
+      text-shadow: 2px 2px black;
     }
+  }
 
-    .like-view{
-        position: absolute;
-        right: 10px;
-        background: hotpink;
-        color: white;
-        padding: 0px 20px;
-        transform: rotate(#{random(6) - 3}deg);
-        transition: all 0.5s;
-        z-index:101;
-        a{
-            color:white;
-        }
+  .like-view {
+    position: absolute;
+    right: 10px;
+    top: 50px;
+    background: hotpink;
+    color: white;
+    padding: 0px 20px;
+    transform: rotate(#{random(6) - 3}deg);
+    transition: all 0.5s;
+    z-index: 101;
+    a {
+      color: white;
     }
-    
-    &:hover{
-        box-shadow:4px 4px blue;
-        z-index:100;
-        .title{
-            position: relative;
-            background: hotpink;
-            transform: rotate(#{random(6) - 3}deg) scale(1.4);
-            z-index:101;
-        }
-        .like-view{
-            background: blue;
-            transform: rotate(#{random(6) - 3}deg);
-            z-index:110;
-        }
-        
-    }
+  }
 
-    
+  &:hover {
+    box-shadow: 4px 4px blue;
+    z-index: 100;
+    .title {
+      position: relative;
+      background: hotpink;
+      transform: rotate(#{random(6) - 3}deg) scale(1.4);
+      z-index: 101;
+      a {
+        text-decoration: underline;
+        text-decoration-color: blue;
+      }
+      a:active {
+        color: blue;
+      }
+    }
+    .like-view {
+      background: blue;
+      transform: rotate(#{random(6) - 3}deg);
+      z-index: 110;
+    }
+  }
 }

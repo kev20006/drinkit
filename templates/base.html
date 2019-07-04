@@ -200,15 +200,18 @@
             <form id="radio-form" class="radio-buttons d-flex justify-content-center my-3">
                 <div class="form-check-inline">
                     <label class="form-check-label blue">
-                        <input id="or-button" type="radio" class="form-check-input" name="and-or" value="or" checked>Match All Selected
+                        <input id="or-button" type="radio" class="form-check-input" name="and-or" value="or" checked>Match Any Selected
                     </label>
                 </div>
                 <div class="form-check-inline blue">
                     <label class="form-check-label">
-                        <input id="and-button" type="radio" class="form-check-input" name="and-or" value="and">Match Any Selected
+                        <input id="and-button" type="radio" class="form-check-input" name="and-or" value="and">Match All Selected
                     </label>
                 </div>
             </form>
+            <div class="d-flex justify-content-center">
+                <p><small><strong>Match All selected requires at least one ingredient and one flavor</strong></small></p>   
+            </div>
             <h3 class="block"><span class="blue">Ingredients</span></h3>
             <p class="pink d-inline-block">Spirits</p>
             <div id="ingredients-filter-spirit" class="d-flex flex-wrap"></div>
@@ -221,10 +224,7 @@
             <h3 class="blue d-inline-block">Flavors</h3>
             <div id="flavor-filter" class="d-flex flex-wrap"></div>
             <div id="search-preview"class="d-flex flex-column justify-content-center align-items-center"> 
-                <div class="d-inline-block">Results: <span id="no-of-results">0</span></div>
-                <div class="modal-btn d-inline-block" onclick="loading(this,'fetching..');getResults();">Show Results</div>
-                </form>
-                
+            <div class="form-btn d-inline-block mt-4" onclick="loading(this,'fetching..');getResults();">Show Results</div> 
             </div>
         </div>
     

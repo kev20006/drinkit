@@ -16,7 +16,7 @@ const genCommentHTML = comment => {
 
   const commentHTML = document.createElement('div');
   commentHTML.innerHTML = `
-            <div class="card my-2 comment ">
+            <div class="my-2 content-card comment ">
                 <div class="row mx-0">
                     <div class="comment-body col-12 pr-0">
                         <p><span class="author">[comment by]</span> - <span class="time"></span></p>
@@ -26,7 +26,6 @@ const genCommentHTML = comment => {
                         </div>
                          <div>
                             <button type="button" class="btn btn-outline-primary reply-btn" onclick="reply(this)">Reply</button> 
-                            <button type="button" class="btn btn-outline-danger"> Report </button>
                         </div>
                     </div>
                     <div class="d-none col-12 reply">
@@ -36,7 +35,7 @@ const genCommentHTML = comment => {
                             </div>
                             <div>
                                 <button type="button" class="btn btn-primary ml-auto reply-button" 
-                                onclick="addComment(this)">Reply</button>
+                                onclick="addComment(this)">send</button>
                             </div>
                         </div>
                     </div>

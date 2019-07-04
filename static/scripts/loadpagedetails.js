@@ -77,8 +77,8 @@ const populateBrowser = async () => {
     }" class="spirit" onclick="addToFilter(this, 'flavor_list')">${flavor.name}</span>`;
   });
 
-  // populate adv. filter
   ingredients.forEach(ingredient => {
+    // populate adv. filter
     document.querySelector(`#ingredients-filter-${ingredient.type}`).innerHTML += `<span id="${
       ingredient._id.$oid
     }" class="spirit" onclick="addToFilter(this, 'ingredient_list')">${ingredient.name}</span>`;
@@ -99,5 +99,15 @@ const populateBrowser = async () => {
 
   if (typeof editFlavorTags === 'function') {
     editFlavorTags(flavors);
+  }
+
+  // update ingredient names on the view cocktails pages
+  if (document.querySelector('.ingredient-name')) {
+    [...document.querySelectorAll('.ingredient-name')].forEach(tag => {
+      const ingredientName = ingredients.filter(
+        ingredient => ingredient._id.$oid === tag.dataset.id
+      );
+      tag.textContent = ingredientName[0].name;
+    });
   }
 };

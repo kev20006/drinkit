@@ -152,7 +152,6 @@ def update_drink_in_db():
                 "equipment": data_dict["equipment"],
                 "creator": ObjectId(session['_id']),
                 "updated_at": str(datetime.now()),
-                "preferred_spirits": [],
                 "image_url": data_dict["image_url"]}
          }
     )
@@ -163,20 +162,16 @@ def update_drink_in_db():
 @update.route('/user/update/<user_id>', methods=["POST"])
 def add_profile(user_id):
     data = request.data
-    data_dict = json.loads(data)
-    print(data_dict)
-    connection = mongo_connect
+    data_dict = dict(json.loads(data))
+    connection = mongo_connect()
     try:
-        connection["users"].update_one({"_id": ObjectId(user_id)},
-                                       {
-            {"$set": {"profile":
-                      {
-                          "profile_url": data_dict["profile_url"],
-                          "bio": data_dict["bio"]
-                      }
-                      }
-             }
-        }
+        connection["users"].update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": {
+                "profile_pic": data_dict["profile_url"],
+                "bio": data_dict["bio"]
+            }
+            }
         )
         resp = jsonify(success=True)
         return resp

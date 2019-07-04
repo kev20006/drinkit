@@ -38,3 +38,32 @@
     left: 2px;
   }
 }
+
+.sort-btn {
+  color: white;
+  position: relative;
+  border: none;
+  display: block;
+  margin: auto;
+  padding: 0 10px;
+  background: hotpink;
+  box-shadow: 2px 2px black;
+  &:hover {
+    top: 2px;
+    left: 2px;
+  }
+}
+
+.delete-btn {
+  color: white;
+  position: relative;
+  border: none;
+  display: block;
+  margin: auto;
+  background: rgb(168, 26, 26);
+  box-shadow: 2px 2px black;
+  &:hover {
+    top: 2px;
+    left: 2px;
+  }
+}

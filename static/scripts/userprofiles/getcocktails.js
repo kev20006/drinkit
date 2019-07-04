@@ -3,21 +3,18 @@
 const generateMiniCocktailCard = cocktail => {
   const template = document.createElement('div');
   template.className = 'col-12 col-md-6';
-  template.innerHTML = `
-        <div id="${cocktail._id.$oid}"class="d-flex w-100">
-            <div class="image-wrapper mr-2">
-                <img class="img-thumbnail" style="height:100px; width:100px"
-                    src="" />
-            </div>
-            <div class="w-100 text-right pr-2">
-                <h5 class="name"><a><strong></strong></a></h5>
-                <p>Date</p>
-                <div class="contols d-flex justify-content-end"></div>
-            </div>
-
-
-        </div>
-    `;
+  template.innerHTML =
+    `<div id="${cocktail._id.$oid}"class="d-flex w-100">` +
+    `<div class="image-wrapper mr-2">` +
+    `<img onerror="this.onerror=null;this.src='../static/images/placeholder.jpg';" class="cocktail-preview img-thumbnail"` +
+    `style="height:100px; width:100px" />` +
+    `</div>` +
+    `<div class="w-100 text-right pr-2">` +
+    `<h5 class="name"><a><strong></strong></a></h5>` +
+    `<p>Date</p>` +
+    `<div class="contols d-flex justify-content-end"></div>` +
+    `</div>` +
+    `</div>`;
   template.querySelector('.image-wrapper img').src = cocktail.image_url;
   template.querySelector('.name a').href = `/cocktails/${cocktail._id.$oid}`;
   template.querySelector('.name strong').innerText = cocktail.name;

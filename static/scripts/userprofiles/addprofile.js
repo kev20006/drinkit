@@ -1,9 +1,10 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-const addProfile = () => {
+const addProfile = (pic = 'https://makemeacocktail.com/images/no_cocktail.png', bio = '') => {
+  console.log(pic, bio);
   document.querySelector('#profile').innerHTML = `<div class="row px-2">
                             <div class="col-12">
-                                <img src="https://makemeacocktail.com/images/no_cocktail.png" alt="placeholder">
+                                <img src="${pic}" alt="placeholder">
                             </div>
                             <div class="col-12 form-group">
                                 <label for="profile-pic-url">Add an image url for your profile</label>
@@ -11,7 +12,7 @@ const addProfile = () => {
                             </div>
                             <div class="col-12 form-group">
                                 <label for="exampleFormControlTextarea1">Type a short bio about yourself for other users to read</label>
-                                <textarea class="form-control" id="bio" rows="3"></textarea>
+                                <textarea class="form-control" id="bio" rows="3">${bio}</textarea>
                             </div>
                             <div class="col-12 mb-4">
                                 <input type="button" class="modal-button" value="submit profile" onclick="nextAction()"/>

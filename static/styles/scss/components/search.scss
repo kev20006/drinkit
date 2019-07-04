@@ -1,6 +1,16 @@
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .search-or-filter {
   padding-top: 40px;
-
+  padding-bottom: 40px;
+  animation: fadein 0.5s;
   position: fixed;
   height: 100%;
   width: 100%;

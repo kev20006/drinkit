@@ -32,4 +32,29 @@
     top: 2px;
     left: 2px; }
 
+.sort-btn {
+  color: white;
+  position: relative;
+  border: none;
+  display: block;
+  margin: auto;
+  padding: 0 10px;
+  background: hotpink;
+  box-shadow: 2px 2px black; }
+  .sort-btn:hover {
+    top: 2px;
+    left: 2px; }
+
+.delete-btn {
+  color: white;
+  position: relative;
+  border: none;
+  display: block;
+  margin: auto;
+  background: #a81a1a;
+  box-shadow: 2px 2px black; }
+  .delete-btn:hover {
+    top: 2px;
+    left: 2px; }
+
 /*# sourceMappingURL=formcontrols.css.map */
