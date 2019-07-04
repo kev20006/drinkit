@@ -51,6 +51,7 @@
                                 <input style="width:100%; border:none"
                                     list="flavor-list" id="flavor-input"
                                     placeholder="add +"
+                                    oninput="addFlavorListener(this, event)"
                                     onkeypress="addFlavorListener(this, event)">
                                 <div type="button" class="blue"
                                     onclick="addFlavorListener(document.querySelector('#flavor-input'),

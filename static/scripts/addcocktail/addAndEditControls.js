@@ -26,11 +26,14 @@ const addFlavor = trigger => {
   });
   newInput = document.createElement('div');
   newInput.classList.add('flavors', 'mx-2', 'w-xs-50', 'w-md-30', 'w-lg-10', 'd-flex');
-  newInput.innerHTML = `
-    <input style="width:100%; border:none" id="flavor-input" placeholder="add +"  onkeypress="addFlavorListener(this, event)">
-    <div type="button" class="blue" onclick="addFlavorListener(document.querySelector('#flavor-input'), event)">
-            <i class="fas fa-plus"></i>
-    </div>`;
+  newInput.innerHTML =
+    `<input style="width:100%; border:none" id="flavor-input" ` +
+    `placeholder="add +" oninput="addFlavorListener(this, event)" ` +
+    `onkeypress="addFlavorListener(this, event)"> ` +
+    `<div type="button" ` +
+    `class="blue" onclick="addFlavorListener(document.querySelector('#flavor-input'), event)"> ` +
+    `<i class="fas fa-plus"></i> ` +
+    `</div>`;
   document.querySelector('#flavors').appendChild(newInput);
   newInput.querySelector('input').focus();
   document.querySelector('#flavor-list').classList.add('d-none');
@@ -38,8 +41,7 @@ const addFlavor = trigger => {
 
 const addFlavorListener = (trigger, event) => {
   // data list was opening on focus, adding datalist on first input as a work around
-  console.log(event.keyCode);
-  if (!trigger.attributes.list) {
+  if (event.type === 'input' && !trigger.attributes.list) {
     trigger.setAttribute('list', 'flavor-list');
   }
   if ((event.type === 'click' && trigger.value) || [13, 44].indexOf(event.keyCode) !== -1) {
