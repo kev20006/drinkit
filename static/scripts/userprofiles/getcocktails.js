@@ -1,8 +1,44 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-undef */
+const userId = document.querySelector('#user-card').dataset.id;
+const sessionId = document.querySelector('#user-card').dataset.sessionid;
+
+const confirmDelete = trigger => {
+  console.log(trigger);
+  const account =
+    `your account, there is no undoing this action. ` +
+    `Any cocktails attached to this account will not be delete, if you ` +
+    `wish to remove any cocktails, please delete them first then repeat this action`;
+  const { id, name, type } = trigger.dataset;
+  document.querySelector('.delete-name').textContent = type === 'user' ? account : name;
+  document.querySelector('#delete').addEventListener('click', () => {
+    loading(trigger, 'deleting');
+    fetch(`/${type}/delete`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      redirect: 'follow',
+      body: JSON.stringify({ id })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          if (type === 'user') {
+            window.location.replace('/');
+          } else {
+            window.location.reload();
+          }
+        } else {
+          document.querySelector('#delete-error').textContent = 'could not delete';
+        }
+      });
+  });
+};
+
 const generateMiniCocktailCard = cocktail => {
   const template = document.createElement('div');
-  template.className = 'col-12 col-md-6';
+  template.className = 'col-12 col-md-6 py-1';
   template.innerHTML =
     `<div id="${cocktail._id.$oid}"class="d-flex w-100">` +
     `<div class="image-wrapper mr-2">` +
@@ -23,7 +59,7 @@ const generateMiniCocktailCard = cocktail => {
   );
   if (userId === sessionId) {
     const editButton = document.createElement('button');
-    editButton.className = 'btn btn-primary btn-sm';
+    editButton.className = 'sort-btn';
     editButton.innerHTML = `edit <i class="fas fa-pen"></i>`;
     editButton.addEventListener('click', () => {
       editButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> loading...`;
@@ -31,23 +67,16 @@ const generateMiniCocktailCard = cocktail => {
     });
 
     const deleteButton = document.createElement('button');
-    deleteButton.className = 'btn btn-danger btn-sm';
+    deleteButton.className = 'delete-btn';
     deleteButton.innerHTML = `delete <i class="fas fa-trash"></i>`;
+    deleteButton.dataset.toggle = 'modal';
+    deleteButton.dataset.target = '#delete';
+    deleteButton.dataset.id = cocktail._id.$oid;
+    deleteButton.dataset.name = cocktail.name;
+    deleteButton.dataset.type = 'cocktail';
     deleteButton.addEventListener('click', () => {
-      deleteButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> deleting...`;
-      fetch('/cocktail/delete', {
-        method: 'post',
-        body: JSON.stringify({
-          object_id: cocktail._id.$oid
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }).then(() => {
-        window.location.reload();
-      });
+      confirmDelete(deleteButton);
     });
-
     template.querySelector('.contols').appendChild(editButton);
     template.querySelector('.contols').appendChild(deleteButton);
   }

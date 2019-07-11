@@ -24,7 +24,17 @@
         <p>You have not yet added a profile</p>
         <div class="d-flex justify-content-around">
           <button class="sort-btn" onclick="addProfile()">Add Profile</button>
-          <button class="delte-btn" onclick="addProfile()">Delete Account</button>
+          <button
+            class="delete-btn"
+            data-toggle="modal"
+            data-target="#delete"
+            data-id="{{ user._id | string }}"
+            data-name="{{ user.username }}"
+            data-type="user"
+            onclick="confirmDelete(this)"
+          >
+            Delete Account
+          </button>
         </div>
         {% else %}
         <div class="col-12">
@@ -44,7 +54,17 @@
             >
               Edit Profile
             </button>
-            <button class="delete-btn" onclick="addProfile()">Delete Account</button>
+            <button
+              class="delete-btn"
+              data-toggle="modal"
+              data-target="#delete"
+              data-id="{{ user._id | string }}"
+              data-name="{{ user.username }}"
+              data-type="user"
+              onclick="confirmDelete(this)"
+            >
+              > Delete Account
+            </button>
           </div>
         </div>
         {% endif %} {% else %} {% if user.profile_pic is not defined %}
@@ -68,13 +88,24 @@
     </div>
   </div>
 </main>
+<!-- Delete Modal -->
+<div id="delete" class="modal fade" aria-labelledby="delete" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="d-flex justify-content-between mt-2 px-2">
+        <h3 class="pink">Confirm Delete</h3>
+        <h3 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h3>
+      </div>
+      <p>
+        Are you sure you want to delete
+        <span class="delete-name"> Placeholder</span>
+      </p>
+      <p id="delete-error"></p>
+      <button class="delete-btn" id="delete">Delete</button>
+    </div>
+  </div>
+</div>
 {% endblock %} {% block scripts %}
-<script>
-  // userId and Session ID added to globabl name space for use for the
-  // two following functions getCocktails and add profile
-  const userId = document.querySelector('#user-card').dataset.id;
-  const sessionId = document.querySelector('#user-card').dataset.sessionid;
-</script>
 <script src="../static/scripts/userprofiles/getcocktails.js"></script>
 <script src="../static/scripts/userprofiles/addprofile.js"></script>
 
