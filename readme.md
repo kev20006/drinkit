@@ -74,12 +74,69 @@ Another important aspect of drinkit is to develop a sense of community for the u
 2. The Application must differentiate between registered and unregistered users
 3. Users must be able to add content to the database without directly interfacing with the database itself.
 4. All data sent to the server should be validated such that it prevents XSS or SQL Injection
+5. Users actions must feel meaningful and provide suitable feedback.
+6. The app should be responsive and work equally well on all devices including:
+   * mobiles
+   * tablets
+   * laptops
+   * desktops - up to 4K resolution
+7. Users should be able to search the database, and filter search results in meaningful ways
+8. The app should work in all browser.
+
+### Functional Requirements
+
+1. The App should be intuitive and easy to use
+2. The App should be eye-catching yet easy to read
+
+
+### Content Requirements
+
+1. All content should be user submitted and therefore appropriately validated and verified
+2. Content should persist through database changes, i.e. if a user deletes their account, all their cocktails shouldn't be deleted with them. 
 
 ## UX - Structure
 
+The site is stuctured such that is has 3 main views with a persistant navigation bar that allows users to perform most core functionality at any point throughout the add
+
+When the uses land on the site they will be displayed with a stream of cocktail cards in a similar fashion to sites like reddit or social media sites - showing the most recently added cocktails first (this can be changed to show the highest rated cocktails first instead), on larger screens a side menu will display key information about the site, user preferences and a a register button / login and some other app controls for registered users.
+
+This same view is used for rendering the results of filters.
+
+To add or edit a cocktail a full page form is displayed in a new view. This form is split into sections, a details section, an ingredients and equipment section and a method section. To not overwhelm the user, ingredient and method fields should be added dynamically as the user needs them.
+
+Viewing a cocktail renders a third view that displays the cocktails information in the same groups as in the add/edit, but fields are uneditable in this view.
+
+The final view is the user profile. User profiles show an optional picture of the user along with a short bio, as well as a list of all the cocktails that the user has submit.
+
+In regard to the order of information on the page. As is conventional the left of the navbar has the logo, which links back to the index. I felt that the when most people are looking for cocktails the most important consideration is what alcohol is in it, so immediately after the logo is a quick filter to allow users to filter the database by spirit. On the right hand of the navbar are more advanced controls, a detailed filter and search (the search function users usernames, cocktail names, flavors and ingredients simulataneously to reduce additional menus), after those options are login /logout and a link to the users own profile assuming if they are logged in, whilst not the most important part of the site, i felt that displaying the username and link here in the nav bar allows the user to determine if they are logged in at a glance.
+
+On mobile login, profiles are hidden behind a hamburger menu, along with controls to add new cocktails, view random cocktail and manage favorites and starred cocktails. On larger screens these options are displayed in a sticky side menu.
+
 ## UX - Skeleton
 
+All main interface elements will be rendered as cards, that will be display in a vertical stream from top to bottom. Originally this stream was going to use infinite scrolling and render more cards as a user scrolled to the bottom of the page, but this was scrapped because of performance issues and instead cards are rendered 5 per page.
+
+To keep the ui clean the navbar hides iteself on scroll down and unhides whenever the user scrolls up.
+
+Cards differentiate a little between screen layouts, small screens render a vertical cards where all details run from top to bottom, whereas larger screens display the image on the left and render the card details on the right.
+
+Attached in the this repo in the **name folder here**
+
+Wireframes are evaluated against final production version here
+
 ## UX - Surface
+
+I had intially opted for a very plain UI, comprising of mostly default bootstrap components, however, when browsing other cocktail sites, to get ideas for reciepes i noticed that many of them were quite visually striking. I was particularly taken by the Brutalist design of [Esquire](https://www.esquire.com/food-drink/) - and took some key design points from that along with other brutalist sites like [dev.to](https://dev.to/)
+
+### Colors
+I chose blue and hotpink for my main colors as they are both striking and eye catching colours, but also strongly contrast, whih creates a nice aesthetic. For most interface elements i chose to use heavy borders as opposed to more subtle drop shadows to give the whole site a retro feel. The color scheme compined with the overlapping content creates a very retro 1990's feel, which should resonate with most people who are old enough to enjoy cocktails.
+
+### Iteractions
+All clickable links underline when they are hovered, again this is a throwback to websites of yesteryear when all hyperlinks were blue and underlined.
+
+Interactions on the page that send requests to the server all display a loading spinner while the are waiting for a response from the server.
+
+## Data
 
 ## Features
 
