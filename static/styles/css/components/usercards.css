@@ -1,0 +1,11 @@
+#user-card .name a {
+  color: white;
+  background-color: hotpink;
+  text-decoration: underline;
+  transition: all 0.5s; }
+  #user-card .name a:hover {
+    text-decoration-color: blue; }
+  #user-card .name a:active {
+    color: blue; }
+
+/*# sourceMappingURL=usercards.css.map */

@@ -4,6 +4,7 @@ from flask import Blueprint, request, jsonify
 
 from bson import ObjectId
 from .utils import mongo_connect
+from .login_logout import logout
 
 delete = Blueprint('delete', __name__)
 
@@ -15,13 +16,16 @@ def delete_cocktail():
     """
     data = request.data
     cocktail = json.loads(data)
-    print(cocktail)
     connection = mongo_connect()
-    connection["cocktails"].delete_one({
-        "_id": ObjectId(cocktail["object_id"])
-    })
-    resp = jsonify(success=True)
-    return resp
+    try:
+        connection["cocktails"].delete_one({
+            "_id": ObjectId(cocktail["id"])
+        })
+        resp = jsonify(success=True)
+        return resp
+    except:
+        resp = jsonify(success=False)
+        return resp
 
 
 @delete.route('/user/delete', methods=["POST"])
@@ -32,8 +36,12 @@ def delete_user():
     data = request.data
     user = json.loads(data)
     connection = mongo_connect()
-    connection["cocktails"].delete_one({
-        "_id": ObjectId(cocktail["object_id"])
-    })
-    resp = jsonify(success=True)
-    return resp
+    try:
+        connection["users"].delete_one({
+            "_id": ObjectId(user["id"])
+        })
+        resp = jsonify(success=True)
+        logout()
+        return resp
+    except:
+        resp = jsonify(success=False)

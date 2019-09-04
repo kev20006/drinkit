@@ -1,6 +1,7 @@
 import json
+import random
 
-from flask import Blueprint, session, render_template
+from flask import Blueprint
 from bson import ObjectId
 from bson.json_util import dumps
 
@@ -14,6 +15,10 @@ api = Blueprint('api', __name__)
 @api.route('/api/ingredients/')
 @api.route('/api/ingredients/<type>')
 def get_ingredients_by_type(type=None):
+    """
+    returns a details on all of all ingredients given no parameter
+    given an id returns details of a specific ingredient
+    """
     connection = mongo_connect()
     if not type:
         ingredients = connection["ingredients"].find({})
@@ -25,6 +30,10 @@ def get_ingredients_by_type(type=None):
 @api.route('/api/flavors/')
 @api.route('/api/flavors/<id>')
 def get_flavors(id=None):
+    """
+    returns a details on all flavors if given no parameter
+    given an id returns details of a specific flavor
+    """
     connection = mongo_connect()
     if id:
         flavors = connection["flavors"].find({"_id": ObjectId(id)})
@@ -35,6 +44,9 @@ def get_flavors(id=None):
 
 @api.route('/api/comments/<cocktail_id>')
 def get_comments(cocktail_id):
+    """
+    fetches all comments on a cocktail given it's ID
+    """
     connection = mongo_connect()
     comments = connection["comments"].aggregate(
         [
@@ -62,6 +74,9 @@ def get_comments(cocktail_id):
 
 @api.route('/api/cocktails/')
 def get_all_cocktails():
+    """
+    returns a list of all cocktails
+    """
     connection = mongo_connect()
     cocktails = connection["cocktails"].find({})
     return dumps(cocktails)
@@ -78,11 +93,30 @@ def get_cocktails_by_user(user_id):
 
 @api.route('/api/cocktail/<cocktail_id>')
 def get_cocktails_by_id(cocktail_id):
+    """
+    return JSON details for a cocktail of given id
+    """
     connection = mongo_connect()
-    cocktail = connection["cocktails"].find_one({
-        "_id": ObjectId(cocktail_id)
-    })
-    return dumps(cocktail)
+    try:
+        cocktail = connection["cocktails"].find_one({
+            "_id": ObjectId(cocktail_id)
+        })
+        return dumps(cocktail)
+    except:
+        return dumps({"error": "no cocktail found"})
+
+
+@api.route('/api/cocktail')
+def get_random_cocktail():
+    """
+    return JSON details for a random cocktail
+    """
+    try:
+        connection = mongo_connect()
+        cocktails = list(connection["cocktails"].find({}))
+        return dumps(cocktails[random.randint(0, len(cocktails) - 1)])
+    except:
+        return dumps({"error": "no cocktail found"})
 
 
 @api.route('/api/check_user/<name>')
@@ -100,7 +134,20 @@ def check_user_exists(name):
         return "False"
 
 
-def get_ingredient_and_flavor_list(dataDict):
+@api.route('/api/users/')
+def get_all_users():
+    """
+    returns a list of all users and their Ids
+    """
+    try:
+        connection = mongo_connect()
+        user = connection["users"].find({}, {"_id": 1, "username": 1})
+        return dumps(user)
+    except:
+        return dumps({"Success": False})
+
+
+def get_ingredient_and_flavor_list(data_dict):
     """
     function take an array of flavor and ingredient names
     and returns arrays of the corresponding ids
@@ -108,7 +155,7 @@ def get_ingredient_and_flavor_list(dataDict):
     ingredients = json.loads(get_ingredients_by_type())
     flavors = json.loads(get_flavors())
     flavor_ids = []
-    for i in dataDict["flavors"]:
+    for i in data_dict["flavors"]:
         if any(j["name"] == i for j in flavors):
             for j in flavors:
                 if j["name"] == i:
@@ -119,7 +166,7 @@ def get_ingredient_and_flavor_list(dataDict):
             )
 
     ingredient_ids = []
-    for i in dataDict["ingredients"]:
+    for i in data_dict["ingredients"]:
         if any(j["name"] == i["name"] for j in ingredients):
             for j in ingredients:
                 if j["name"] == i["name"]:

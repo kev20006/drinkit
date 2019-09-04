@@ -3,247 +3,303 @@
 
 
 {% block content %}
-    <main class="container" data-id="{{ session['_id'] }}">
-        <div class="row d-md-none my-2 mx-0">
-            <div class="card col-12 px-0">
-                <div class="card-header pink">
-                    <h5> Welcome to Drinkit</h5>
+{% set add_flavor, add_ingredient = "" ,"" %}
+{% set remove_flavor, remove_ingredient = "" ,"" %}
+{% if session['username'] %}
+    {% set add_flavor, add_ingredient = "addFavorite(this ,'favorite_flavors')" ,"addFavorite(this ,'favorite_ingredients')" %}   
+    {% set remove_flavor, remove_ingredient = "removeFavorite(this ,'favorite_flavors')" ,"removeFavorite(this ,'favorite_ingredients')" %}
+{% endif %}
+<main class="container" data-user="{{ session['_id'] }}">
+    <div class="container row mx-0 px-0">
+        <div class="col-xs-12 col-md-8">
+            <div class="card mt-4">
+                <div class="card-header blue">
+                    <h5> Sort By: </h5>
                 </div>
-                <div class="card-body">
-                    {% if session['username'] %}
-                        <a href="{{ url_for('add_drink.new_drink') }}"><i
-                            class="fas fa-cocktail"></i>New Drink</a>
-                    {% else %}
-                        <a class="waves-effect waves-light btn modal-trigger" data-toggle="modal" data-target="#sign-up"><i class="fas fa-cocktail"></i>Join
-                            Today</a>
-                    {% endif %}
-                    <a href="{{ url_for('home.index', page=1, filter='recent') }}">
-                        <span><i class="fas fa-hourglass-start"></i></span>
-                    </a>
-                    <a href="{{ url_for('home.index', page=1, filter='popular' ) }}">
-                        <span><i class="fas fa-chart-line"></i></span>
-                    </a>
-                    
+                <div class="d-flex justify-content-around">
+                    <div>
+                        <a class="sort-btn my-1" href="{{ url_for('home.index', page=1,
+                            filter='recent') }}">
+                            <span><i class="fas fa-hourglass-start"></i>Most
+                                Recent</span>
+                        </a>
+                    </div>
+                    <div>
+                        <a class="sort-btn my-1" href="{{ url_for('home.index', page=1,
+                            filter='popular' ) }}">
+                            <span><i class="fas fa-chart-line"></i>Most Popular</span>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-       
-        <div class="container row mx-0 px-0">
-            <div class="col-xs-12 col-md-8">
-                <!-- start of card-->
-                {% for cocktail in cocktails %}
-                <div class="card my-4" data-hyperlink="{{ url_for('profiles.view_cocktail', cocktail_id = cocktail._id)}}" onclick="viewCocktail(this, event)">
-                    <div class="row mx-0 pr-2">
-                        <div class="img-wrapper d-none d-lg-block col-lg-4" style="background:url({{cocktail.image_url}}); background-position: center;background-size: cover;">
-                        </div>
-                        <img class="card-img-top col-12 d-lg-none h-100" src="{{ cocktail.image_url }}"
-                                onerror="this.onerror=null;this.src='../static/images/placeholder.jpg';">
-                        <div class="card-body col-12 col-lg-8">
-                            <div class="row">
-                                <div>
-                                    <h3 class="title">{{ cocktail.name }}</h3>
-                                </div>
-                        
-                                <div class="d-flex like-view">
-                                    {% if session['username'] %}
-                                    {%  if cocktail._id in user.starred_cocktails %}
-                                    <h3 class="cocktails"><i class="fas fa-star clickable" data-id="{{cocktail._id}}"
-                                            data-user="{{session['_id']}}" onclick="removeFavorite(this, 'starred_cocktails')"></i></h3>
-                                    {% else %}
-                                    <h3 class="cocktails"><i class="far fa-star clickable" data-id="{{cocktail._id}}"
-                                            data-user="{{session['_id']}}" onclick="addFavorite(this , 'starred_cocktails')"></i></h3>
-                                    {% endif %}
-                                    {% endif %}
-                                </div>
-                        
+            <!-- start of card-->
+            {% for cocktail in cocktails %}
+            <div class="card my-4">
+                <div class="row mx-0 pr-2">
+                    <div class="img-wrapper d-none d-lg-block col-lg-4"
+                        style="background: url({{cocktail.image_url}}), url(../static/images/placeholder.jpg);
+                        background-position: center;background-size: cover;">
+                    </div>
+                    <img class="card-img-top col-12 d-lg-none h-100" src="{{
+                        cocktail.image_url }}"
+                        onerror="this.onerror=null;this.src='../static/images/placeholder.jpg';">
+                    <div class="card-body col-12 col-lg-8">
+                        <div class="row name-wrapper">
+                            <div>
+                                <h3 class="title">
+                                    <a href="{{url_for('profiles.view_cocktail', cocktail_id= cocktail._id)}}">
+                                    {{ cocktail.name }}
+                                    </a>
+                                </h3>
                             </div>
-                            <hr>
-                            <div class="row d-flex">
-                                <strong>SPIRITS:</strong><br>
-                        
-                                {% for spirit in cocktail.ingredient_list %}
-                                {%  if spirit.type == "spirit" %}
-                                <span class="ingredients spirit">
-                                    {{ spirit.name }}
-                                    {% if session['username'] %}
-                                    {%  if spirit._id in user.favorite_ingredients %}
-                                    <i class="fas fa-heart clickable" data-id="{{spirit._id}}" data-name="{{ spirit.name }}"
-                                        data-user="{{session['_id']}}" onclick="removeFavorite(this , 'favorite_ingredients')"></i>
-                                    {% else %}
-                                    <i class="far fa-heart clickable" data-id="{{spirit._id}}" data-name="{{ spirit.name }}"
-                                        data-user="{{session['_id']}}" onclick="addFavorite(this , 'favorite_ingredients')"></i>
-                                    {% endif %}
-                                    {% endif %}
-                                </span>
+
+                            <div class="d-flex like-view">
+                                {% if session['username'] %}
+                                {% if cocktail._id in user.starred_cocktails %}
+                                <h3 class="cocktails">
+                                    <i id="star-{{cocktail._id}}" 
+                                        class="fas fa-star
+                                        clickable" data-name="{{ cocktail.name
+                                        }}" data-id="{{cocktail._id}}"
+                                        data-user="{{session['_id']}}"
+                                        onclick="removeFavorite(this,
+                                        'starred_cocktails')">
+                                    </i>
+                                </h3>
+                                {% else %}
+                                <h3 class="cocktails">
+                                    <i id="star-{{cocktail._id}}"
+                                        class="far fa-star clickable"
+                                        data-name="{{ cocktail.name }}"
+                                        data-id="{{cocktail._id}}"
+                                        data-user="{{session['_id']}}"
+                                        onclick="addFavorite(this ,
+                                        'starred_cocktails')"></i></h3>
                                 {% endif %}
-                                {% endfor %}
-                        
+                                {% endif %}
                             </div>
-                            <div class="row">
+
+                        </div>
+                        <hr>
+                        <!-- Spirit Tags -->
+                        <div class="row">
+                            <strong>SPIRITS:</strong>
+                            {% for spirit in cocktail.ingredients %}
+                            {% if spirit.type == "spirit" %}
+                            {% if spirit.ingredient in user.favorite_ingredients %}
+                            <span class="ingredients spirit"
+                                data-id="{{spirit.ingredient}}"
+                                data-user="{{session['_id']}}"
+                                onclick="{{ remove_ingredient }}">
+                                <span class="ing-{{spirit.ingredient}}"></span>
+                                {% if session['username'] %}
+                                <i class="fas fa-heart clickable"></i>
+                                {% endif %}
+                            </span>
+
+                            {% else %}
+                            <span class="ingredients spirit"
+                                data-id="{{spirit.ingredient}}"
+                                data-user="{{session['_id']}}"
+                                onclick="{{ add_ingredient }}">
+                                <span class="ing-{{spirit.ingredient}}"></span>
+                                {% if session['username'] %}
+                                <i class="far fa-heart clickable"></i>
+                                {% endif %}
+                            </span>
+                            {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        <!-- End of Spirit Tags -->
                         
-                                <strong>FLAVORS:</strong>
-                        
-                                {% for flavor in cocktail.flavors %}
-                                <span class="flavors">
-                                    {{ flavor.name }}
+                        <div class="row">
+                            <!-- Flavor Tags -->
+                            {% if cocktail.flavor_tags | length > 0 %}
+                            <strong>FLAVORS:</strong>
+
+                            {% for flavor in cocktail.flavor_tags %}
+
+                            {% if flavor in user.favorite_flavors %}
+                            <span class="flavors" data-id="{{flavor}}"
+                                data-user="{{session['_id']}}"
+                                onclick="{{ remove_flavor }}">
+                                <span class="flav-{{flavor}}"></span>
+                                {% if session['username'] %}
+                                <i class="fas fa-heart clickable"></i>
+                                {% endif %}
+                            </span>
+                            {% else %}
+                            <span class="flavors" data-id="{{flavor}}"
+                                data-user="{{session['_id']}}"
+                                onclick="{{ add_flavor }}">
+                                <span class="flav-{{flavor}}"></span>
+                                {% if session['username'] %}
+                                <i class="far fa-heart clickable"></i>
+                                {% endif %}
+                            </span>
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                        <!-- End of Flavor tags-->
+                        <div class="row">
+                            <p>{{ cocktail.description[:350] }}{% if
+                                cocktail.description|length > 350 %}...{% endif
+                                %}</p>
+                        </div>
+                    </div>
+                    <div class="w-100">
+                        <div class="d-flex justify-content-between">
+                            <div class="mr-2 text-center foot foot-left">
+                                <p class="pink"> Upvotes </p>
+                                <h5 class="pink">
                                     {% if session['username'] %}
-                                    {%  if flavor._id in user.favorite_flavors %}
-                                    <i class="fas fa-heart clickable" data-id="{{flavor._id}}" data-name="{{ flavor.name }}"
-                                        data-user="{{session['_id']}}" onclick="loading(this); removeFavorite(this , 'favorite_flavors')"></i>
+                                    {% if user._id|string in
+                                    cocktail.votes.upvotes %}
+                                    <i class="far fa-arrow-alt-circle-up voted
+                                        clickable" data-id="{{cocktail._id}}"
+                                        data-user="{{session['_id']}}"
+                                        onclick="vote(this, 'up', 'cocktails')"></i>
                                     {% else %}
-                                    <i class="far fa-heart clickable" data-id="{{flavor._id}}" data-name="{{ flavor.name }}"
-                                        data-user="{{session['_id']}}" onclick="loading(this); addFavorite(this , 'favorite_flavors')"></i>
+                                    <i class="far fa-arrow-alt-circle-up
+                                        clickable" data-id="{{cocktail._id}}"
+                                        data-user="{{session['_id']}}"
+                                        onclick="vote(this, 'up', 'cocktails')"
+                                        disabled></i>
                                     {% endif %}
                                     {% endif %}
-                                </span>
-                                {% endfor %}
+                                    <span class="vote-count">{{
+                                        cocktail.votes.upvotes|length -
+                                        cocktail.votes.downvotes|length }}</span>
+                                    {% if session['username'] %}
+                                    {% if user._id|string in
+                                    cocktail.votes.downvotes %}
+                                    <i class="far fa-arrow-alt-circle-down voted
+                                        clickable" data-id="{{cocktail._id}}"
+                                        data-user="{{session['_id']}}"
+                                        onclick="vote(this, 'down',
+                                        'cocktails')"></i>
+                                    {% else %}
+                                    <i class="far fa-arrow-alt-circle-down
+                                        clickable" data-id="{{cocktail._id}}"
+                                        data-user="{{session['_id']}}"
+                                        onclick="vote(this, 'down',
+                                        'cocktails')"></i>
+                                    {% endif %}
+                                    {% endif %}
+                                </h5>
                             </div>
-                            <div class="row">
-                                <p>{{ cocktail.description[:350] }}{% if cocktail.description|length > 350 %}...{% endif %}</p>
-                            </div>
-                        </div>
-                        <div class="w-100">
-                            <div class="d-flex justify-content-between">
-                                <div class="mr-2 text-center foot foot-left">
-                                    <p class="pink"> Upvotes </p>
-                                    <h5 class="pink">
-                                        {% if session['username'] %}
-                                        {% if user._id|string in cocktail.votes.upvotes %}
-                                        <i class="far fa-arrow-alt-circle-up voted clickable" data-id="{{cocktail._id}}"
-                                            data-user="{{session['_id']}}" onclick="vote(this, 'up', 'cocktails')"></i>
-                                        {% else %}
-                                        <i class="far fa-arrow-alt-circle-up clickable" data-id="{{cocktail._id}}"
-                                            data-user="{{session['_id']}}" onclick="vote(this, 'up', 'cocktails')" disabled></i>
-                                        {% endif %}
-                                        {% endif %}
-                                        <span class="vote-count">{{ cocktail.votes.upvotes|length - cocktail.votes.downvotes|length }}</span>
-                                        {% if session['username'] %}
-                                        {% if user._id|string in cocktail.votes.downvotes %}
-                                        <i class="far fa-arrow-alt-circle-down voted clickable" data-id="{{cocktail._id}}"
-                                            data-user="{{session['_id']}}" onclick="vote(this, 'down', 'cocktails')"></i>
-                                        {% else %}
-                                        <i class="far fa-arrow-alt-circle-down clickable" data-id="{{cocktail._id}}"
-                                            data-user="{{session['_id']}}" onclick="vote(this, 'down', 'cocktails')"></i>
-                                        {% endif %}
-                                        {% endif %}
-                                    </h5>
-                                </div>
-                                <div class="mr-2 text-right foot foot-right">
-                                    <p class="blue"><small> a drink by <a
-                                                href="{{ url_for('profiles.view_user_profile', user_id=cocktail.creator._id) }}">{{ cocktail.creator.username }}</a></small>
-                                    </p>
-                                    <p class="blue"><small class="timestamp">{{ cocktail.created_at }}</small></p>
-                                </div>
+                            <div class="mr-2 text-right foot foot-right">
+                                <p class="blue"><small> a drink by <a
+                                            class="made-by
+                                            user-{{cocktail.creator}}"
+                                            href="{{
+                                            url_for('profiles.view_user_profile',
+                                            user_id=cocktail.creator) }}"></a></small>
+                                </p>
+                                <p class="blue"><small class="timestamp">{{
+                                        cocktail.created_at }}</small></p>
                             </div>
                         </div>
                     </div>
                 </div>
-                {% endfor %}
-                <!-- End of Card -->
             </div>
-            <!-- Start of Sticky Column -->
-            <div id="controls" class="col-4 d-none d-md-block">
-                <div style="top:40px;">
-                    <div class="card mt-4">
-                        <div class="card-header pink">
-                            <h5> Welcome to Drinkit</h5>
-                        </div>
-                        <div class="card-content center">
-                            {% if session['username'] %}
-                            <a class="waves-effect waves-light btn modal-trigger" href="{{ url_for('add_drink.new_drink') }}"><i
-                                    class="fas fa-cocktail"></i>New Drink</a>
-                            {% else %}
-                            <a class="waves-effect waves-light btn modal-trigger" data-toggle="modal" data-target="#sign-up"><i
-                                    class="fas fa-cocktail"></i>Join Today</a>
-                            {% endif %}
-                            <a href="{{ url_for('home.index', page=1, filter='recent') }}">
-                                <span><i class="fas fa-hourglass-start"></i></span>
-                            </a>
-                            <a href="{{ url_for('home.index', page=1, filter='popular' ) }}">
-                                <span><i class="fas fa-chart-line"></i></span>
-                            </a>
-                        </div>
-                    </div>
-                    {% if session['username'] %}
-                    <div class="card mt-4">
-                        <div class="card-header blue">
-                            <h5> Starred Cocktails </h5>
-                        </div>
-                        <div class="card-content center">
-                            <ul id="starred-list" class="list-group">
-                                {% for starred in user.starred_cocktails %}
-                                <li id="{{ starred }}" data-id="{{ starred }}" class="list-group-item">{{ starred }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                    {% endif %}
-                    <div class="card mt-4">
-                        <div class="card-header pink">
-                            <h5> Favorites </h5>
-                        </div>
-                        <div class="card-content center">
-                            {% if session['username'] %}
-                            <ul id="flavor-list" class="list-group">
-                                <li class="list-group-item d-flex justify-content-around">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-flavors" aria-expanded="true"
-                                        aria-controls="collapse-flavors">
-                                        Show Favorite Flavors
-                                    </button></strong></li>
-                                <div id="collapse-flavors" class="collapse" aria-labelledby="headingOne">
-                                    {% for flavor in user.favorite_flavors %}
-                                    <li data-id="{{ flavor }}" class="list-group-item">{{ flavor }}</li>
-                                    {% endfor %}
-                                </div>
-                            </ul>
-                            <ul id="ingredient-list" class="list-group">
-                                <li class="list-group-item d-flex justify-content-around">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-ingredients"
-                                        aria-expanded="true" aria-controls="collapse-ingredients">
-                                        Show Favorite Ingredients
-                                    </button></strong></li>
-                                <div id="collapse-ingredients" class="collapse" aria-labelledby="headingOne">
-                                    {% for ingredient in user.favorite_ingredients %}
-                                    <li data-id="{{ ingredient }}" class="list-group-item">{{ ingredient }} </li>
-                                    {% endfor %}
-                                </div>
-                            </ul>
-                            {% else %}
-                            <p>As a member of drinkit you will be able to immediately jump to recipes related to your favorites ingredients
-                                and flavors from this menu</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <!-- End of Sticky Column -->
-            </div>
-            <!-- end of controls column -->
+            {% endfor %}
+            <!-- End of Card -->
         </div>
-        <!-- End of body-->
-        <div class= "d-flex justify-content-center" id="paginaiton" class="row mx-0 px-0">
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    {% for i in range(pages) %}
-                        {% if i+1 == current_page | int %}
-                        <li class="page-item active">
-                            <a class="page-link" href="{{ url_for('home.index', page=(i+1), filter=filter) }}">{{ (i+1) }} <span class="sr-only">(current)</span></a>
-                        </li>
+        <!-- Start of Sticky Column -->
+        <div id="controls" class="col-4 d-none d-md-block">
+            <div class="sticky-top" style="top:20px;">
+                <div class="card mt-4">
+                        <div class="card-header pink">
+                                <h5> Welcome to Drinkit</h5>
+                            </div>
+                            <div class="card-content center">
+                                <ul class="list-group">
+                                {% if session['username'] %}
+                                <li class="list-group-item">
+                                    <a href="{{ url_for('add_drink.new_drink') }}"><i
+                                            class="fas fa-cocktail mr-4"></i>New Drink</a>
+                                </li>
+                                {% else %}
+                                <li class="list-group-item">
+                                    <a data-toggle="modal" data-target="#sign-up"><i
+                                            class="fas fa-cocktail mr-4"></i>Join Today</a>
+                                    {% endif %}
+                                </li>
+                                <li class="list-group-item">
+                                    <a 
+                                        href="{{ url_for('profiles.view_cocktail', cocktail_id= 'random') }}"><i class="fas fa-dice mr-4"></i>Random Drink</a>
+                                    </ul>
+                                </li>
+                            </div>
+                </div>
+                <div class="card mt-4">
+                    <div class="card-header pink">
+                        <h5> Favorites </h5>
+                    </div>
+                    <div class="card-content center">
+                        {% if session['username'] %}
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <button class="btn btn-link" data-toggle="modal"
+                                    data-target="#starred-menu">
+                                    Starred Cocktails
+                                </button>
+                            </li>
+                            <li class="list-group-item">
+                                <button class="btn btn-link" data-toggle="modal"
+                                    data-target="#fave-flav-menu">
+                                    Favorite Flavors
+                                </button>
+                            </li>
+                            <li class="list-group-item">
+                                <button class="btn btn-link" data-toggle="modal"
+                                    data-target="#fave-ing-menu">
+                                    Favorite Ingredients
+                                </button>
+                            </li>
+                        </ul>
                         {% else %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ url_for('home.index', page=(i+1), filter=filter) }}" > {{ (i+1) }}</a>
-                        </li>
+                        <p>As a member of drinkit you will be able to
+                            immediately jump to recipes related to your
+                            favorites ingredients
+                            and flavors from this menu</p>
                         {% endif %}
-                    {% endfor %}
-                </ul>
-            </nav>
+                    </div>
+                </div>
+            </div>
+            <!-- End of Sticky Column -->
         </div>
-    </main>
+        <!-- end of controls column -->
+    </div>
+    <!-- End of body-->
+    <div class="d-flex justify-content-center" id="paginaiton" class="row mx-0
+        px-0">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% for i in range(pages) %}
+                {% if i+1 == current_page | int %}
+                <li class="page-item active">
+                    <a class="page-link" href="{{ url_for('home.index',
+                        page=(i+1), filter=filter) }}">{{ (i+1) }} <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('home.index',
+                        page=(i+1), filter=filter) }}"> {{ (i+1) }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+</main>
 {% endblock %}
 {% block scripts %}
-    {% if session['username'] %}
-        <script src="/static/scripts/updateAside.js" charset="utf-8"></script>
-    {% endif %}
-    <script src="/static/scripts/viewcocktail.js" charset="utf-8"></script>
-    
+<script src="/static/scripts/viewcocktail.js" charset="utf-8"></script>
+
 
 {% endblock %}

@@ -4,8 +4,7 @@ from datetime import datetime
 from flask import Blueprint, session, render_template, request, jsonify
 from bson import ObjectId
 
-from .utils import mongo_connect
-from .api import get_ingredients_by_type, get_flavors
+from .utils import mongo_connect, get_user
 from .api import get_ingredient_and_flavor_list
 
 update = Blueprint('update', __name__)
@@ -96,6 +95,7 @@ def update_cocktail(cocktail_id):
     route to update a cocktails details
     """
     if "_id" in session:
+        user = get_user()
         if ObjectId.is_valid(cocktail_id):
             connection = mongo_connect()
             cocktail = connection["cocktails"].aggregate([
@@ -113,12 +113,13 @@ def update_cocktail(cocktail_id):
             if cocktail:
                 cocktailDetails = {}
                 for i in cocktail:
-                    cocktailDetails = i               
+                    cocktailDetails = i
                 if "creator" in cocktailDetails:
                     if cocktailDetails['creator'] == ObjectId(session["_id"]):
                         return render_template(
                             'editcocktail.html',
-                            cocktail=cocktailDetails
+                            cocktail=cocktailDetails,
+                            user=user
                         )
     return render_template('notfound.html'), 404
 
@@ -129,8 +130,6 @@ def update_drink_in_db():
     function called from the cocktail form to add a drink to the
     database using AJAX
     """
-    ingredients = json.loads(get_ingredients_by_type(None))
-    flavors = json.loads(get_flavors())
     data = request.data
     data_dict = json.loads(data)
 
@@ -138,49 +137,44 @@ def update_drink_in_db():
     # index 0: list of flavors
     # index 1: is a list of ingredients
     ingredients_and_flavors = get_ingredient_and_flavor_list(data_dict)
+    print(data_dict)
+    print(ingredients_and_flavors)
     connection = mongo_connect()
     connection["cocktails"].update_one(
         {"_id": ObjectId(data_dict["id"])},
         {"$set":
             {"name": data_dict["name"],
-             "description": dataDict["description"],
-             "flavor_tags": ingredients_and_flavors[0],
-             "ingredients": ingredients_and_flavors[1],
-             "method": data_dict["instructions"],
-             "glass": data_dict["glass"],
-             "equipment": data_dict["equipment"],
-             "creator": ObjectId(session['_id']),
-             "updated_at": str(datetime.now()),
-             "preferred_spirits": [],
-             "image_url": data_dict["image_url"]}
+                "description": data_dict["description"],
+                "flavor_tags": ingredients_and_flavors[0],
+                "ingredients": ingredients_and_flavors[1],
+                "method": data_dict["instructions"],
+                "glass": data_dict["glass"],
+                "equipment": data_dict["equipment"],
+                "creator": ObjectId(session['_id']),
+                "updated_at": str(datetime.now()),
+                "image_url": data_dict["image_url"]}
          }
     )
     resp = jsonify(success=True)
     return resp
 
 
-@update.route('/user_profile/update/<user_id>', methods=["POST"])
-def add_or_update_userprofile(user_id):
+@update.route('/user/update/<user_id>', methods=["POST"])
+def add_profile(user_id):
     data = request.data
-    data_dict = json.loads(data)
+    data_dict = dict(json.loads(data))
     connection = mongo_connect()
-    print(user_id)
-    print(data_dict)
     try:
         connection["users"].update_one(
-                {"_id": ObjectId(user_id)},
-                {"$set":
-                    {
-                     "profile_pic": data_dict["profile_pic"],
-                     "bio": data_dict["bio"]
-                    }
-                 }
-            )
+            {"_id": ObjectId(user_id)},
+            {"$set": {
+                "profile_pic": data_dict["profile_url"],
+                "bio": data_dict["bio"]
+            }
+            }
+        )
         resp = jsonify(success=True)
-        print(data_dict)
         return resp
     except:
-        print("I'm doing this")
         resp = jsonify(success=False)
         return resp
-

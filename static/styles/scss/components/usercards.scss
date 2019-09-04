@@ -1,0 +1,16 @@
+#user-card {
+  .name {
+    a {
+      color: white;
+      background-color: hotpink;
+      text-decoration: underline;
+      transition: all 0.5s;
+      &:hover {
+        text-decoration-color: blue;
+      }
+      &:active {
+        color: blue;
+      }
+    }
+  }
+}

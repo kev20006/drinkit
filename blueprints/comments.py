@@ -1,10 +1,11 @@
+from .utils import mongo_connect
+
 import json
 
 from flask import Blueprint, request
 from bson import ObjectId
 from datetime import datetime
 
-from .utils import mongo_connect
 
 comment = Blueprint('comment', __name__)
 

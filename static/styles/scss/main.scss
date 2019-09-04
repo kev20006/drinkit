@@ -1,25 +1,38 @@
-@import 'utilities/blocktitles', 'utilities/buttons';
-@import 'components/navbar', 'components/cards', 'components/infocard',  'components/modals', 'components/search';
+@import 'utilities/blocktitles', 'utilities/formcontrols';
+@import 'components/navbar', 'components/cards', 'components/infocard', 'components/modals',
+  'components/search', 'components/usercards.scss';
 
- main{
-    margin-top:60px;
+html,
+body {
+  height: 100%;
+}
+
+main {
+  margin-top: 60px;
 }
 
 .voted {
-    color: blue;
+  color: blue;
 }
 
-.spirit{
-    padding: 0px 10px;
-    border: 3px solid hotpink;
-    color: hotpink;
-    margin: 2px 3px;
+.spirit {
+  padding: 0px 10px;
+  border: 3px solid hotpink;
+  color: hotpink;
+  margin: 2px 3px;
 }
 
-.flavors{
-    padding: 0px 10px;
-    border: 3px solid blue;
-    color: blue;
-    margin: 2px 3px;
+.flavors {
+  padding: 0px 10px;
+  border: 3px solid blue;
+  color: blue;
+  margin: 2px 3px;
 }
 
+#page-content {
+  flex: 1 0 auto;
+}
+
+#page-footer {
+  flex-shrink: none;
+}

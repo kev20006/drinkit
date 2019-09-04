@@ -1,5 +1,6 @@
 import os
 import json
+import random
 
 from flask import session
 from bson import ObjectId
@@ -29,7 +30,6 @@ def aggregate_cocktail_previews(cocktails, page, filter, match=None):
     to create the item previews used on the index page and
     in search results
     """
-    print(page)
     page = (int(page) * 5)-5
     if match is None:
         match = {"name": {"$ne": "null"}}
@@ -38,66 +38,16 @@ def aggregate_cocktail_previews(cocktails, page, filter, match=None):
     elif filter == "popular":
         filter = "noOfVotes"
     cocktail_details = cocktails.aggregate([
+        {"$addFields": {
+            "noOfVotes": {
+                "$subtract": [
+                    {"$size": {"$ifNull": ["$votes.upvotes", []]}},
+                    {"$size": {"$ifNull": ["$votes.downvotes", []]}}
+                ]
+            }
+        }
+        },
         {"$match": match},
-        {"$lookup":
-            {
-                "from": "users",
-                "foreignField": "_id",
-                "localField": "creator",
-                "as": "creator"
-            }
-         },
-        {"$unwind":
-            {
-                'path': '$flavor_tags',
-                'preserveNullAndEmptyArrays': True
-            }
-         },
-        {"$lookup":
-            {
-                "from": "flavors",
-                "foreignField": "_id",
-                "localField": "flavor_tags",
-                "as": "flavors"
-            }
-         },
-        {"$unwind":
-            {
-                'path': '$flavors',
-                'preserveNullAndEmptyArrays': True
-            }
-         },
-        {"$unwind": "$creator"},
-        {"$unwind": "$ingredients"},
-        {"$lookup":
-            {
-                "from": "ingredients",
-                "foreignField": "_id",
-                "localField": "ingredients.ingredient",
-                "as": "ingredient_list"
-            }
-         },
-        {"$unwind": "$ingredient_list"},
-        {"$group":
-            {
-                "_id": "$_id",
-                "name": {"$min": "$name"},
-                "description": {"$min": "$description"},
-                "flavor_tags": {"$min": "$flavor_tags"},
-                "ingredients": {"$min": "$ingredients"},
-                "votes": {"$min": "$votes"},
-                "noOfVotes": {"$min": {"$subtract": [
-                    {"$size": "$votes.upvotes"},
-                    {"$size": "$votes.downvotes"}
-                ]}
-                },
-                "image_url": {"$min": "$image_url"},
-                "creator": {"$min": "$creator"},
-                "flavors": {"$addToSet": '$flavors'},
-                "created_at": {"$min": "$created_at"},
-                "ingredient_list":  {"$addToSet": '$ingredient_list'}
-            }
-         },
         {"$sort":
             {filter: -1}
          },
@@ -145,19 +95,22 @@ def add_flavor_return_id(name):
     return new_flavor["_id"]
 
 
-def find(list, key, value):
-    for i, item in enumerate(list):
-        if dic[key] == value:
-            return i
-    return -1
-
-
 def get_user():
     user = None
     if '_id' in session:
         connection = mongo_connect()
         user = connection["users"].find_one({"_id": ObjectId(session['_id'])})
     return user
+
+
+def random_cocktail():
+    """
+    return a random cocktail
+    """
+
+    connection = mongo_connect()
+    cocktails = list(connection["cocktails"].find({}))
+    return cocktails[random.randint(0, len(cocktails) - 1)]
 
 
 def genereate_mongo_query(data_dict):

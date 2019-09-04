@@ -1,0 +1,60 @@
+.btn-active {
+  position: relative;
+  background-color: hotpink;
+  box-shadow: -4px 3px blue; }
+  .btn-active:hover {
+    box-shadow: none;
+    right: 4px;
+    top: 3px; }
+
+.text-input {
+  border: 3px solid black;
+  display: block;
+  margin: 0 auto;
+  width: 95%;
+  padding: 0px 5px; }
+  .text-input:hover {
+    box-shadow: 5px 5px hotpink; }
+  .text-input:focus {
+    outline: none;
+    box-shadow: -5px -5px blue, 3px 3px hotpink; }
+
+.form-btn {
+  color: white;
+  position: relative;
+  border: none;
+  display: block;
+  margin: auto;
+  background: hotpink;
+  transform: scale(1.4);
+  box-shadow: 2px 2px black; }
+  .form-btn:hover {
+    top: 2px;
+    left: 2px; }
+
+.sort-btn {
+  color: white;
+  position: relative;
+  border: none;
+  display: block;
+  margin: auto;
+  padding: 0 10px;
+  background: hotpink;
+  box-shadow: 2px 2px black; }
+  .sort-btn:hover {
+    top: 2px;
+    left: 2px; }
+
+.delete-btn {
+  color: white;
+  position: relative;
+  border: none;
+  display: block;
+  margin: auto;
+  background: #a81a1a;
+  box-shadow: 2px 2px black; }
+  .delete-btn:hover {
+    top: 2px;
+    left: 2px; }
+
+/*# sourceMappingURL=formcontrols.css.map */

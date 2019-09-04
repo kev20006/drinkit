@@ -14,7 +14,8 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/css/main.css') }}">
 </head>
 
-<body>
+<body class="d-flex flex-column">
+    <!-- navbar-->
     <nav id="nav" class="navbar navbar-light bg-light justify-content-between fixed-top">
         <div class="d-flex">
         <div class="d-flex nav-logo mr-2">
@@ -63,13 +64,20 @@
                 <strong>USERS:</strong>
                 {% if session['username'] %}
                 <a href="{{ url_for('profiles.view_user_profile', user_id=session['_id']) }}">
-                    <span class="nav-button-3 d-md-none">
+                    <span class="nav-button-3 d-block d-md-none">
                         {{ session['username'] }}
                     </span>
                 </a>
                 <a href="{{ url_for('login_logout.logout') }}">
-                    <span class="nav-button-3 d-md-none">Log Out</span>
+                    <span class="nav-button-3 d-block d-md-none">Log Out</span>
                 </a>
+                <strong>Cocktails:</strong>
+                <span class="nav-button-3 d-block d-md-none" onclick="window.location.href = '/cocktails/new';">Add Cocktail</span>
+                <span class="nav-button-3 d-block d-md-none" onclick="window.location.href = '/cocktails/random';">Random Cocktail</span>
+                <strong>Favorites:</strong>
+                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#starred-menu">Starred Cocktails</span>
+                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#fave-flav-menu">Favorite Flavors</span>
+                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#fave-ing-menu">Favorite Ingredients</span>
                 {% else %}
                 <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#login">Login</span>
                 <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
@@ -77,9 +85,13 @@
             </div>
         </div>
     </nav>
+    <!-- end of navbar-->
+    <div id="page-content">
     {% block content %}
     {% endblock %}
-    <footer class="card w-100 sticky-bottom">
+    </div>
+    <!-- page footer-->
+    <footer id="page-footer" class="card w-100 sticky-bottom">
         <div class="card-content text-center">
             <p class="mt-4"> Drinkit was made by Kevin Stewart </p>
             <p class="mb-4"> check it out on github 
@@ -87,6 +99,7 @@
             </p>
         </div>
     </footer>
+    <!-- end of footer -->
     <!-- Login Modal -->
     <div id="login" class="modal fade" aria-labelledby="login" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -98,14 +111,14 @@
                 <p id="login-error-message"></p>
                 <div class="form-group">
                     <label for="username">Please Enter Your Username</label>
-                    <input id="username" class="modal-input" name="username" type="text" aria-describedby="username"
+                    <input id="username" class="text-input" name="username" type="text" aria-describedby="username"
                         placeholder="Enter Username" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Please Enter Your Password</label>
-                    <input id="password" name="password" class="modal-input" type="password" placeholder="Password">
+                    <input id="password" name="password" class="text-input" type="password" placeholder="Password">
                 </div>
-                <button class="modal-btn" onClick="login(this)"type="submit">Sign in</button>
+                <button class="form-btn" onClick="login(this)"type="submit">Sign in</button>
             </div>
         </div>
     </div>
@@ -130,19 +143,19 @@
                     </div>
                 </div>
                 <div class="row mx-0 px-2 text-center d-flex flex-column">
-                    <form id="new-account" action="{{ url_for('login_logout.new_user') }}" method="POST" ></form>
+                    <form id="new-account" action="{{ url_for('login_logout.new_user') }}" method="POST" >
                         <div class="form-group">
                             <label for="new-username">Please Enter Your Desired Username</label>
-                            <input id="new-username" name="newusername" class="modal-input" type="text" placeholder="new username" required>
+                            <input id="new-username" name="newusername" class="text-input" type="text" placeholder="new username" required />
                         </div>
                         
                         <div class="form-group">
                             <label for="new-password1">Please Enter Your Password</label>
-                            <input id="new-password1" name="newpassword1" class="modal-input" type="password" placeholder="password" required>
+                            <input id="new-password1" name="newpassword1" class="text-input" type="password" placeholder="password" required />
                         </div>
                         <div class="form-group">
                             <label for="new-password2">Please Re-Enter Your Password</label>
-                            <input id="new-password2" name="newpassword2" class="modal-input" type="password" placeholder="password" required>
+                            <input id="new-password2" name="newpassword2" class="text-input" type="password" placeholder="password" required />
                         </div>
                         <div class="row">
                             <div class="col-12">
@@ -150,7 +163,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button class="modal-btn" onClick="validatePasswords()" type="submit">Join Today</button>
+                            <button class="form-btn" onClick="validatePasswords(this)" type="submit">Join Today</button>
                         </div>
                     </form>
                 </div>
@@ -193,15 +206,18 @@
             <form id="radio-form" class="radio-buttons d-flex justify-content-center my-3">
                 <div class="form-check-inline">
                     <label class="form-check-label blue">
-                        <input id="or-button" type="radio" class="form-check-input" name="and-or" value="or" checked>Match All Selected
+                        <input id="or-button" type="radio" class="form-check-input" name="and-or" value="or" checked>Match Any Selected
                     </label>
                 </div>
                 <div class="form-check-inline blue">
                     <label class="form-check-label">
-                        <input id="and-button" type="radio" class="form-check-input" name="and-or" value="and">Match Any Selected
+                        <input id="and-button" type="radio" class="form-check-input" name="and-or" value="and">Match All Selected
                     </label>
                 </div>
             </form>
+            <div class="d-flex justify-content-center">
+                <p><small><strong>Match All selected requires at least one ingredient and one flavor</strong></small></p>   
+            </div>
             <h3 class="block"><span class="blue">Ingredients</span></h3>
             <p class="pink d-inline-block">Spirits</p>
             <div id="ingredients-filter-spirit" class="d-flex flex-wrap"></div>
@@ -214,15 +230,86 @@
             <h3 class="blue d-inline-block">Flavors</h3>
             <div id="flavor-filter" class="d-flex flex-wrap"></div>
             <div id="search-preview"class="d-flex flex-column justify-content-center align-items-center"> 
-                <div class="d-inline-block">Results: <span id="no-of-results">0</span></div>
-                <div class="btn-active d-inline-block" onclick="loading(this,'fetching..');getResults();">Show Results</div>
-                </form>
-                
+            <div class="form-btn d-inline-block mt-4" onclick="loading(this,'fetching..');getResults();">Show Results</div> 
             </div>
         </div>
     
     </div>
     <!-- End of Filter Menu -->
+<!-- favorite menus -->    
+    <!-- Starred Cocktails Modal -->
+    <div id="starred-menu" class="modal fade" aria-labelledby="starred-menu" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="d-flex justify-content-between mt-2 px-2">
+                    <h3 class="pink">Starred Cocktails</h3>
+                    <h3 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h3>
+                </div>
+                <ul id="starred-cocktails" class="list-group">
+                    {% if session['username'] %}
+                    {% for cocktail_id in user.starred_cocktails %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div><a href="/cocktails/{{ cocktail_id }}" class="sc-{{ cocktail_id }}"></a></div>
+                        <div class="delete-wrapper" data-id="{{ cocktail_id }}" data-user="{{ session['_id'] }}" onclick="removeFavoriteFromList(this, 'starred_cocktails')">
+                            <i data-id="{{ cocktail_id }}" data-user="{{ session['_id'] }}" class="fas fa-trash-alt"></i>
+                        </div>    
+                    </li>
+                    {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Favorite Flavors Modal -->
+    <div id="fave-flav-menu" class="modal fade" aria-labelledby="fave-flav-menu" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="d-flex justify-content-between mt-2 px-2">
+                    <h3 class="pink">Favorite Flavors</h3>
+                    <h3 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h3>
+                </div>
+                <ul id="fave-flav" class="list-group">
+                    {% if session['username'] %}
+                    {% for flavor_id in user.favorite_flavors %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div>
+                            <a class="ff-{{ flavor_id }}"></a>
+                        </div>
+                        <div class="delete-wrapper" data-id="{{ flavor_id }}" data-user="{{ session['_id'] }}"
+                        onclick="removeFavoriteFromList(this, 'favorite_flavors')">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>    
+                    </li>
+                    {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Favorite Ingredients Modal -->
+    <div id="fave-ing-menu" class="modal fade" aria-labelledby="fave-ing-menu" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="d-flex justify-content-between mt-2 px-2">
+                    <h3 class="pink">Favorite Ingredients</h3>
+                    <h3 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h3>
+                </div>
+                <ul id="fave-ing" class="list-group">
+                    {% if session['username'] %}
+                    {% for ingredient_id in user.favorite_ingredients %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div><a class="fi-{{ ingredient_id }}"></a></div>
+                        <div class="delete-wrapper" data-id="{{ ingredient_id }}" data-user="{{ session['_id'] }}"
+                        onclick="removeFavoriteFromList(this, 'favorite_ingredients')">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>    
+                    </li>
+                    {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -241,62 +328,11 @@
     <script src="/static/scripts/login/login.js" charset="utf-8"></script>
     <script src="/static/scripts/searchandfilter/search.js" charset="utf-8"></script>
     <script src="/static/scripts/searchandfilter/advFilter.js" charset="utf-8"></script>
+    <script src="/static/scripts/uiscripts.js" charset="utf-8"></script>
+    <script src="/static/scripts/loadpagedetails.js" charset="utf-8"></script>
     {% block scripts %}
     {% endblock %}
     <script>
-        const toggleSearch = () =>{
-            document.querySelector("#search").classList.toggle("d-none");
-        }
-        const toggleAdvFilters = () => {
-            document.querySelector("#adv-filter").classList.toggle("d-none");
-        }
-
-        /* When the user scrolls down, hide the navbar. When the user scrolls up, show the navbar */
-        var prevScrollpos = window.pageYOffset;
-        window.onscroll = function () {
-            var currentScrollPos = window.pageYOffset;
-            if (prevScrollpos > currentScrollPos) {
-                document.getElementById("nav").style.top = "0";
-            } else {
-                    document.getElementById("nav").style.top = "-60px";
-            }
-            prevScrollpos = currentScrollPos;
-        }
-
-        const loading = (trigger, message="") =>{
-            trigger.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${message}`;
-        }
-
-        const populateBrowser = async() =>{
-            loading(document.querySelector("#quick-filters"), "fetching ingredients")
-            const flavors= await fetch('/api/flavors/').then((response) => response.json());
-            const ingredients = await fetch('/api/ingredients/').then((response) => response.json());
-            const spirits = await fetch('/api/ingredients/spirit').then((response) => {
-                document.querySelector("#quick-filters").innerHTML = ""
-                return response.json()
-            });
-            // populate drop down
-            ingredients.forEach(({ _id, name }) => {
-                document.querySelector("#quick-filters").innerHTML += (`<a class="dropdown-item" href="/filter/ingredient/${name}">${name}</a>`)
-            })
-            // populate adv. filter 
-            flavors.forEach(flavor => {
-                document.querySelector(`#flavor-filter`)
-                    .innerHTML += `<span id="${flavor._id.$oid}" class="spirit" onclick="addToFilter(this, 'flavor_list')">${flavor.name}</span>`
-            })
-
-            //populate adv. filter 
-            ingredients.forEach(ingredient => {
-                document.querySelector(`#ingredients-filter-${ingredient.type}`)
-                    .innerHTML += `<span id="${ingredient._id.$oid}" class="spirit" onclick="addToFilter(this, 'ingredient_list')">${ingredient.name}</span>`;
-            })
-            if (typeof updateAside === "function"){
-                updateAside(flavors, "flavor");
-                updateAside(ingredients, "ingredient");
-            }
-            
-        }
-
         populateBrowser()
     </script>
 </body>

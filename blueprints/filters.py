@@ -2,10 +2,8 @@ import ast
 import json
 import math
 
-from flask import Blueprint, session, render_template, request, url_for
-from flask import redirect
+from flask import Blueprint, render_template, request, url_for
 
-from bson import ObjectId
 from bson.json_util import dumps
 
 from .utils import (mongo_connect, aggregate_cocktail_previews,
@@ -22,12 +20,12 @@ def view_by_type(type_of_search, keyword, filter=None, page=1):
     """
     query_terms = {"ingredient_list": [], "flavor_list": [], "type": "or"}
     search_id = mongo_connect()["{}s".format(type_of_search)].find_one(
-            {"name": keyword}
-        )
+        {"name": keyword}
+    )
     key = "ingredient_list" if type_of_search == "ingredient" else "flavor_list"
     query_terms[key] = [str(search_id["_id"])]
     query = genereate_mongo_query(query_terms)
-   
+
     connection = mongo_connect()
     cocktails = connection["cocktails"]
     user = get_user()
@@ -40,25 +38,15 @@ def view_by_type(type_of_search, keyword, filter=None, page=1):
     total_results = connection["cocktails"].find(query).count()
 
     max_pages = math.ceil(total_results/5)
-    """
-    for i in cocktail_previews:
-        if type_of_search == "ingredient":
-            for ingredient in i["ingredient_list"]:
-                if ingredient["name"] == keyword:
-                    output_cocktails.append(i)
-        elif type_of_search == "flavor":
-            if any(flavor["name"] == keyword for flavor in i["flavors"]):
-                output_cocktails.append(i)
-    """
     return render_template(
         'filtered.html',
         cocktails=list(cocktail_previews),
         user=user,
-        urlString="viewing > {} > {}".format(type_of_search, keyword),
+        url_string="viewing > {} > {}".format(type_of_search, keyword),
         current_page=page,
         pages=max_pages,
-        type_of_search=type_of_search, 
-        keyword=keyword, 
+        type_of_search=type_of_search,
+        keyword=keyword,
         filter=filter
     )
 
@@ -84,7 +72,8 @@ def advanced_filter(count=None):
         return dumps({"url": url})
 
 
-@filters.route('/results/<type_of_search>/<ingredients>/<flavors>/<page>')
+@filters.route('/results/<type_of_search>/<ingredients>/<flavors>/')
+@filters.route('/results/<type_of_search>/<ingredients>/<flavors>/<page>/<filter>')
 def filter_results(type_of_search, ingredients, flavors, filter=None, page=1):
     filter_dict = {
         "ingredient_list": ast.literal_eval(ingredients),
@@ -104,6 +93,7 @@ def filter_results(type_of_search, ingredients, flavors, filter=None, page=1):
     user = get_user()
     return render_template(
         'filtered.html',
+        type_of_search=type_of_search,
         cocktails=list(results),
         user=user,
         url_string="custom filter",
@@ -114,4 +104,3 @@ def filter_results(type_of_search, ingredients, flavors, filter=None, page=1):
         flavors=flavors,
         filter=filter
     )
-
