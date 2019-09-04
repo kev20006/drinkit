@@ -5,3 +5,12 @@ package.json
 package-lock.json
 .eslintrc.json
 **.pyc
+blueprints/__pycache__/add_drink.cpython-37.pyc
+blueprints/__pycache__/api.cpython-37.pyc
+blueprints/__pycache__/comments.cpython-37.pyc
+blueprints/__pycache__/delete.cpython-37.pyc
+blueprints/__pycache__/filters.cpython-37.pyc
+blueprints/__pycache__/login_logout.cpython-37.pyc
+blueprints/__pycache__/profiles.cpython-37.pyc
+blueprints/__pycache__/update.cpython-37.pyc
+blueprints/__pycache__/utils.cpython-37.pyc
