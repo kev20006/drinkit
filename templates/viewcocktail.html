@@ -72,7 +72,7 @@
                     <div class="row mx-0">
                            
 
-                            {% for flavor in cocktail.flavor_tags %}
+                        {% for flavor in cocktail.flavor_tags %}
 
                             {% if flavor in user.favorite_flavors %}
                             <span class="flavors" data-id="{{flavor}}"
@@ -95,9 +95,10 @@
                                 {% endif %}
                             </span>
                             {% endif %}
-                            {% endfor %}
-                            {% endif %}
-                        </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                        
               
             </div>
         </div>
