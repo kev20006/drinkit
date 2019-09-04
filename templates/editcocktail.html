@@ -6,7 +6,7 @@
             <div>
                 <h4>Edit Cocktail Details:</h4>
             </div>
-            <div><a class="btn btn-outline-dark" href="{{ url_for('index') }}"><i class="fas fa-times"></i></a></div>
+            <div><a class="btn btn-outline-dark" href="{{ url_for('home.index') }}"><i class="fas fa-times"></i></a></div>
         </div>
         <form>
             <div class="form-group px-4">
@@ -37,17 +37,16 @@
                 <label for="flavors">Enter a list of decriptors</label>
                 <div id="flavors" name="flavors" type="text" class="d-flex flex-wrap" aria-describedby="flavorHelp">
                     {% for i in cocktail.flavor_tags %}
-                        <div id="{{ i }}" class="flavors badge badge-secondary d-flex mx-2 px-2 w-xs-50 w-md-30 w-lg-10">loading tags..</div>
+                        <div id="{{ i }}" class="flavors align-items-center d-flex my-0 mx-1">loading tags..</div>
                     {% endfor %}
-                    <div class="flavors badge badge-secondary mx-2 px-2 w-xs-50 w-md-30 w-lg-10">
+                    <div class="flavors align-items-center d-flex my-0 mx-1">
                         <!-- remove inline styles later!! -->
-                        <input style="width:100%" list="flavor-list" id="flavor-input" type="text" placeholder="add +"
-                            onkeydown="addFlavor(event, this)">
+                        <input style="width:100%; border:none" list="flavor-list" id="flavor-input" type="text" placeholder="add +"
+                            oninput="addFlavor(this)" />
                     </div>
                 </div>
                 <datalist id="flavor-list"></datalist>
-                <small id="flavorHelp" class="form-text text-muted">please press space or enter after each
-                    descriptor</small>
+                <small id="flavorHelp" class="form-text text-muted">please press , after each descriptor </small>
             </div>
             <hr>
             <div id="ingredients">
@@ -201,21 +200,24 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/scripts/addingredient.js" charset="utf-8"></script>
-<script src="/static/scripts/getFormDetails.js" charset="utf-8"></script>
+<script src="/static/scripts/addcocktail/addingredient.js" charset="utf-8"></script>
+<script src="/static/scripts/addcocktail/getFormDetails.js" charset="utf-8"></script>
+<script src="/static/scripts/addcocktail/addAndEditControls.js" charset="utf-8"></script>
 <script>
+    //initialise and populate an array of flavor tag names
+    //pull the string names of the flavors from the db using ajax
     let addedFlavors = []
     let flavorTags = [...document.querySelector("#flavors").children].map(element =>{
         console.log(element)
         return element.id
     })
-    console.log(flavorTags)
     
     fetch('/api/flavors/')
         .then((response) => response.json())
         .then(data => {
             data.forEach(flavor => {
                 if (flavorTags.includes(flavor._id.$oid)){
+                    addedFlavors.push(flavor.name)
                     document.getElementById(flavor._id.$oid).innerHTML = ""
                     let crossIcon = document.createElement("i")
                     crossIcon.addEventListener("click", (e) => {
@@ -239,76 +241,7 @@
         })
 
     
-    let addFlavor = (event, trigger) => {
-        console.log(event.keyCode)
-        if ((event.keyCode == 13 || event.keyCode == 188) && trigger.value != "") {
-            if (addedFlavors.includes(trigger.value)) {
-                trigger.value = "";
-            } else {
-                let flavor = trigger.value
-                addedFlavors.push(flavor)
-                document.querySelector("#flavors").innerHTML = ""
-                console.log(addedFlavors)
-                addedFlavors.forEach(flavor => {
-                    console.log(flavor)
-                    let newTag = document.createElement("div")
-                    newTag.className = "flavors badge badge-secondary d-flex my-0 mx-1"
-                    let crossIcon = document.createElement("i")
-                    crossIcon.addEventListener("click", (e) => {
-                        console.log(addedFlavors)
-                        addedFlavors = addedFlavors.filter(element => {
-                            return element != flavor
-                        })
-                        console.log(addedFlavors)
-                        e.currentTarget.parentNode.remove()
-                    })
-                    crossIcon.className = "fas fa-times ml-4 mr-1"
-                    let flavorText = document.createElement("p")
-                    flavorText.className = "ml-1"
-                    flavorText.textContent = flavor
-                    newTag.appendChild(flavorText);
-                    newTag.appendChild(crossIcon);
-                    document.querySelector("#flavors").appendChild(newTag)
-                })
-                newInput = document.createElement("div")
-                newInput.classList = "flavors badge badge-secondary mx-2 px-2 w-xs-50 w-md-30 w-lg-10"
-                newInput.innerHTML = `<input style="width:100%" list="flavor-list" id="flavor-input" type="text" placeholder="add +"  onkeydown="addFlavor(event, this)">`
-                document.querySelector("#flavors").appendChild(newInput)
-            }
-        }
-    }
-
-    let unlockOther = (trigger) => {
-        if (trigger.checked) {
-            document.getElementById("other-equipment-name").disabled = false;
-        } else {
-            document.getElementById("other-equipment-name").value = "";
-            document.getElementById("other-equipment-name").disabled = false;
-        }
-    }
-
-    let newStep = () => {
-        let stepByStep = document.getElementById("step-by-step")
-        let nextStep = parseInt(stepByStep.children[stepByStep.children.length - 1].id.split("-")[1]) + 1
-        let htmlString = `
-                    <input class="form-control steps" type="text" placeholder="step ${nextStep}" onkeydown="next(this, event, newStep)">
-            `
-        let div = document.createElement("div");
-        div.className = "form-group";
-        div.id = `step-${nextStep}`
-        div.innerHTML = htmlString;
-        stepByStep.append(div);
-        div.focus()
-    }
-
-    let updatePreview = (trigger) => {
-        document.querySelector("#image-preview").src = trigger.value
-        document.querySelector("#image-preview").onerror = () => {
-            this.onerror = null;
-            document.querySelector("#image-error").textContent = "Invalid image URL placeholder will be used";
-            document.querySelector("#image-preview").src = '../static/images/placeholder.jpg';
-        };
-    }
+    
 
 
 </script>

@@ -1,4 +1,4 @@
-@import 'utilities/blocktitles';
+@import 'utilities/blocktitles', 'utilities/buttons';
 @import 'components/navbar', 'components/cards', 'components/infocard',  'components/modals', 'components/search';
 
  main{
@@ -7,5 +7,19 @@
 
 .voted {
     color: blue;
+}
+
+.spirit{
+    padding: 0px 10px;
+    border: 3px solid hotpink;
+    color: hotpink;
+    margin: 2px 3px;
+}
+
+.flavors{
+    padding: 0px 10px;
+    border: 3px solid blue;
+    color: blue;
+    margin: 2px 3px;
 }
 

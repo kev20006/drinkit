@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Drink-it</title>
+    <link rel="shortcut icon" href="#" />
     <!-- Import Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
         integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> 
@@ -18,7 +19,7 @@
         <div class="d-flex">
         <div class="d-flex nav-logo mr-2">
                 <h5>
-                    <a href="{{ url_for('index') }}">
+                    <a href="{{ url_for('home.index') }}">
                         <strong>
                             <i class="fas fa-glass-martini-alt"></i> 
                             <span class="d-none d-md-inline">Drinkit</span>
@@ -26,74 +27,85 @@
                     </a>
                 </h5>
         </div>
-        <div class="d-flex py-0 ml-4">
-            <select class="nav-search w-sm-25" type="text" id="type-filter">
-                <option disabled selected> Quick Filters </option>
-                <option>Spirits</option>
-                <option>Mixers</option>
-                <option>Garnish</option>
-                <option>Other</option>
-            </select>
-            <span class="nav-button-3 mr-2" onclick="advancedFilter()"><i class="fas fa-filter"></i></span>
+        <div class="d-flex py-0 ml-2 ml-lg-4">
+            <div class="btn-group">
+                <div type="button" class="nav-button-3 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    Browse
+            </div>
+                <div id="quick-filters" class="dropdown-menu">
+                    
+                </div>
+            </div>
         </div>
     </div>
         <div class="d-flex">
+                <span class="nav-button-3 mr-2" onclick="toggleAdvFilters()"><i class="fas fa-filter"></i></span>
                 <span class="nav-button-3" onclick="toggleSearch()"><i class="fas fa-search"></i></span>
-                <span class="nav-button-1 btn-active d-none d-md-block"><a href="{{ url_for('index', filter='recent') }}"><i class="fas fa-hourglass-start"></i></a></span>
-                <span class="nav-button-2 d-none d-md-block"><a href="{{ url_for('index', filter='popular' ) }}"><i class="fas fa-chart-line"></i></a></span>
             {% if session['username'] %}
-                <span class="nav-button-3 d-none d-md-block">
-                    <a href="{{ url_for('view_user_profile', user_id=session['_id']) }}">{{ session['username'] }}</a>
-                </span>
-                <span class="nav-button-3 d-none d-md-block" ><a href="{{ url_for('logout') }}">Log Out</a></span>
+                <a href="{{ url_for('profiles.view_user_profile', user_id=session['_id']) }}">
+                    <span class="nav-button-3 d-none d-md-block">
+                        {{ session['username'] }}
+                    </span>
+                </a>
+                <a href="{{ url_for('login_logout.logout') }}">
+                    <span class="nav-button-3 d-none d-md-block">Log Out</span>
+                </a>
+                
             {% else %}
-                <span class="nav-button-4 d-none d-md-block" data-toggle="modal" data-target="#login">Login</span>
-                <span class="nav-button-4 d-none d-md-block" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
+                <span class="nav-button-3 d-none d-md-block" data-toggle="modal" data-target="#login">Login</span>
+                <span class="nav-button-3 d-none d-md-block" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
             {% endif %}
-                <span class="nav-button-5 d-md-none navbar-toggler ml-2" data-toggle="collapse" data-target="#context-menu"><a><i class="fas fa-bars"></i></a></span>
+                <span class="nav-button-3 d-md-none navbar-toggler ml-2" data-toggle="collapse" data-target="#context-menu"><i class="fas fa-bars"></i></span>
         </div>
         <div id="context-menu" class="collapse navbar-collapse pt-3 d-md-none">
             <div class="d-flex flex-column">
-                <strong>SORT:</strong>
-                <span class="nav-button-2 d-md-none btn-active"><a href="{{ url_for('index', filter='recent') }}">
-                    <i class="fas fa-hourglass-start"></i>Most Recent</a></span>
-                <span class="nav-button-2 d-md-none"><a href="{{ url_for('index', filter='popular' ) }}"><i
-                            class="fas fa-chart-line"></i>Most Popular</a></span>
-                <hr>
                 <strong>USERS:</strong>
                 {% if session['username'] %}
-                <span class="nav-button-2 d-md-none">
-                    <a href="{{ url_for('view_user_profile', user_id=session['_id']) }}">{{ session['username'] }}</a>
-                </span>
-                <span class="nav-button-2 d-md-none"><a href="{{ url_for('logout') }}">Log Out</a></span>
+                <a href="{{ url_for('profiles.view_user_profile', user_id=session['_id']) }}">
+                    <span class="nav-button-3 d-md-none">
+                        {{ session['username'] }}
+                    </span>
+                </a>
+                <a href="{{ url_for('login_logout.logout') }}">
+                    <span class="nav-button-3 d-md-none">Log Out</span>
+                </a>
                 {% else %}
-                <span class="nav-button-2 d-block d-md-none" data-toggle="modal" data-target="#login">Login</span>
-                <span class="nav-button-2 d-block d-md-none" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
+                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#login">Login</span>
+                <span class="nav-button-3 d-block d-md-none" data-toggle="modal" data-target="#sign-up">Sign-Up</span>
                 {% endif %}
             </div>
         </div>
     </nav>
-
     {% block content %}
     {% endblock %}
+    <footer class="card w-100 sticky-bottom">
+        <div class="card-content text-center">
+            <p class="mt-4"> Drinkit was made by Kevin Stewart </p>
+            <p class="mb-4"> check it out on github 
+                <a href="https://github.com/kev20006/drinkit"><i class="fab fa-github"></i></a>
+            </p>
+        </div>
+    </footer>
     <!-- Login Modal -->
     <div id="login" class="modal fade" aria-labelledby="login" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <h4>login</h4>
-                
-                <form action="{{ url_for('login') }}" method="POST">
-                    <div class="form-group">
-                        <label for="username">Please Enter Your Username</label>
-                        <input id="username" class="modal-input" name="username" type="text" aria-describedby="username"
-                            placeholder="Enter Username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Please Enter Your Password</label>
-                        <input id="password" name="password" class="modal-input" type="password" placeholder="Password">
-                    </div>
-                    <button class="modal-btn" type="submit">Sign in</button>
-                </form>
+                <div class="d-flex justify-content-between mt-2 px-2">
+                    <h3 class="pink">Login</h3>
+                    <h3 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h3>
+                </div>
+                <p id="login-error-message"></p>
+                <div class="form-group">
+                    <label for="username">Please Enter Your Username</label>
+                    <input id="username" class="modal-input" name="username" type="text" aria-describedby="username"
+                        placeholder="Enter Username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Please Enter Your Password</label>
+                    <input id="password" name="password" class="modal-input" type="password" placeholder="Password">
+                </div>
+                <button class="modal-btn" onClick="login(this)"type="submit">Sign in</button>
             </div>
         </div>
     </div>
@@ -104,18 +116,21 @@
                 <div class="modal-content">
                 <div class="row mx-0 px-2">
                     <div class="col-12">
-                    <h4>Create Account</h4>
+                    <div class="d-flex justify-content-between mt-2 px-2">
+                        <h4 class="pink">create account</h4>
+                        <h4 class="blue" data-dismiss="modal"><i class="fas fa-times"></i></h4>
+                    </div>
                     <p>By joining drinkit you are joining a brand new community of cocktail enthusiasts. As a member you will be able to
                         share
                         your creations, offer your advice to other like minded people and follow your favorite spirits, mixers or flavors to
                         get
                         new ideas to try in your bar or at home with your friends.</p>
                     
-                    <p>To join all you need to do is provide a username and a 5 digit pin number that will serve as your password.</p>
+                    <p>To join all you need to do is provide a username and a  password.</p>
                     </div>
                 </div>
-                <div class="row mx-0 px-2">
-                    <form action="{{ url_for('new_user') }}" method="POST" onsubmit="validatePasswords()">
+                <div class="row mx-0 px-2 text-center d-flex flex-column">
+                    <form id="new-account" action="{{ url_for('login_logout.new_user') }}" method="POST" ></form>
                         <div class="form-group">
                             <label for="new-username">Please Enter Your Desired Username</label>
                             <input id="new-username" name="newusername" class="modal-input" type="text" placeholder="new username" required>
@@ -123,11 +138,11 @@
                         
                         <div class="form-group">
                             <label for="new-password1">Please Enter Your Password</label>
-                            <input id="new-password1" name="newpassword1" class="modal-input" type="password" placeholder="password" >
+                            <input id="new-password1" name="newpassword1" class="modal-input" type="password" placeholder="password" required>
                         </div>
                         <div class="form-group">
                             <label for="new-password2">Please Re-Enter Your Password</label>
-                            <input id="new-password2" name="newpassword2" class="modal-input" type="password" placeholder="password">
+                            <input id="new-password2" name="newpassword2" class="modal-input" type="password" placeholder="password" required>
                         </div>
                         <div class="row">
                             <div class="col-12">
@@ -135,27 +150,23 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button class="modal-btn" type="submit">Join Today</button>
+                            <button class="modal-btn" onClick="validatePasswords()" type="submit">Join Today</button>
                         </div>
                     </form>
-                </div>
-                <div class="row mx-0 px-2">
-                <p><strong>Disclaimer:</strong> Drinkit is a practice project and has implemented minimal security so please don't
-                    disclose any personal
-                    information, I would also advise against using your email address as your username</p>
                 </div>
             </div>
         </div>
     </div>
-
-    <div id="search" class="d-none">
+    <!-- end of sign up-->
+    <!-- Search Menu -->
+    <div id="search" class="d-none search-or-filter">
         <div class="container">
             <div class="d-flex justify-content-between">
                 <h1 class="pink">Cocktail Search</h1>
                 <h1 class="blue" onclick="toggleSearch()"><i class="fas fa-times"></i></h1>
             </div>
     
-            <h3><input class="mt-2" placeholder="enter search term" oninput="search(this)"/></h3>
+            <h3><input class="mt-2" placeholder="enter search term" type="text" onkeydown="search(this, event)"/></h3>
             <div id="results" class="row mx-0">
                 <p id="no-results"></p>
                 <ul id="cocktails-results" class="list-group col-12 col-md-3">
@@ -171,7 +182,47 @@
         </div>
     
     </div>
-
+    <!-- End of Search Menu -->
+    <!-- Filter Menu Menu -->
+    <div id="adv-filter" class="d-none search-or-filter">
+        <div class="container">
+            <div class="d-flex justify-content-between">
+                <h1 class="pink">Advanced Filters</h1>
+                <h1 class="blue" onclick="toggleAdvFilters()"><i class="fas fa-times"></i></h1>
+            </div>
+            <form id="radio-form" class="radio-buttons d-flex justify-content-center my-3">
+                <div class="form-check-inline">
+                    <label class="form-check-label blue">
+                        <input id="or-button" type="radio" class="form-check-input" name="and-or" value="or" checked>Match All Selected
+                    </label>
+                </div>
+                <div class="form-check-inline blue">
+                    <label class="form-check-label">
+                        <input id="and-button" type="radio" class="form-check-input" name="and-or" value="and">Match Any Selected
+                    </label>
+                </div>
+            </form>
+            <h3 class="block"><span class="blue">Ingredients</span></h3>
+            <p class="pink d-inline-block">Spirits</p>
+            <div id="ingredients-filter-spirit" class="d-flex flex-wrap"></div>
+            <p class="pink d-inline-block">Mixers</p>
+            <div id="ingredients-filter-mixer" class="d-flex flex-wrap"></div>
+            <p class="pink d-inline-block">Garnishes</p>
+            <div id="ingredients-filter-garnish" class="d-flex flex-wrap"></div>
+            <p class="pink d-inline-block">Others</p>
+            <div id="ingredients-filter-others" class="d-flex flex-wrap"></div>
+            <h3 class="blue d-inline-block">Flavors</h3>
+            <div id="flavor-filter" class="d-flex flex-wrap"></div>
+            <div id="search-preview"class="d-flex flex-column justify-content-center align-items-center"> 
+                <div class="d-inline-block">Results: <span id="no-of-results">0</span></div>
+                <div class="btn-active d-inline-block" onclick="loading(this,'fetching..');getResults();">Show Results</div>
+                </form>
+                
+            </div>
+        </div>
+    
+    </div>
+    <!-- End of Filter Menu -->
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -184,76 +235,69 @@
         crossorigin="anonymous"></script>
 
     <script src="/static/scripts/utilities.js" charset="utf-8"></script>   
-    <script src="/static/scripts/favorites.js" charset="utf-8"></script>
-    <script src="/static/scripts/votes.js" charset="utf-8"></script>
-    <script src="/static/scripts/validatePasswords.js" charset="utf-8"></script>
+    <script src="/static/scripts/favoritesandvotes/favorites.js" charset="utf-8"></script>
+    <script src="/static/scripts/favoritesandvotes/votes.js" charset="utf-8"></script>
+    <script src="/static/scripts/login/validatePasswords.js" charset="utf-8"></script>
+    <script src="/static/scripts/login/login.js" charset="utf-8"></script>
+    <script src="/static/scripts/searchandfilter/search.js" charset="utf-8"></script>
+    <script src="/static/scripts/searchandfilter/advFilter.js" charset="utf-8"></script>
     {% block scripts %}
     {% endblock %}
     <script>
         const toggleSearch = () =>{
             document.querySelector("#search").classList.toggle("d-none");
         }
+        const toggleAdvFilters = () => {
+            document.querySelector("#adv-filter").classList.toggle("d-none");
+        }
 
-        const search = (trigger) => {
-            typeList = ["cocktails", "users", "flavors", "ingredients"];
-            if (trigger.value == ""){
-                typeList.forEach(type => {
-                    document.querySelector(`#${type}-results`).innerHTML = "";
-                });
-            }else{
-                typeList.forEach(type =>{
-                    fetch(`/s/${type}/${trigger.value}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            document.querySelector(`#${type}-results`).innerHTML = "";
-                            if (!data.length < 1) {
-                                let title = document.createElement("li")
-                                title.innerHTML = `<strong>${type}</strong>`
-                                title.className = "list-group-item pink mb-2 result-title"
-                                document.querySelector(`#${type}-results`).appendChild(title)
-                                data.forEach(element => {
-                                    let newItem = createItem(type,element)
-                                    document.querySelector(`#${type}-results`).appendChild(newItem)
-                                })
-                            }
-                        })
-                        .catch(error => console.error(error));
-                })
-                //catch no results returned
-                if( !document.querySelector(`#cocktails-results`).hasChildNodes  &&
-                    document.querySelector(`#users-results`).hasChildNodes &&
-                    document.querySelector(`#flavors-results`).hasChildNodes &&
-                    document.querySelector(`#ingredients-results`).hasChildNodes)
-                    {
-                        document.querySelector("#no-results").textContent = "No Results Found"
-                    }
-                    else{
-                        document.querySelector("#no-results").textContent = ""
-                    }
+        /* When the user scrolls down, hide the navbar. When the user scrolls up, show the navbar */
+        var prevScrollpos = window.pageYOffset;
+        window.onscroll = function () {
+            var currentScrollPos = window.pageYOffset;
+            if (prevScrollpos > currentScrollPos) {
+                document.getElementById("nav").style.top = "0";
+            } else {
+                    document.getElementById("nav").style.top = "-60px";
+            }
+            prevScrollpos = currentScrollPos;
+        }
 
+        const loading = (trigger, message="") =>{
+            trigger.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${message}`;
+        }
+
+        const populateBrowser = async() =>{
+            loading(document.querySelector("#quick-filters"), "fetching ingredients")
+            const flavors= await fetch('/api/flavors/').then((response) => response.json());
+            const ingredients = await fetch('/api/ingredients/').then((response) => response.json());
+            const spirits = await fetch('/api/ingredients/spirit').then((response) => {
+                document.querySelector("#quick-filters").innerHTML = ""
+                return response.json()
+            });
+            // populate drop down
+            ingredients.forEach(({ _id, name }) => {
+                document.querySelector("#quick-filters").innerHTML += (`<a class="dropdown-item" href="/filter/ingredient/${name}">${name}</a>`)
+            })
+            // populate adv. filter 
+            flavors.forEach(flavor => {
+                document.querySelector(`#flavor-filter`)
+                    .innerHTML += `<span id="${flavor._id.$oid}" class="spirit" onclick="addToFilter(this, 'flavor_list')">${flavor.name}</span>`
+            })
+
+            //populate adv. filter 
+            ingredients.forEach(ingredient => {
+                document.querySelector(`#ingredients-filter-${ingredient.type}`)
+                    .innerHTML += `<span id="${ingredient._id.$oid}" class="spirit" onclick="addToFilter(this, 'ingredient_list')">${ingredient.name}</span>`;
+            })
+            if (typeof updateAside === "function"){
+                updateAside(flavors, "flavor");
+                updateAside(ingredients, "ingredient");
             }
             
         }
 
-        const createItem = (type, item) => {
-            let newItem = document.createElement("li")
-            newItem.className = "list-group-item";
-            switch (type){
-                case "cocktails":
-                    newItem.innerHTML = `<a href="/v/cocktail/${item._id.$oid}">${item.name}</a>`
-                break;
-                case "users":
-                    newItem.innerHTML = `<a href="/v/user_profile/${item._id.$oid}">${item.username}</a>`
-                break;
-                case "ingredients":
-                    newItem.innerHTML = `<a href="/v/ingredient/${item.name}">${item.name}</a>`
-                break;
-                case "flavors":
-                    newItem.innerHTML = `<a href="/v/flavor/${item.name}">${item.name}</a>`
-                break;
-            }
-            return newItem;
-        }
+        populateBrowser()
     </script>
 </body>
 </html>

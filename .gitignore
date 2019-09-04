@@ -1,2 +1,4 @@
 todo
 environment.py
+**/*.css.map
+tests/__pycache__
