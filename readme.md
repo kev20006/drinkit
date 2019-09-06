@@ -198,20 +198,16 @@ The data is stored using
 Automated testing has been added in the ./tests folder, and can be run using pythons unit test.
 
 ```
-python3 run - put actual code here
+python -m unittest -v
 ```
 
 Tests have been included for following:
 
 - URL GET Routes - to test if pages are being served correctly.
-- API Routes - to test if API routes are serving the correct json files
-- Utils - to test if pure functions are returning expected values.
 
 **problem:**
 
 I could not figure out mocking a database, so failed to automate tests for that, Post Methods were tested manually.
-
-Additionally Jasmine has been used to unittest the js pure functions.
 
 ### Manual Testing
 
