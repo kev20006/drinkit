@@ -124,6 +124,12 @@ Attached in the this repo in the **name folder here**
 
 Wireframes are evaluated against final production version here
 
+### Wireframes
+
+All wireframes can be found in the documentation folder.
+
+However an analysis of the wireframe can also be found [here](https://github.com/kev20006/drinkit/blob/master/documentation/Drinkit%20Wireframes.pdf)
+
 ## UX - Surface
 
 I had intially opted for a very plain UI, comprising of mostly default bootstrap components, however, when browsing other cocktail sites, to get ideas for reciepes i noticed that many of them were quite visually striking. I was particularly taken by the Brutalist design of [Esquire](https://www.esquire.com/food-drink/) - and took some key design points from that along with other brutalist sites like [dev.to](https://dev.to/)
@@ -137,6 +143,122 @@ All clickable links underline when they are hovered, again this is a throwback t
 Interactions on the page that send requests to the server all display a loading spinner while the are waiting for a response from the server.
 
 ## Data
+
+The data in the backend uses a NoSQL database, whilst noSQL doesn't enfore a strict schema, I tried to stick to the following as closely as possible
+![alt text](https://github.com/kev20006/drinkit/blob/master/documentation/Schema.PNG "database schema")
+
+### Cocktails
+The cocktails document contains all the user submitted cocktails in the database, most of this should be self explanatory. However a couple of points are worth mentioning. 
+votes are an array of user ids, whilst this consumes more space than just having an incrementing value, it prevents users from spam upvoting their own cocktails, or review bombing others.
+#### Sample Cocktail JSON
+```
+{
+   "_id":{"$oid":"5c8d09761c9d44000012beea"},
+   "name":"dark and stormy",
+   "description":"The Dark and Stormy is a drink that came to be in the Caribbean waters, where rum is plentiful and so are sailors. It’s a drink that was spit out by the sea, more or less. It’s a drink with a really cool name.",
+   "flavor_tags":[
+      {"$oid":"5c9b05761c9d440000b3a3d1"},
+      {"$oid":"5c9b05e51c9d440000a1d0cf"},
+      {"$oid":"5cb60f63fc7d4000044adaca"}
+   ],
+   "ingredients":[
+      {
+         "ingredient":{"$oid":"5c9a42f11c9d440000cde72c"},
+         "quantity":"2",
+         "units":"oz",
+         "type":"spirit"
+      },
+      {
+         "ingredient": {"$oid":"5c9a44bb1c9d440000cde72e"},
+         "quantity":"0.5",
+         "units":"oz",
+         "type":"mixer"
+      },
+      {
+         "ingredient":{"$oid":"5c9a44fc1c9d440000cde72f"},
+         "quantity":"3",
+         "units":"oz",
+         "type":"mixer"
+      },
+      {
+         "ingredient":{"$oid":"5c9a45281c9d440000cde730"},
+         "quantity":"1",
+         "units":"slice",
+         "type":"garnish"
+      }
+   ],
+   "votes":{
+      "downvotes":[],
+      "upvotes":[
+         "5cab8f5907130600048685c4",
+         "5cad97ca7589b90004319321",
+         "5ca4ba55ec4ad1038c0c2ba1"
+       ]
+   },
+   "method":[
+      "Fill Glass With Ice",
+      "Add Rum",
+      "Add Ginger Beer",
+      "(Optional) Add Lime Juice",
+      "Garnish With Lime"],
+   "glass":"highball",
+   "equipment":[],
+   "creator":{"$oid":"5ca4ba55ec4ad1038c0c2ba1"},
+   "flagged":{"$numberInt":"0"},
+   "created_at":"2019-03-27 09:04:53.259622",
+   "updated_at":"2019-06-26 09:26:31.045229",
+   "image_url":"https://cdn.liquor.com/wp-content/uploads/2017/11/22150958/dark-n-stormy-720x720-recipe.jpg"
+}
+```
+
+### Users
+By default a user doesn't have a profile pic or a bio, however these will be added to the document if the user creates a profile.
+starred cocktails and favorites are simply arrays of cocktail or flavor ids that link them to the corresponding documents in the cocktails colleciton
+
+#### sample JSON
+```
+{
+   "_id":{"$oid":"5d1ae298c2755621a137192b"},
+   "username":"flobbins",
+   "passhash":result of sha_256 encryption
+   "date_joined":"2019-07-02 11:50:32.175767",
+   "starred_cocktails":[{"$oid":"5cacb7e6ec4ad1236c11911d"},{"$oid":"5d1b585806e536000485d60b"}],
+   "favorite_ingredients":[{"$oid":"5c9a45281c9d440000cde730"},{"$oid":"5cab524eec4ad12098cc2807"}],
+   "favorite_flavors":[{"$oid":"5c9b05761c9d440000b3a3d1"},{"$oid":"5cab524dec4ad12098cc2805"}],
+   "bio":"dfgdfgs",
+   "profile_pic":"http://custom-gwent.com/cardsBg/1104730b3c4a83f3c8bcd13c97caccb0.jpeg"
+}
+```
+#### Ingredients and Flavors
+These collections are essentially the same. they are primarily used for filtering and searching more efficiently without the need for text matching.
+
+#### sample JSON
+```
+{"_id":{"$oid":"5c9a44bb1c9d440000cde72e"},"name":"ginger beer","type":"mixer"}
+{"_id":{"$oid":"5cab524cec4ad12098cc2801"},"name":"breakfast"}
+```
+
+
+#### Comments
+Each comment is stored as a document, each comment is associated with a cocktail, as these are the only things that can recieve comments at this stage. Additionally if a comment has a parent, the parent document is referenced. In a similar way to how votes are tracked for each cocktail, each comment maintains an array of who has upvoted it and downvoted it.
+
+#### sample JSON
+```
+{
+   "_id":{"$oid":"5cb89455ec4ad1376049f575"},
+   "user_id":{"$oid":"5ca4ba55ec4ad1038c0c2ba1"},
+   "parent":"",
+   "cocktail_id":{"$oid":"5cb640dfab711700046834ad"},
+   "comment":"test comment",
+   "votes":{
+      "upvotes":["5ca4ba55ec4ad1038c0c2ba1","5cbde439031094000425b301"],
+      "downvotes":[]
+      },
+   "reported":{"$numberInt":"0"},
+   "created_at":"2019-04-18 22:14:29.420542"
+}
+```
+
 
 ## Features
 
@@ -321,11 +443,11 @@ When the aggregate query is performed, it filters out query results that have no
 
 #### Bug 2: App is very slow to load index page and search results:
 
-**Status**: identified
+**Status**: fixed
 
 The large aggregate query that was filtering out cocktails was also causing problems with loading times (it took upwards of 3 seconds to complete on a small dataset - this could only get exponentially worse). Each cocktail preview is making 4 calls to the database, querying cocktails, looking up flavors, looking up ingredients, looking up users.
 
-**Solution**: Planned change to the implementation of the initial query and aggregating results
+**Solution**: Aggregate query was removed, core information for page load is render, and additional supplemental information is done with api calls and loaded onto the page when ready, they combined with the solution for the next bug greatly improved load time
 
 #### Bug 3: App is taking quite a while to load all page elements from partial page loads.
 
@@ -334,6 +456,8 @@ The large aggregate query that was filtering out cocktails was also causing prob
 Lots of content on the app, cocktail names in the sidebar, search and filter lists, favorites are taking a long time to load. Leaving users essentially stuck in the homepage for a few seconds.
 
 **Solution**: Tidy up the API calls, many items are being called more than once, all of these could be condensed into a single api call. Cacheing may be implemented to further speed this up.
+
+**Solution Revisited**: API calls were grouped together, so that each collection is only called at most once per page.
 
 #### Bug 4: Favorites were not updating until page refresh.
 
@@ -362,9 +486,15 @@ Create a Mongo DB database skeleton with collections named as follows:
 - ingredients
 - flavors
 
-Using .env.sample create a .env file.
+You will need to create the following enviroment variables:
 
-from the project route directory run
+**DBS_NAME**: This is a string that contains the name of your database
+**MONGO_URI**: This is a string that contains the URI of your mongo DB
+n.b. if you want to use another noSQL db some extra config will be required
+**SECRET_KEY**: this is the secret key used for sha_crypt_256
+**VERSION**: version does not need to be included in your dev environment, but if you are launchin a production version this variable must be set to **"PROD"** to disable the dev server
+
+From the project route directory run
 
 python3 app.py
 
